@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ErrorPage from './pages/ErrorPage';
 import Home from './pages/Home';
 import DefaultLayout from './layouts/DefaultLayout';
+import WaitingRoom from './pages/WaitingRoom';
 
 
 function App() {
@@ -13,7 +14,14 @@ function App() {
       element: <DefaultLayout />,
       errorElement: <ErrorPage />,
       children: [
-        {index: true, element: <Home />}
+        {
+          index: true, 
+          element: <Home />
+        },
+        {
+          path: "/waiting-room",
+          element: <WaitingRoom />
+        }
       ]
     }
   ])
