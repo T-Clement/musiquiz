@@ -1,0 +1,12 @@
+[
+    {
+      "id": 123,
+      "roomId": 1,
+      "roomName": "Hits Rock"
+    },
+    {
+      "id": 124,
+      "roomId": 2,
+      "roomName": "Jazz Vibes"
+    }
+  ]

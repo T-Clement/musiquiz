@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 
 
@@ -9,8 +9,14 @@ function WaitingRoom() {
   let { id } = useParams();
   console.log(id);
 
+
+
+
   return (
-    <div>WaitingRoom</div>
+    <>
+      <Link to={'/'}>Home</Link>
+      <div>WaitingRoom</div>
+    </>
   )
 }
 

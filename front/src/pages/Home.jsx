@@ -1,25 +1,47 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Router, useNavigate } from 'react-router-dom';
+import { checkIfRoomExists } from '../rooms';
 
 function Home() {
 
   const [roomCode, setRoomCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const navigate = useNavigate();
 
   const handleChange = (e) => setRoomCode(e.target.value);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Go to room with id : " + roomCode);
-    navigate(`/waiting-room/${roomCode}`);
+    console.log("Go to room with id : ")
+    console.log(roomCode);
+
+
+
+    const roomExists = await checkIfRoomExists(roomCode);
+    console.log(roomExists);
+    if(roomExists) {
+      navigate(`/waiting-room/${roomCode}`);
+    } else {
+      setErrorMessage("Aucune salle n'a été trouvée avec cet identifiant.");
+    }
+
+
+
 
     // Loader 
 
     // if no current room at this id -> show error message
     
     // else if current room at this id -> navigate to it
+
+    
+    // check if room exists -> API
+
+    //
+
 
   }
 
@@ -29,6 +51,7 @@ function Home() {
         <input type="search" name="roomCode" onChange={handleChange}/>
         <input type='submit' value="Rejoindre"/>
       </form>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </div>
   )
 }
