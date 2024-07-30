@@ -20,10 +20,10 @@ function Home() {
 
 
 
-    const roomExists = await checkIfRoomExists(roomCode);
-    console.log(roomExists);
-    if(roomExists) {
-      navigate(`/waiting-room/${roomCode}`);
+    const room = await checkIfRoomExists(roomCode);
+    console.warn(room);
+    if(room) {
+      navigate(`/waiting-room/${roomCode}`, { state : { room } });
     } else {
       setErrorMessage("Aucune salle n'a été trouvée avec cet identifiant.");
     }
