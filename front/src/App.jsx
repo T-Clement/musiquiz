@@ -19,7 +19,7 @@ function App() {
           element: <Home />
         },
         {
-          path: "/waiting-room",
+          path: "waiting-room/:id",
           element: <WaitingRoom />
         }
       ]

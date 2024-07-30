@@ -13,7 +13,7 @@ function Home() {
     e.preventDefault();
 
     console.log("Go to room with id : " + roomCode);
-    navigate(`/waiting-room?id=${roomCode}`);
+    navigate(`/waiting-room/${roomCode}`);
 
     // Loader 
 
