@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Router, useNavigate } from 'react-router-dom';
 import { checkIfRoomExists } from '../rooms';
+import Tab from '../components/Tab'; 
 
 function Home() {
 
+  const [tabSelected, setTabSelected] = useState("Code");
   const [roomCode, setRoomCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
 
 
   const navigate = useNavigate();
@@ -47,6 +50,20 @@ function Home() {
 
   return (
     <div>
+
+      <h2>Rejoindre une partie</h2>
+
+      <div>
+        <Tab title="Code" setActiveTab={ () => setTabSelected("Code") } isActive={tabSelected === "Code"} />
+        <Tab title="QrCode" setActiveTab={ () => setTabSelected("QrCode") } isActive={tabSelected === "QrCode"} />
+      </div>
+
+
+      <div>
+        {/* { tabSelected === "Code" && <JoinRoomSearchInput />}
+        { tabSelected === "QrCode" && <JoinRoomQrCode />} */}
+      </div>
+
       <form action='' method='' onSubmit={handleSubmit}> 
         <input type="search" name="roomCode" onChange={handleChange}/>
         <input type='submit' value="Rejoindre"/>
