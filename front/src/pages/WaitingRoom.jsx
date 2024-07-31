@@ -9,7 +9,7 @@ function WaitingRoom() {
   let { id } = useParams();
   console.log(id);
   const { state } = useLocation();
-  const { waitingRoomId, roomId, roomName} = state.room;
+  const { waitingRoomId, roomId, roomName } = state.room;
   console.log(state);
 
   console.warn(waitingRoomId);
