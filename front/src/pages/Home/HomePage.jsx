@@ -22,8 +22,10 @@ function HomePage() {
 
     <div>
 
-      <h2>Rejoindre une partie</h2>
-      <JoinGameSection />
+      <section>
+        <h2>Rejoindre une partie</h2>
+        <JoinGameSection />
+      </section>
       
     </div>
   )

@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { checkIfRoomExists } from '../../rooms';
 import Tab from '../../components/Tab';
+import JoinRoomSearchInput from './JoinRoomSearchInput';
+import JoinRoomQrCode from './JoinRoomQrCode';
 
 function JoinGameSection() {
     
@@ -36,15 +38,15 @@ function JoinGameSection() {
         </div>
 
         <div>
-            {/* { tabSelected === "Code" && <JoinRoomSearchInput />}
-            { tabSelected === "QrCode" && <JoinRoomQrCode />} */}
+            { tabSelected === "Code" && 
+            <JoinRoomSearchInput 
+                errorMessage = { errorMessage }
+                onChangeInput = {handleChange}
+                roomCode = { roomCode }
+                onSubmitForm = { handleSubmit } 
+            />}
+            { tabSelected === "QrCode" && <JoinRoomQrCode />}
         </div>
-
-        <form action='' method='' onSubmit={handleSubmit}> 
-            <input type="search" name="roomCode" onChange={handleChange}/>
-            <input type='submit' value="Rejoindre"/>
-        </form>
-        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     
     </div>
   )
