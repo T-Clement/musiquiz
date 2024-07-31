@@ -1,9 +1,9 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ErrorPage from './pages/ErrorPage';
-import Home from './pages/Home';
 import DefaultLayout from './layouts/DefaultLayout';
 import WaitingRoom from './pages/WaitingRoom';
+import HomePage from './pages/Home/HomePage';
 
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
       children: [
         {
           index: true, 
-          element: <Home />
+          element: <HomePage />
         },
         {
           path: "waiting-room/:id",
