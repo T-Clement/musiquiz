@@ -33,7 +33,7 @@ function JoinGameSection() {
 
         <div className='mt-3 flex flex-col justify-center items-center'>
 
-            <div className='rounded-lg overflow-hidden'>
+            <div className='rounded-full overflow-hidden'>
                 <Tab title="Code" setActiveTab={() => setTabSelected("Code")} isActive={tabSelected === "Code"} />
                 <Tab title="QrCode" setActiveTab={() => setTabSelected("QrCode")} isActive={tabSelected === "QrCode"} />
             </div>

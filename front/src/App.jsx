@@ -4,6 +4,7 @@ import ErrorPage from './pages/ErrorPage';
 import {DefaultLayout} from './layouts/DefaultLayout';
 import {WaitingRoom} from './pages/WaitingRoom';
 import {HomePage} from './pages/Home/HomePage';
+import { RoomPage } from './pages/Room/RoomPage';
 
 
 export function App() {
@@ -17,6 +18,10 @@ export function App() {
         {
           index: true, 
           element: <HomePage />
+        },
+        {
+          path: "room/:id",
+          element: <RoomPage />
         },
         {
           path: "waiting-room/:id",
