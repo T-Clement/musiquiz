@@ -23,7 +23,7 @@ export function HomePage() {
     <div>
 
       <section>
-        <h2>Rejoindre une partie</h2>
+        <h2 className='mt-8'>Rejoindre une partie</h2>
         <JoinGameSection />
       </section>
 
