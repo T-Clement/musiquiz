@@ -17,8 +17,50 @@ export function RoomPage() {
 
 
   return (
-    <div>
-        RoomPage - id : {id}
+    <div className='p-2'>
+        <p>RoomPage - id : {id}</p>
+        {/* Scoreboard */}
+        <div className='border w-full border-white'>
+           
+           <div className='w-1/3 bg-cyan-800'> 
+                <table className='mt-6 w-full border border-lime-800 h-[400px]'>
+                    <thead>
+                        <tr className='flex flex-row gap-x-4'>
+                            <th className=''>#</th>
+                            <th className='me-auto'>User</th>
+                            <th className='pe-2'>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr className='flex flex-row gap-x-4'>
+                            <td className=''>1</td>
+                            <td className='me-auto'>ClemClemeClem</td>
+                            <td className='pe-2'>7000 pts</td>
+                        </tr>
+                        <tr className='flex flex-row gap-x-4'>
+                            <td className=''>1</td>
+                            <td className='me-auto'>Clem</td>
+                            <td className='pe-2'>7000 pts</td>
+                        </tr>
+                        <tr className='flex flex-row gap-x-4'>
+                            <td className=''>1</td>
+                            <td className='me-auto'>Clem</td>
+                            <td className='pe-2'>7000 pts</td>
+                        </tr>
+                        <tr className='flex flex-row gap-x-4'>
+                            <td className=''>1</td>
+                            <td className='me-auto'>Clem</td>
+                            <td className='pe-2'>7000 pts</td>
+                        </tr>
+                    </tbody>
+                </table>
+           </div>
+
+
+
+        </div>
+
+
     </div>
   )
 }
