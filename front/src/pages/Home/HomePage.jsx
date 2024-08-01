@@ -23,22 +23,35 @@ export function HomePage() {
 
     <div className='px-4'>
 
-      <section>
-        <h2 className='mt-8'>Rejoindre une partie</h2>
+      <section className='mt-8'>
+        <h2 className=''>Rejoindre une partie</h2>
         <JoinGameSection />
       </section>
 
-      <section>
+      <section className='mt-8'>
         <h2>Top 3</h2>
         <div className='flex flex-col'>
-          <p>FAIRE APPEL A LA VUE DANS LA BDD</p>
           
           <Link className='underline' to={"/room/1"} >Room 1</Link>
           <Link className='underline' to={"/room/2"} >Room 2</Link>
           <Link className='underline' to={"/room/3"} >Room 3</Link>
+
         </div>
       </section>
       
+      <section className='mt-8'>
+        <h2>Themes</h2>
+        <p>Theme 1</p>
+        <p>Theme 2</p>
+        <p>Theme 3</p>
+      </section>
+
+      <section className='mt-8'>
+        <p>Random</p>
+      </section>
+
+
+
     </div>
   )
 }

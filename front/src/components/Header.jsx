@@ -7,7 +7,9 @@ export function Header() {
         
         <h1 className='me-auto'><Link to="/">Musiquiz</Link></h1>
 
-        <nav>
+        
+
+        <nav className='hidden md:block'>
             <ul className='flex gap-x-6'>
                 <li>Parcourir</li>
                 <li>Compte</li>
