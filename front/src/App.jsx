@@ -1,12 +1,12 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ErrorPage from './pages/ErrorPage';
-import DefaultLayout from './layouts/DefaultLayout';
-import WaitingRoom from './pages/WaitingRoom';
-import HomePage from './pages/Home/HomePage';
+import {DefaultLayout} from './layouts/DefaultLayout';
+import {WaitingRoom} from './pages/WaitingRoom';
+import {HomePage} from './pages/Home/HomePage';
 
 
-function App() {
+export function App() {
 
   const router = createBrowserRouter([
     {
@@ -29,4 +29,3 @@ function App() {
   return <RouterProvider router = {router} />
 }
 
-export default App

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import JoinGameSection from './JoinGameSection';
 
-function HomePage() {
+export function HomePage() {
 
     // Loader 
 
@@ -26,9 +26,16 @@ function HomePage() {
         <h2>Rejoindre une partie</h2>
         <JoinGameSection />
       </section>
+
+      <section>
+        <h2>Top 3</h2>
+        <div>
+          FAIRE APPEL A LA VUE DANS LA BDD
+        </div>
+      </section>
       
     </div>
   )
 }
 
-export default HomePage
+// export default HomePage

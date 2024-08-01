@@ -31,14 +31,14 @@ function JoinGameSection() {
 
     return (
 
-        <div>
+        <div className='mt-3'>
 
-            <div>
+            <div className=''>
                 <Tab title="Code" setActiveTab={() => setTabSelected("Code")} isActive={tabSelected === "Code"} />
                 <Tab title="QrCode" setActiveTab={() => setTabSelected("QrCode")} isActive={tabSelected === "QrCode"} />
             </div>
 
-            <div>
+            <div className='mt-3'>
                 {tabSelected === "Code" &&
                     <JoinRoomSearchInput
                         errorMessage={errorMessage}

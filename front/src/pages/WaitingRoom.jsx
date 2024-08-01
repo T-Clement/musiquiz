@@ -4,7 +4,7 @@ import { Link, useLocation, useParams } from 'react-router-dom'
 
 
 
-function WaitingRoom() {
+export function WaitingRoom() {
 
   let { id } = useParams();
   console.log(id);
@@ -16,7 +16,7 @@ function WaitingRoom() {
 
   return (
     <>
-      <Link to={'/'}>Home</Link>
+      <Link to={'/'} className='link'>Home</Link>
       <div>Welcome to the WaitingRoom !</div>
       <div>
         <p>ID : {waitingRoomId}</p>
@@ -26,5 +26,3 @@ function WaitingRoom() {
     </>
   )
 }
-
-export default WaitingRoom

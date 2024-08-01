@@ -1,6 +1,6 @@
 function Tab({ title, setActiveTab, isActive }) {
   return (
-    <button onClick={setActiveTab} style={{fontWeight: isActive ? "bold" : "normal"}}>
+    <button className="p-2 border rounded-sm" onClick={setActiveTab} style={{fontWeight: isActive ? "bold" : "normal"}}>
         {title}
     </button>
   )
