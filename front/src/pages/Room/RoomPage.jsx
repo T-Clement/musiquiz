@@ -7,7 +7,7 @@ export function RoomPage() {
 
     console.log(`In room page id ${id}`);
 
-
+    // count of parties played
 
     // room classement
 
@@ -22,7 +22,7 @@ export function RoomPage() {
         {/* Scoreboard */}
         <div className='border w-full border-white'>
            
-           <div className='w-full md:w-1/3 bg-cyan-800'> 
+            <div className='w-full md:w-1/3 bg-cyan-800'> 
                 <table className='w-full border border-lime-800 h-[400px]'>
                     <thead>
                         <tr className='flex flex-row gap-x-4'>
@@ -54,8 +54,13 @@ export function RoomPage() {
                         </tr>
                     </tbody>
                 </table>
-           </div>
+            </div>
 
+            <div className='w-full md:w-2/3'>
+                <h3>Multijoueur</h3>
+                <button>Créer une partie</button>
+                <button disabled>Créer une partie <br/> personnalisée</button>
+            </div>
 
 
         </div>
