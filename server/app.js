@@ -28,6 +28,10 @@ app.use((req, res, next) => { // middleware pour le CORS
 app.use('/api/user/', userRoutes);
 
 
+// 404 route to place at the end
+app.get('*', (req, res, next) => {
+    res.status(404).json({message : "404, ressource not found"})
+})
 
 
 module.exports = app; // export pour pouvoir avoir accès à cette constante depuis les autres fichiers, notamment celui de notre server Node
