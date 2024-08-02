@@ -1,12 +1,14 @@
 import './App.css'
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import ErrorPage from './pages/ErrorPage';
-import DefaultLayout from './layouts/DefaultLayout';
-import WaitingRoom from './pages/WaitingRoom';
-import HomePage from './pages/Home/HomePage';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ErrorPage } from './pages/ErrorPage';
+import { DefaultLayout } from './layouts/DefaultLayout';
+import { WaitingRoom } from './pages/WaitingRoom';
+import { HomePage } from './pages/Home/HomePage';
+import { RoomPage } from './pages/Room/RoomPage';
+import { Page404 } from './pages/Page404';
 
 
-function App() {
+export function App() {
 
   const router = createBrowserRouter([
     {
@@ -19,8 +21,16 @@ function App() {
           element: <HomePage />
         },
         {
+          path: "room/:id",
+          element: <RoomPage />
+        },
+        {
           path: "waiting-room/:id",
           element: <WaitingRoom />
+        },
+        {
+          path : "*", 
+          element: <Page404 />
         }
       ]
     }
@@ -29,4 +39,3 @@ function App() {
   return <RouterProvider router = {router} />
 }
 
-export default App

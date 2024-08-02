@@ -6,7 +6,7 @@ import JoinRoomSearchInput from './JoinRoomSearchInput';
 import JoinRoomQrCode from './JoinRoomQrCode';
 
 function JoinGameSection() {
-    
+
     const [tabSelected, setTabSelected] = useState("Code");
     const [roomCode, setRoomCode] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -20,7 +20,7 @@ function JoinGameSection() {
 
         const room = await checkIfRoomExists(roomCode);
 
-        if(room) {
+        if (room) {
             navigate(`/waiting-room/${roomCode}`, { state: { room } });
         } else {
             setErrorMessage("Aucune salle n'a été trouvée avec cet identifiant");
@@ -29,27 +29,28 @@ function JoinGameSection() {
 
 
 
-  return (
-    <div>
+    return (
 
-        <div>
-            <Tab title="Code" setActiveTab={ () => setTabSelected("Code") } isActive={tabSelected === "Code"} />
-            <Tab title="QrCode" setActiveTab={ () => setTabSelected("QrCode") } isActive={tabSelected === "QrCode"} />
-        </div>
+        <div className='mt-3 flex flex-col justify-center items-center'>
 
-        <div>
-            { tabSelected === "Code" && 
-            <JoinRoomSearchInput 
-                errorMessage = { errorMessage }
-                onChangeInput = {handleChange}
-                roomCode = { roomCode }
-                onSubmitForm = { handleSubmit } 
-            />}
-            { tabSelected === "QrCode" && <JoinRoomQrCode />}
+            <div className='rounded-full overflow-hidden'>
+                <Tab title="Code" setActiveTab={() => setTabSelected("Code")} isActive={tabSelected === "Code"} />
+                <Tab title="QrCode" setActiveTab={() => setTabSelected("QrCode")} isActive={tabSelected === "QrCode"} />
+            </div>
+
+            <div className='mt-3'>
+                {tabSelected === "Code" &&
+                    <JoinRoomSearchInput
+                        errorMessage={errorMessage}
+                        onChangeInput={handleChange}
+                        roomCode={roomCode}
+                        onSubmitForm={handleSubmit}
+                    />}
+                {tabSelected === "QrCode" && <JoinRoomQrCode />}
+            </div>
+
         </div>
-    
-    </div>
-  )
+    )
 }
 
 export default JoinGameSection

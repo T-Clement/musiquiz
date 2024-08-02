@@ -4,19 +4,19 @@ import { Link, useLocation, useParams } from 'react-router-dom'
 
 
 
-function WaitingRoom() {
+export function WaitingRoom() {
 
   let { id } = useParams();
   console.log(id);
   const { state } = useLocation();
-  const { waitingRoomId, roomId, roomName} = state.room;
+  const { waitingRoomId, roomId, roomName } = state.room;
   console.log(state);
 
   console.warn(waitingRoomId);
 
   return (
     <>
-      <Link to={'/'}>Home</Link>
+      <Link to={'/'} className='link'>Home</Link>
       <div>Welcome to the WaitingRoom !</div>
       <div>
         <p>ID : {waitingRoomId}</p>
@@ -26,5 +26,3 @@ function WaitingRoom() {
     </>
   )
 }
-
-export default WaitingRoom
