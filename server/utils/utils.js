@@ -1,5 +1,6 @@
 
  exports.generatePasswordHash = async (password, saltRounds) => {
+    
     const bcrypt = require('bcrypt');
 
     try {

@@ -42,44 +42,60 @@ exports.create = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() })
     }
     
-
+    
     const validatedData = matchedData(req);
-
+    
     const { pseudo, email, password } = validatedData;
-
+    
     console.log(pseudo, email, password);
     
 
-    // check if user with same mail exists
-    if(!User.checkMail(email)) {
-        return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec cette addresse" })
-    }
 
-    // check if user with same pseudo exists
-    if(!User.checkPseudo(pseudo)) {
-        return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec ce pseudo" })
-    }
-
-
-    // all good
-    // encrypt passsword and send to database
 
     try {
 
-        const saltRounds = 10;
+        // check if user with same pseudo exists
+        const pseudoExists = await User.checkPseudo(pseudo);
+        console.log('pseudo exists : '  + pseudoExists);
+
+        if(!pseudoExists ) {
+            return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec ce pseudo" })
+        }
+
         
+        // check if user with same mail exists
+        const emailExists = await User.checkMail(email);
+        console.log('mail exists : '  + emailExists);
+        if(!emailExists) {
+            return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec cette addresse" })
+        }
+
+
+
+        // all good
+        // encrypt passsword and send to database
+
+        
+        const saltRounds = 10;
         const hashedPassword = await utils.generatePasswordHash(password, saltRounds);
         
-        console.log(password, hashedPassword);    
+        // console.log(password, hashedPassword);    
+        
+        
+        const insertedUser =  await User.insertNewUser(pseudo, hashedPassword, email);
+        
+        console.log("inserted User :");
+        console.log(insertedUser);
+        
+        return res.status(201).json({  message: "Utilisateur créé avec succès", user: insertedUser });
+        
+        
         
     } catch(error) {
         console.log(error, error.message);
+        return res.status(500).json({ message: error.message });
     }
         
-    res.status(200).json({ message: "data received" });
-
-
-
 
 };
 
