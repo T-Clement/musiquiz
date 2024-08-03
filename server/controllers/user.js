@@ -1,5 +1,7 @@
 // const dbCo = require("../db");
 
+const utils = require('../utils/utils');
+
 const User = require('../models/User');
 
 
@@ -62,13 +64,21 @@ exports.create = async (req, res, next) => {
     // all good
     // encrypt passsword and send to database
 
+    try {
 
-
-
-
+        const saltRounds = 10;
+        
+        const hashedPassword = await utils.generatePasswordHash(password, saltRounds);
+        
+        console.log(password, hashedPassword);    
+        
+    } catch(error) {
+        console.log(error, error.message);
+    }
+        
     res.status(200).json({ message: "data received" });
 
-    
+
 
 
 };
