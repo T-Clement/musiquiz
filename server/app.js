@@ -4,7 +4,7 @@ const express = require('express');
 
 // const mongoose = require('mongoose');
 
-const { body, validationResult } = require("express-validator");
+const { body, validationResult, matchedData } = require("express-validator");
 
 
 
@@ -56,19 +56,15 @@ app.post('/api/login', validateLogin, (req, res, next) => {
 
     const errors = validationResult(req);
 
+    // check if user and password field are in req
     if(!errors.isEmpty()) {
         return res.status(400).json({ errors : errors.array() })
     }
 
-    // check if user and password field are in req
-
-    // data coming from request
+    // get validated data
+    const validatedData = matchedData(req);
     
-    // console.log(req.body);
-    
-    
-    const { username, password } = req.body;
-
+    const { pseudo, password } = validatedData;
 
     res.status(200).json({ message : "data received" });
 
