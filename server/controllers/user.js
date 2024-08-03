@@ -1,9 +1,9 @@
-const dbCo = require("../db");
+// const dbCo = require("../db");
 
 const User = require('../models/User');
 
 
-exports.getOneUser = async (req, res, next) => {
+exports.show = async (req, res, next) => {
     // get params of req
     const userId = parseInt(req.params.id);
 
@@ -13,7 +13,7 @@ exports.getOneUser = async (req, res, next) => {
     }
 
     try {
-        const user = await User.findOneUser(userId);
+        const user = await User.findOneUserById(userId);
 
         if(!user) {
             return res.status(404).json({message: "User not found"});

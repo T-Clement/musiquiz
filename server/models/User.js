@@ -12,7 +12,7 @@ class User {
     }
 
 
-    static async findOneUser(id) {
+    static async findOneUserById(id) {
 
         // placeholder in query 
         const query = 'SELECT * FROM Users WHERE id = ?';
@@ -43,7 +43,29 @@ class User {
 
 
 
+    static async findOneUser(pseudo, passwordHash) {
 
+        const query = 'SELECT * FROM USERS WHERE pseudo = ? AND password = ?';
+        
+        const values = [pseudo, passwordHash]; // password is hashed
+
+
+        try {
+
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null; // no match for this credentials
+            }
+
+            const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
+            return new User(userId, pseudo, password, email, createdAt, updatedAt);
+
+        } catch (error) {
+            console.error('Error finding user in login : ' + error.message);
+            throw error;
+        }
+    }
 
 
 

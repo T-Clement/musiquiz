@@ -66,9 +66,21 @@ app.post('/api/login', validateLogin, (req, res, next) => {
     
     const { pseudo, password } = validatedData;
 
+
+    // check for match of user in database
+
+
+
+
+
     res.status(200).json({ message : "data received" });
 
 });
+
+
+
+
+
 
 
 // 404 route to place at the end
