@@ -69,6 +69,34 @@ class User {
 
 
 
+    static async checkMail(email) {
+        const query = 'SELECT * FROM Users WHERE email = ?';
+        const values = [email];
+
+        const [rows, fields] = await pool.execute(query, values);
+
+        if(rows.length !== 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    static async checkPseudo(pseudo) {
+        const query = 'SELECT * FROM Users WHERE pseudo = ?';
+        const values = [pseudo];
+
+
+        const [rows, fields] = await pool.execute(query, values);
+
+        if(rows.length !== 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }
 
 

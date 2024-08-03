@@ -3,6 +3,9 @@
 const User = require('../models/User');
 
 
+const { validationResult, matchedData } = require("express-validator");
+
+
 exports.show = async (req, res, next) => {
     // get params of req
     const userId = parseInt(req.params.id);
@@ -26,9 +29,47 @@ exports.show = async (req, res, next) => {
         res.status(500).json({"message": "Servor Error"});
         console.log(`Error : ${error.message}`);
     }
+};
+
+
+exports.create = async (req, res, next) => {
+
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    
+
+    const validatedData = matchedData(req);
+
+    const { pseudo, email, password } = validatedData;
+
+    console.log(pseudo, email, password);
+    
+
+    // check if user with same mail exists
+    if(!User.checkMail(email)) {
+        return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec cette addresse" })
+    }
+
+    // check if user with same pseudo exists
+    if(!User.checkPseudo(pseudo)) {
+        return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec ce pseudo" })
+    }
+
+
+    // all good
+    // encrypt passsword and send to database
 
 
 
+
+
+    res.status(200).json({ message: "data received" });
+
+    
 
 
 };
+

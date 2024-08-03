@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+const userCtrl = require('../controllers/user');
 
-const { body, validationResult, matchedData } = require("express-validator");
+const { body } = require("express-validator");
 
 
 const validateRegisterUser = [
@@ -27,39 +28,9 @@ const validateRegisterUser = [
 ]
 
 
-const userCtrl = require('../controllers/user');
 
 router.get('/:id', userCtrl.show);
 
-router.post("/register", validateRegisterUser, (req, res, next) => {
-
-    const errors = validationResult(req);
-
-    if(!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-    }
-
-    const validatedData = matchedData(req);
-
-    const { pseudo, email, password } = validatedData;
-
-    
-    // check if user with same mail exists
-
-
-    // check if user with same pseudo exists
-
-
-
-    // encrypt passsword and send to database
-
-
-    console.log(validatedData);
-
-    res.statuts.json({ message: "data received" });
-
-
-
-});
+router.post("/register", validateRegisterUser, userCtrl.create);
 
 module.exports = router;
