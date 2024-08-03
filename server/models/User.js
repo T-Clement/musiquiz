@@ -14,23 +14,37 @@ class User {
 
     static async findOneUser(id) {
 
+        // placeholder in query 
         const query = 'SELECT * FROM Users WHERE id = ?';
         const values = [id];
-
+        
         try {
-            const row = await pool.execute(query, values);
-            if(row) {
-                // console.log(row);
-                const { id, pseudo, password, email, createdAt, updatedAt } = row[0][0]; // array of responses, why ???
-                return new User( id, pseudo, password, email, createdAt, updatedAt );
+            
+            const [rows, fields] = await pool.execute(query, values);
 
-            } else {
+            // no user found
+            if (rows.length === 0) {
+                console.log("No User found with id: " + id);
                 return null;
             }
+
+            const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
+            return new User(userId, pseudo, password, email, createdAt, updatedAt);
+            // return new User(...rows[0]);
+
+
+           
         } catch (error) {
+            console.error('Error finding user : ' + error.message);
             throw error;
         }
     }
+
+
+
+
+
+
 
 
 }

@@ -5,8 +5,6 @@ const User = require('../models/User');
 
 exports.getOneUser = async (req, res, next) => {
     // get params of req
-    console.log(req.params);
-
     const userId = parseInt(req.params.id);
 
     if(!userId) {
