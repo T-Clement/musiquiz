@@ -12,10 +12,6 @@ class User {
     }
 
 
-
-
-
-
     static async findOneUserById(id) {
 
         // placeholder in query 
@@ -53,7 +49,6 @@ class User {
         
         const values = [pseudo, passwordHash]; // password is hashed
 
-
         try {
 
             const [rows, fields] = await pool.execute(query, values);
@@ -61,24 +56,9 @@ class User {
             if(rows.length === 0) {
                 return null; // no match for this credentials
             }
-
-            // !!!!!!!!!
-            // !!!!!!!!!
-            // TO UPDATE BECAUSE WE DONT WANT PASSWORD TO BE RETURNED
-            // !!!!!!!!!
-            // !!!!!!!!!
             
             const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
-            const user = new User(userId, pseudo, null, email, createdAt, updatedAt);
-            // delete password hash
-            // delete user.password;
-            return user;
-
-            // !!!!!!!!!
-            // !!!!!!!!!
-            // TO UPDATE BECAUSE WE DONT WANT PASSWORD TO BE RETURNED
-            // !!!!!!!!!
-            // !!!!!!!!!
+            return new User(userId, pseudo, null, email, createdAt, updatedAt);
 
         } catch (error) {
             console.error('Error finding user in login : ' + error.message);
