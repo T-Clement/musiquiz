@@ -13,7 +13,7 @@ exports.show = async (req, res, next) => {
     const userId = parseInt(req.params.id);
 
     if(!userId) {
-        throw new Error("Param missing in User get request");
+        return next(new Error("Param missing in User get request"));
         
     }
 
@@ -29,7 +29,7 @@ exports.show = async (req, res, next) => {
 
     } catch (error) {
         res.status(500).json({"message": "Servor Error"});
-        console.log(`Error : ${error.message}`);
+        next(error);
     }
 };
 

@@ -23,7 +23,7 @@ exports.show = async (req, res, next) => {
         res.status(200).json(theme);
 
     } catch(error) {
-        res.status(500).json({"message" : "Servor Error"});
+        res.status(500).json({ message : "Servor Error" });
         next(error);
     }
 

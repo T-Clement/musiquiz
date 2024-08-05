@@ -10,7 +10,7 @@ const { body, validationResult, matchedData } = require("express-validator");
 
 const userRoutes = require('./routes/user');
 const themeRoutes = require('./routes/theme');
-
+const roomRoutes = require('./routes/room');
 
 
 
@@ -80,7 +80,7 @@ app.post('/api/login', validateLogin, (req, res, next) => {
 
 
 app.use('/api/theme/', themeRoutes);
-
+app.use('/api/room/', roomRoutes);
 
 // error handling middleware
 app.use((err, req, res, next) => {
