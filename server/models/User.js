@@ -65,8 +65,11 @@ class User {
             // !!!!!!!!!
             
             const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
-            return new User(userId, pseudo, password, email, createdAt, updatedAt);
-            
+            const user = new User(userId, pseudo, password, email, createdAt, updatedAt);
+            // delete password hash
+            // delete user.password;
+            return user;
+
             // !!!!!!!!!
             // !!!!!!!!!
             // TO UPDATE BECAUSE WE DONT WANT PASSWORD TO BE RETURNED

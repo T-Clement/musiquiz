@@ -42,15 +42,12 @@ exports.create = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() })
     }
     
-    
     const validatedData = matchedData(req);
     
     const { pseudo, email, password } = validatedData;
     
     console.log(pseudo, email, password);
     
-
-
 
     try {
 
@@ -62,7 +59,7 @@ exports.create = async (req, res, next) => {
             return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec ce pseudo" })
         }
 
-        
+
         // check if user with same mail exists
         const emailExists = await User.checkMail(email);
         console.log('mail exists : '  + emailExists);
@@ -71,25 +68,15 @@ exports.create = async (req, res, next) => {
         }
 
 
-
         // all good
         // encrypt passsword and send to database
 
-        
         const saltRounds = 10;
         const hashedPassword = await utils.generatePasswordHash(password, saltRounds);
         
-        // console.log(password, hashedPassword);    
-        
-        
         const insertedUser =  await User.insertNewUser(pseudo, hashedPassword, email);
         
-        console.log("inserted User :");
-        console.log(insertedUser);
-        
         return res.status(201).json({  message: "Utilisateur créé avec succès", user: insertedUser });
-        
-        
         
     } catch(error) {
         console.log(error, error.message);
