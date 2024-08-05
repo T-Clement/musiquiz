@@ -12,6 +12,10 @@ class User {
     }
 
 
+
+
+
+
     static async findOneUserById(id) {
 
         // placeholder in query 
@@ -29,7 +33,7 @@ class User {
             }
 
             const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
-            return new User(userId, pseudo, password, email, createdAt, updatedAt);
+            return new User(userId, pseudo, null, email, createdAt, updatedAt);
             // return new User(...rows[0]);
 
 
@@ -65,7 +69,7 @@ class User {
             // !!!!!!!!!
             
             const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
-            const user = new User(userId, pseudo, password, email, createdAt, updatedAt);
+            const user = new User(userId, pseudo, null, email, createdAt, updatedAt);
             // delete password hash
             // delete user.password;
             return user;
