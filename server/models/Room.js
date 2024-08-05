@@ -1,6 +1,9 @@
 const pool = require('../db');
 
 class Room {
+
+    static tableName = "mqz_rooms";
+
     constructor(id, name, api_id_playlist, description, themeId) {
         this.id = id;
         this.name = name;
@@ -12,7 +15,7 @@ class Room {
 
 
 
-    
+
 
 
 }

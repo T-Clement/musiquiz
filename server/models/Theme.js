@@ -2,13 +2,16 @@ const pool = require('../db');
 
 
 class Theme {
+
+    static tableName = "mqz_theme";
+
     constructor(id, name) {
         this.id = id;
         this.name = name;
     }
 
     static async findOneThemeById(id) {
-        const query = 'SELECT * FROM Theme WHERE id = ?';
+        const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
         const values = [id];
 
 

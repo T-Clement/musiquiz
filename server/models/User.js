@@ -2,6 +2,9 @@ const pool = require('../db');
 
 
 class User {
+
+    static tableName = "mqz_users";
+
     constructor(id = null, pseudo, password, email, createdAt = "", updatedAt = "") {
         this.id = id;
         this.pseudo = pseudo;
@@ -15,7 +18,7 @@ class User {
     static async findOneUserById(id) {
 
         // placeholder in query 
-        const query = 'SELECT * FROM Users WHERE id = ?';
+        const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
         const values = [id];
         
         try {
@@ -45,7 +48,7 @@ class User {
 
     static async findOneUser(pseudo, passwordHash) {
 
-        const query = 'SELECT * FROM USERS WHERE pseudo = ? AND password = ?';
+        const query = `SELECT * FROM ${this.tableName} WHERE pseudo = ? AND password = ?`;
         
         const values = [pseudo, passwordHash]; // password is hashed
 
@@ -69,7 +72,7 @@ class User {
 
 
     static async checkMail(email) {
-        const query = 'SELECT * FROM Users WHERE email = ?';
+        const query = `SELECT * FROM ${this.tableName} WHERE email = ?`;
         const values = [email];
 
         const [rows, fields] = await pool.execute(query, values);
@@ -84,7 +87,7 @@ class User {
 
 
     static async checkPseudo(pseudo) {
-        const query = 'SELECT * FROM Users WHERE pseudo = ?';
+        const query = `SELECT * FROM ${this.tableName} WHERE pseudo = ?`;
         const values = [pseudo];
 
 
@@ -102,7 +105,7 @@ class User {
 
     static async insertNewUser(pseudo, hashedPassword, email) {
 
-        const query = 'INSERT INTO Users (pseudo, password, email, createdAt, updatedAt) VALUES(?, ?, ?, NOW(), NOW())';
+        const query = `INSERT INTO ${this.tableName} (pseudo, password, email, createdAt, updatedAt) VALUES(?, ?, ?, NOW(), NOW())`;
         const values = [pseudo, hashedPassword, email];
 
         try {
@@ -111,7 +114,7 @@ class User {
             const insertedId = result.insertId;
 
             // fetch the inserted user data
-            const [rows] = await pool.execute('SELECT * FROM Users WHERE id = ?', [insertedId]);
+            const [rows] = await pool.execute(`SELECT * FROM ${this.tableName} WHERE id = ?`, [insertedId]);
 
             if (rows.length === 0) {
                 throw new Error('User not found after insertion');
