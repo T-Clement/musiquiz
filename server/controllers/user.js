@@ -13,7 +13,7 @@ exports.show = async (req, res, next) => {
     const userId = parseInt(req.params.id);
 
     if(!userId) {
-        throw new Error("");
+        throw new Error("Param missing in User get request");
         
     }
 
