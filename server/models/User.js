@@ -121,7 +121,7 @@ class User {
             }
 
             const { id, pseudo, password, email, createdAt, updatedAt } = rows[0];
-            return new User(id, pseudo, password, email, createdAt, updatedAt);
+            return new User(id, pseudo, null, email, createdAt, updatedAt);
             
         } catch (error) {
             console.error('Error inserting new user in Database : ' + error.message);
@@ -133,6 +133,9 @@ class User {
 
 
 
+    getPseudo () {
+        return this.pseudo;
+    }
 
 }
 
