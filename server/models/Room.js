@@ -14,6 +14,10 @@ class Room {
 
 
 
+    getName() {
+        return this.name;
+    }
+
 
     static async findOneRoomById(id) {
         const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
@@ -80,6 +84,10 @@ class Room {
         }
 
     }
+
+
+
+    
 
 
 }

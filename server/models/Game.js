@@ -14,8 +14,18 @@ class Game {
     }
 
 
-    
+    getId() {
+        return this.id;
+    }
 
+    getRoomId() {
+        return this.id_room;
+    }
+
+
+    getUserId() {
+        return this.id_user;
+    }
 
 }
 
