@@ -14,19 +14,23 @@ exports.show = async (req, res, next) => {
 
     try {
 
+        // get room data and games played in this room
         const [room, scores] = await Promise.all([
             Room.findOneRoomById(roomId),
-            Room.getRoomScores(roomId, 5, 0),
+            Room.getRoomScores(roomId, 10, 0),
         ]);
 
         if(!room) {
             return res.status(404).json({ message: "Room not found" });
         }
 
+        // get theme name
         const theme = await Theme.findOneThemeById(room.id_theme);
-
         room.name_theme = theme.name;
 
+
+        // get pseudo of each player for each Game
+        // await foreach call to database made to be resolved
         const scoresWithUsernames = await Promise.all(scores.map(async (score) => {
             const user = await User.findOneUserById(score.id_user);
             score.pseudo_user = user.getPseudo();
@@ -35,7 +39,7 @@ exports.show = async (req, res, next) => {
 
         room.scores = scoresWithUsernames;
 
-        // res.status(200).json(room);
+        // return room data
         res.status(200).json({room});
 
     } catch (error) {

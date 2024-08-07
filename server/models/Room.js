@@ -47,16 +47,31 @@ class Room {
         // console.log(Game.tableName);
         const tableNameGame = Game.tableName;
 
-        const query = `SELECT * FROM ${tableNameGame} WHERE id_room = ? ORDER BY score DESC LIMIT ? OFFSET ?`;
+        // const query = 
+        // `SELECT * FROM ${tableNameGame} WHERE id_room = ? ORDER BY score DESC LIMIT ? OFFSET ?`;
+        
+        const query = 
+        `SELECT g.id_room, g.id_user, u.pseudo, g.id, g.date_score, g.score
+        FROM ${tableNameGame} g
+            JOIN mqz_users u ON u.id = g.id_user
+            JOIN (
+                SELECT id_user, MAX(score) AS max_score
+                FROM ${tableNameGame}
+                WHERE id_room = ?
+                GROUP BY id_user
+            ) gm ON g.id_user = gm.id_user AND g.score = gm.max_score
+        WHERE g.id_room = ?
+        ORDER BY g.score DESC
+        LIMIT ? OFFSET ?;`
         
         // limit offset as string for execute() // as number with query()
-        const values = [parseInt(roomId), limit.toString(), offset.toString()];
+        const values = [parseInt(roomId), parseInt(roomId), limit.toString(), offset.toString()];
         console.log(values);
     
         try {
 
             const [rows, fields] = await pool.execute(query, values);
-
+            console.log(rows);
             return rows.map(row => new Game(row.id, row.score, row.date_score, row.id_user, row.id_room));
 
         } catch(error) {
