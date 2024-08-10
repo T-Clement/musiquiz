@@ -35,21 +35,23 @@ export function HomePage() {
     <div className='px-4'>
 
       <section className='mt-8'>
-        <h2 className=''>Rejoindre une partie</h2>
+        <h2 className='text-2xl mb-4'>Rejoindre une partie</h2>
         <JoinGameSection />
       </section>
 
       <section className='mt-8'>
-        <h2>Top 3</h2>
-        <ul className='mt-6 flex flex-col lg:flex-row gap-12 lg:gap-12 '>
+        <h2 className='text-2xl'>Top 3</h2>
+        <ul className='mt-6 flex flex-col lg:flex-row gap-12 lg:gap-12 items-center md:flex-wrap'>
           
-
+        {/* min-[320px]: */}
         {top3.map((room, index) => 
-          <li key={room.id} className=''>
-            <article className=''>
+          <li key={room.id} className='flex max-[320px]:flex-col min-[300px]:gap-y-4 sm:flex-row items-center gap-x-5'>
+            
+            <span className='text-6xl'>{index +1}</span>
+            
+            <article className='flex flex-col gap-y-4'>
               <div className='flex flex-wrap'>
 
-                <span>{index +1}</span>
 
                 <div className='w-[280px] sm:w-[300px] bg-violet-900 flex rounded-lg items-stretch shadow-lg'>
 
@@ -77,9 +79,10 @@ export function HomePage() {
                 </div>
               </div>
 
-              <h3>{room.name}</h3>
+              <h3 className='text-2xl'>{room.name}</h3>
 
             </article>
+
           </li>
         )}
           
