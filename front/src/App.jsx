@@ -3,8 +3,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ErrorPage } from './pages/ErrorPage';
 import { DefaultLayout } from './layouts/DefaultLayout';
 import { WaitingRoom } from './pages/WaitingRoom';
-import { HomePage } from './pages/Home/HomePage';
-import { RoomPage } from './pages/Room/RoomPage';
+import { HomePage, loader as homeLoader } from './pages/Home/HomePage';
+import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
 
 
@@ -18,11 +18,13 @@ export function App() {
       children: [
         {
           index: true, 
-          element: <HomePage />
+          element: <HomePage />,
+          loader: homeLoader
         },
         {
           path: "room/:id",
-          element: <RoomPage />
+          element: <RoomPage />,
+          loader: roomPageLoader
         },
         {
           path: "waiting-room/:id",
