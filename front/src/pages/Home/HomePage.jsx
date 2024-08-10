@@ -3,8 +3,21 @@ import React, { useState } from 'react'
 import JoinGameSection from './JoinGameSection';
 import { Link, useLoaderData } from 'react-router-dom';
 
-import svgPlay from '../../../public/assets/play.svg';
-import svgCup from '../../../public/assets/cup.svg'
+
+
+// import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import Swiper styles
+import 'swiper/swiper-bundle.css';
+// custom css for swiper
+import "../../swiper.css";
+// import required modules
+import { Navigation } from 'swiper/modules';
+
+
+
+import svgPlay from '/assets/play.svg';
+import svgCup from '/assets/cup.svg'
 
 export async function loader() {
   const top3 = await fetch("http://localhost:3000/api/top3").then(response => response.json());
@@ -66,7 +79,7 @@ export function HomePage() {
 
                     <div className='absolute bg-black opacity-30 inset-0 rounded-r-lg'></div>
 
-                    <img src={svgCup} alt="" className="w-10 h-10 z-10"/>
+                    <img src={svgCup} alt="Winner cup, for the current bestplayer of the room" className="w-10 h-10 z-10"/>
                     
                     <ul className='flex flex-col z-10'>
 
@@ -92,9 +105,70 @@ export function HomePage() {
       
       <section className='mt-8'>
         <h2>Themes</h2>
-        <p>Theme 1</p>
-        <p>Theme 2</p>
-        <p>Theme 3</p>
+
+        <Swiper
+          direction="horizontal" 
+          loop={false} // disabled loop
+          navigation={{
+            nextEl: '.swiper-button-next', // class for next btn
+            prevEl: '.swiper-button-prev', // class for previous btn
+          }}
+          modules={[Navigation]} // add navigation module
+          breakpoints={{ // breakpoints to config displaying of slides
+            480: {
+              slidesPerView: 1,
+              spaceBetween: 50,
+            },
+            770: {
+              slidesPerView: 2,
+              spaceBetween: 80,
+            },
+            1028: {
+              slidesPerView: 3,
+              spaceBetween: 50,
+            },
+          }}
+        >
+          <SwiperSlide>
+            <div className="slide-content">
+              <Link to='/theme' className='swiper-theme-link'>Slide 1</Link>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="slide-content">
+              <Link to='/theme' className='swiper-theme-link'>Slide 2</Link>
+              </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="slide-content">
+              <Link to='/theme' className='swiper-theme-link'>Slide 3</Link>
+              </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="slide-content">
+              <Link to='/theme' className='swiper-theme-link'>Slide 4</Link>
+              </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="slide-content">
+              <Link to='/theme' className='swiper-theme-link'>Slide 5</Link>
+              </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="slide-content">
+              <Link to='/theme' className='swiper-theme-link'>Slide 6</Link>
+              </div>
+          </SwiperSlide>
+          
+          {/* nav buttons */}
+          <div className="swiper-button-next"></div>
+          <div className="swiper-button-prev"></div>
+        </Swiper>
+
+
+
+
+
       </section>
 
       <section className='mt-8'>

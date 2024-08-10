@@ -1,0 +1,57 @@
+.swiper {
+    width: 100%;
+    /* max-width: 1100px; */
+
+    margin-top: 1rem;
+
+}
+
+.swiper-wrapper {
+    /* overflow-y: visible; */
+    /* overflow-x: hidden; */
+}
+
+.swiper-slide {
+    height: 100px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    background-color: #000752;
+    border-radius: .75rem;
+    padding: 5rem;
+}
+
+
+
+.swiper-theme-link {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*for dev puposes*/
+.swiper-theme-link:hover {
+    color: yellow;
+}
+
+@media screen and (min-width: 729px) {
+    /* .swiper {
+
+    } */
+
+
+    .swiper-slide:hover {
+
+        background-color: #000752; 
+        /* font-size: 2rem; */
+        transition: background-color .5s ease-out 100ms;
+    }    
+       
+}
+
+.swiper-button-prev, .swiper-button-next {
+    color: white;
+}
