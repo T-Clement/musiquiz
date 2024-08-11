@@ -34,6 +34,26 @@ class Theme {
 
     }
 
+    static async getThemes() {
+        const query = `SELECT * FROM ${this.tableName};`;
+        
+        try {
+            const [rows, fields] = await pool.execute(query, []);
+
+            if(rows.length === 0) {
+                return null;
+            }
+            console.log(rows)
+            return rows.map(theme => {
+                return new Theme(theme.id, theme.name);
+            });
+
+        } catch (error) {
+            console.error('Error getting themes : ' + error.message);
+            throw error;
+        }
+    }
+
 
 
     

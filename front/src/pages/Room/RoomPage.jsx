@@ -31,6 +31,8 @@ export function RoomPage() {
 
 
 
+    // add datas related to previous games in this room (history of parties ??)
+
 
   return (
     <div className='p-2'>

@@ -12,9 +12,11 @@ const validateRegisterUserTheme = [
 ];
 
 
+const Theme = require('../models/Theme');
+
 
 
 router.get('/:id', themeCtrl.show);
-
+router.get('/', themeCtrl.getAllThemes);
 
 module.exports = router;

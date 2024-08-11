@@ -119,7 +119,8 @@ export function HomePage() {
               slidesPerView: 1,
               spaceBetween: 50,
             },
-            770: {
+            // 770: {
+            600: {
               slidesPerView: 2,
               spaceBetween: 80,
             },

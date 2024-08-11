@@ -28,3 +28,20 @@ exports.show = async (req, res, next) => {
     }
 
 }
+
+
+exports.getAllThemes = async (req, res, next) => {
+    try {
+        const themes = await Theme.getThemes();
+
+        if(!themes) {
+            return res.status(404).json({ message: "Themes not found" });
+        }
+
+
+        res.status(200).json(themes);
+    } catch(error) {
+        res.status(500).json({ message: "Servor Error" });
+        next(error);
+    } 
+}

@@ -2,7 +2,8 @@ import React from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 
 
-
+// PROTECTED PAGE
+// ONLY ACCESSIBLE IF IS CONNCETED / IS AUTH
 
 export function WaitingRoom() {
 
