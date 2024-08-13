@@ -40,17 +40,17 @@ export function RoomPage() {
             <div className='flex flex-wrap gap-y-6 p-2'>
 
                 <div className="w-full md:w-1/2">
-                    <div class="relative overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-700 dark:text-gray-400">
+                    <div className="relative overflow-x-auto">
+                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead className="text-xs text-gray-700 uppercase bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         #
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Pseudo
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Points
                                     </th>
                                 </tr>
