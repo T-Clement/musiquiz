@@ -7,9 +7,17 @@ import { HomePage, loader as homeLoader } from './pages/Home/HomePage';
 import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
 import { ThemePage, loader as themePageLoader } from './pages/Theme/ThemePage';
+import { createContext, useState } from 'react';
 
+
+export const AuthContext = createContext(null);
 
 export function App() {
+
+   const [user, setUser] = useState(null);
+
+
+
 
   const router = createBrowserRouter([
     {
@@ -44,6 +52,14 @@ export function App() {
     }
   ])
 
-  return <RouterProvider router = {router} />
+  return <AuthContext.Provider value = { user }>
+            <RouterProvider router = {router} />
+          </AuthContext.Provider>
+//   <RouterProvider
+//   router={Router}
+//   fallbackElement={
+//    <YourLoadingComponent/>
+//   }
+// />
 }
 
