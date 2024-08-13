@@ -20,6 +20,10 @@ exports.show = async (req, res, next) => {
             return res.status(404).json({ message: "Theme not found" });
         }
 
+        // add rooms to theme object
+        theme.rooms = await Theme.getRoomsOfOneTheme(themeId);
+
+
         res.status(200).json(theme);
 
     } catch(error) {
@@ -30,7 +34,7 @@ exports.show = async (req, res, next) => {
 }
 
 
-exports.getAllThemes = async (req, res, next) => {
+exports.index = async (req, res, next) => {
     try {
         const themes = await Theme.getThemes();
 

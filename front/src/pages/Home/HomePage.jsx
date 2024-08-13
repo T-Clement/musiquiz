@@ -22,7 +22,8 @@ import svgCup from '/assets/cup.svg'
 export async function loader() {
   const top3 = await fetch("http://localhost:3000/api/top3").then(response => response.json());
   // console.log(top3)
-  return {top3};
+  const themes = await fetch("http://localhost:3000/api/theme").then(response => response.json());
+  return {top3, themes};
 }
 
 
@@ -37,10 +38,11 @@ export function HomePage() {
 
 
   // get data coming from react-router loader
-  const { top3 } = useLoaderData();
+  const { top3, themes } = useLoaderData();
 
-  console.log(top3);
-    
+  console.log(top3, themes);
+  
+
   
 
   return (
@@ -130,36 +132,16 @@ export function HomePage() {
             },
           }}
         >
-          <SwiperSlide>
-            <div className="slide-content">
-              <Link to='/theme' className='swiper-theme-link'>Slide 1</Link>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="slide-content">
-              <Link to='/theme' className='swiper-theme-link'>Slide 2</Link>
+          {themes.map(theme => (
+            <SwiperSlide>
+            
+              <div className="slide-content">
+                <Link to={`theme/${theme.id}`} className='swiper-theme-link uppercase font-semibold'>{theme.name}</Link>
               </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="slide-content">
-              <Link to='/theme' className='swiper-theme-link'>Slide 3</Link>
-              </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="slide-content">
-              <Link to='/theme' className='swiper-theme-link'>Slide 4</Link>
-              </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="slide-content">
-              <Link to='/theme' className='swiper-theme-link'>Slide 5</Link>
-              </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="slide-content">
-              <Link to='/theme' className='swiper-theme-link'>Slide 6</Link>
-              </div>
-          </SwiperSlide>
+            </SwiperSlide>
+            ))}
+          
+          
           
           {/* nav buttons */}
           <div className="swiper-button-next"></div>

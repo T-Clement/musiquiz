@@ -17,6 +17,6 @@ const Theme = require('../models/Theme');
 
 
 router.get('/:id', themeCtrl.show);
-router.get('/', themeCtrl.getAllThemes);
+router.get('/', themeCtrl.index);
 
 module.exports = router;

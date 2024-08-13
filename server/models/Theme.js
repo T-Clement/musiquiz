@@ -56,6 +56,29 @@ class Theme {
 
 
 
+    static async getRoomsOfOneTheme(themeId) {
+        const Room = require("./Room");
+        const query = `SELECT * FROM ${Room.tableName} WHERE id_theme = ?;`
+
+        const values = [themeId];
+
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return [];
+            }
+
+            return rows.map(room => {
+                return new Room(room.id, room.name, null, room.description, room.id_theme);
+            })
+
+        } catch(error) {
+            console.error('Error getting rooms from Theme model : ' + error.message);
+            throw error;
+        }
+    }
+
     
 
 }
