@@ -6,6 +6,7 @@ import { WaitingRoom } from './pages/WaitingRoom';
 import { HomePage, loader as homeLoader } from './pages/Home/HomePage';
 import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
+import { ThemePage, loader as themePageLoader } from './pages/Theme/ThemePage';
 
 
 export function App() {
@@ -29,6 +30,11 @@ export function App() {
         {
           path: "waiting-room/:id",
           element: <WaitingRoom />
+        },
+        {
+          path: "theme/:id",
+          element: <ThemePage />,
+          loader: themePageLoader
         },
         {
           path : "*", 
