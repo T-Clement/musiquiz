@@ -37,6 +37,8 @@ export function RoomPage() {
     return (
         <div>
             <p className='mb-6'>RoomPage - id : {id}</p>
+            <p className='mb-6'>{roomData.room.name}</p>
+            <p className='mb-6'>{roomData.room.description}</p>
             <div className='flex flex-wrap gap-y-6 p-2'>
 
                 <div className="w-full md:w-1/2">

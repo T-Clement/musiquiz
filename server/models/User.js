@@ -133,6 +133,28 @@ class User {
 
 
 
+    static async checkCredentialsUser(email, hashedPassword) {
+        const query = `SELECT * FROM ${this.tableName} WHERE email = ? AND password = ?`;
+        const values = [email, hashedPassword];
+
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null; // no match for this credentials
+            }
+            
+            const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
+            return new User(userId, pseudo, null, email, createdAt, updatedAt);
+
+        } catch(error) {
+            console.error('Error checking user credentials in Database : ' + error.message);
+            throw error;
+        }
+
+    }
+
+
     getPseudo () {
         return this.pseudo;
     }

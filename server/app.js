@@ -14,19 +14,6 @@ const roomRoutes = require('./routes/room');
 
 
 
-// validation middleware  
-const validateLogin = [
-    body('pseudo')
-        .trim()
-        .escape()
-        .isString().withMessage('Le pseudo doit être une chaîne de caractères')
-        .notEmpty().withMessage('Le pseudo est requis'),
-    body('password')
-        .trim()
-        .escape()
-        .isString().withMessage('Le mot de passe doit être une chaîne de caractères')
-        .notEmpty().withMessage('Le mot de passe est requis'),
-];
 
 
 
@@ -64,11 +51,18 @@ app.use('/api/user/', userRoutes);
 //     // get validated data
 //     const validatedData = matchedData(req);
     
-//     const { pseudo, password } = validatedData;
+//     const { email, password } = validatedData;
 
+
+
+
+
+//     console.log("Voici les données", email, password);
 
 //     // check for match of user in database
 
+
+//     const User = require("./models/User");
 
 
 

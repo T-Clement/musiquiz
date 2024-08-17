@@ -45,6 +45,36 @@ export function App() {
           loader: themePageLoader
         },
         {
+          path: "login",
+          action: 
+            async ({request}) => {
+              const formData = await request.formData();
+              const email = formData.get("email");
+              const password = formData.get("password");
+
+              // call to api
+              const response = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+              });
+
+              if (!response.ok) {
+                // handle login error
+                return { error: 'Échec de la connexion' };
+              }
+
+              const userData = await response.json();
+              console.log(userData);
+              // Mettre à jour l'UI ou rediriger l'utilisateur
+              return { user: userData };
+
+            } 
+          
+        },
+        {
           path : "*", 
           element: <Page404 />
         }

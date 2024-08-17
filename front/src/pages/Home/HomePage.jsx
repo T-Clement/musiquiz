@@ -102,7 +102,7 @@ export function HomePage() {
           }}
         >
           {themes.map(theme => (
-            <SwiperSlide>
+            <SwiperSlide key={theme.id}>
             
               <div className="slide-content">
                 <Link to={`theme/${theme.id}`} className='swiper-theme-link uppercase font-semibold'>{theme.name}</Link>
