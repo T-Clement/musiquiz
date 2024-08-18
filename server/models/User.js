@@ -85,6 +85,29 @@ class User {
     }
 
 
+    static async findUserByMail(email) {
+        const query = `SELECT * FROM ${this.tableName} WHERE email = ?`;
+        const values = [email];
+        
+
+        try {
+
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null;
+            } else {
+                return new User(rows[0].id, rows[0].pseudo, rows[0].password, rows[0].email, rows[0].createdAt, rows[0].updatedAt);
+            }
+
+        } catch(error) {
+            console.error("Error finding user by mail : " + error.message);
+            throw error;
+        }
+
+    }
+
+
 
     static async checkPseudo(pseudo) {
         const query = `SELECT * FROM ${this.tableName} WHERE pseudo = ?`;
@@ -158,6 +181,9 @@ class User {
     getPseudo () {
         return this.pseudo;
     }
+
+
+   
 
 }
 

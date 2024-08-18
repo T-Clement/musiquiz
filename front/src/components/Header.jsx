@@ -8,7 +8,9 @@ import UserRegisterForm from './UserRegisterForm';
 export function Header() {
 
 
-  const currentUser = useContext(AuthContext);
+  const {user, setUser } = useContext(AuthContext);
+
+  console.log("Le contexte" , user);
 
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState("login");
@@ -23,7 +25,7 @@ export function Header() {
 
         <nav className='hidden md:block'>
             
-          { currentUser ? 
+          { user !== null ? 
           ( <ul className='flex gap-x-6'>
               <li>Parcourir</li>
               <li>Compte</li>
@@ -66,7 +68,7 @@ export function Header() {
               // toggle 4 renderings ??? why ?????
               modalContent === "login" ? 
               (
-                <UserLoginForm setModalContent={setModalContent} />
+                <UserLoginForm setModalContent={setModalContent} setUser={setUser} />
               ) 
               : 
               (

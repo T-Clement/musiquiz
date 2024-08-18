@@ -1,28 +1,78 @@
-import React, { useEffect } from 'react'
-import { Form, useFetcher } from 'react-router-dom';
+import React, { useState } from 'react'
+// import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent}) {
-
-
-    const fetcher = useFetcher({ key: "send-login-form" });
-
-
-    // React.useEffect(() => {
-
-    //     fetcher.submit(data, options);
-    //   }, [fetcher]);
-
-
-    const isSubmitting = fetcher.state === 'submitting';
+export default function UserLoginForm({setModalContent, setUser}) {
 
 
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // const isSubmitting = fetcher.state === 'submitting';
+
+    // const isSubmitting = false;
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("Formulaire soumis !");
+        
+        // toggle loading
+        setIsSubmitting(true);
+
+
+
+        
+        const formData = new FormData(e.target);
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        console.log("email : " + email);
+        console.log("password : " + password);
+        
+        try {
+            
+            const response = await fetch('http://localhost:3000/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-type' : 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+                
+            });
+
+
+            if(response.status === 500 || response.status === 401) {
+                console.error("Connection failed");
+                setIsSubmitting(false);
+                return;
+            }
+
+            // get response
+            const userData = await response.json();
+            console.log('User data:', userData);
+
+
+
+            // update context
+            setUser(userData);
+
+            
+            // reset form values
+            e.target.reset();
+            
+        } catch(error) {
+            console.error('Error during form submission : ', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+
+
+
+    };
 
 
   return (
-    <fetcher.Form action='/login' method='post'>
-    {/* <form action='/login' method='post'> */}
+    <form onSubmit={handleSubmit}>
         <div className="space-y-6">
         <div>
             <label className="text-gray-800 text-sm mb-2 block">Votre email</label>
@@ -67,7 +117,6 @@ export default function UserLoginForm({setModalContent}) {
         </button>
         </div>
         <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscivez vous</a></p>
-    </fetcher.Form>
-    // </form>
+    </form>
   )
 }

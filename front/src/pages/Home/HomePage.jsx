@@ -30,6 +30,9 @@ export async function loader() {
 
 export function HomePage() {
 
+
+  console.log("Render HomePage");
+
     // Loader 
 
     // if no current room at this id -> show error message
