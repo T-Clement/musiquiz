@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../App';
-import Modal from './Modal';
+import { AuthContext } from '../../App';
+import Modal from '../Modal';
 import UserLoginForm from './UserLoginForm';
 import UserRegisterForm from './UserRegisterForm';
 
@@ -19,7 +19,9 @@ export function Header() {
   return (
     <header className='flex border border-white-800 p-6'>
         
-        <h1 className='me-auto'><Link to="/">Musiquiz</Link></h1>
+        <h1 className='me-auto'>
+          <Link to="/">Musiquiz</Link>
+        </h1>
 
         
 
@@ -68,7 +70,7 @@ export function Header() {
               // toggle 4 renderings ??? why ?????
               modalContent === "login" ? 
               (
-                <UserLoginForm setModalContent={setModalContent} setUser={setUser} />
+                <UserLoginForm setModalContent={setModalContent} setUser={setUser} setOpen={setOpen}/>
               ) 
               : 
               (

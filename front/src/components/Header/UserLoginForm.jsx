@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 // import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent, setUser}) {
+export default function UserLoginForm({setModalContent, setUser, setOpen}) {
 
 
 
@@ -60,6 +60,10 @@ export default function UserLoginForm({setModalContent, setUser}) {
             // reset form values
             e.target.reset();
             
+            // close modal
+            setOpen(false);
+
+
         } catch(error) {
             console.error('Error during form submission : ', error);
         } finally {
@@ -120,3 +124,6 @@ export default function UserLoginForm({setModalContent, setUser}) {
     </form>
   )
 }
+
+
+// https://stackoverflow.com/questions/78143260/how-to-trigger-a-loader-to-re-render-in-react-router-dom
