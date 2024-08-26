@@ -1,7 +1,7 @@
+require('dotenv').config();
 const http = require('http'); // va permetttre de créer un serveur
 const app = require ('./app');
 const { error } = require('console');
-
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -16,8 +16,8 @@ const normalizePort = val => {
 };
 
 
-const port = normalizePort(process.env.PORT || '3000');
-app.set('port', process.env.PORT || 3000); // on définit le port de l'application
+const port = normalizePort(process.env.DOCKER_PORT_API || '3000'); // get port from env variables
+app.set('port', port); // set port of app server
 
 
 /**
@@ -25,6 +25,7 @@ app.set('port', process.env.PORT || 3000); // on définit le port de l'applicati
  * @param {*} error 
  */
 const errorHandler = error => {
+  console.log("In server.js error handler");
     if (error.syscall !== 'listen') {
         throw error;
     }

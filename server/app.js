@@ -1,22 +1,17 @@
+require('dotenv').config();
 const express = require('express');
-
+const cors = require('cors');
 // const config = require("./config.json");
 
 // const mongoose = require('mongoose');
 
-const { body, validationResult, matchedData } = require("express-validator");
+// const { body, validationResult, matchedData } = require("express-validator");
 
 
 
 const userRoutes = require('./routes/user');
 const themeRoutes = require('./routes/theme');
 const roomRoutes = require('./routes/room');
-
-
-
-
-
-
 
 
 
@@ -35,41 +30,19 @@ app.use((req, res, next) => { // middleware pour le CORS
     next();
 });
 
+// app.use(cors({
+//     origin: 'http://localhost:8080',
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     credentials: true,
+// }));
+
+
+
 
 // routes
 app.use('/api/user/', userRoutes);
 
-// app.post('/api/login', validateLogin, (req, res, next) => {
 
-//     const errors = validationResult(req);
-
-//     // check if user and password field are in req
-//     if(!errors.isEmpty()) {
-//         return res.status(400).json({ errors : errors.array() })
-//     }
-
-//     // get validated data
-//     const validatedData = matchedData(req);
-    
-//     const { email, password } = validatedData;
-
-
-
-
-
-//     console.log("Voici les données", email, password);
-
-//     // check for match of user in database
-
-
-//     const User = require("./models/User");
-
-
-
-
-//     res.status(200).json({ message : "data received" });
-
-// });
 
 app.get('/api/top3', async (req, res, next) => {
     const pool = require("./db");
@@ -131,14 +104,19 @@ app.get('/api/top3', async (req, res, next) => {
 });
 
 
+
 app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
 
+
 // error handling middleware
 app.use((err, req, res, next) => {
+    console.log("In error middleware");
+    console.log(err);
     console.error(err.stack);
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message});
 });
+
 
 
 

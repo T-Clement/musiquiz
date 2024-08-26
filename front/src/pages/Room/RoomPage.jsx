@@ -5,7 +5,7 @@ export async function loader({ request, params }) {
     // console.log(request, params);
     // let {id} = useParams();
     // console.log(id);
-    const roomData = await fetch(`http://localhost:3000/api/room/${params.id}`).then(response => response.json());
+    const roomData = await fetch(`${import.meta.env.VITE_API_URL}/api/room/${params.id}`).then(response => response.json());
     // console.log(roomData);
     return { roomData }
 

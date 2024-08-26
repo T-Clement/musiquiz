@@ -4,7 +4,7 @@ import { RoomItem } from '../../components/RoomItem';
 
 
 export async function loader({requset, params}) {
-    const theme = await fetch(`http://localhost:3000/api/theme/${params.id}`).then(response => response.json());
+    const theme = await fetch(`${import.meta.env.VITE_API_URL}/api/theme/${params.id}`).then(response => response.json());
     return {theme};
 }
 

@@ -21,10 +21,10 @@ import { RoomItem } from '../../components/RoomItem';
 
 export async function loader() {
 
-  
-  const top3 = await fetch("http://localhost:3000/api/top3").then(response => response.json());
+  // console.log(import.meta.env.VITE_API_URL);
+  const top3 = await fetch(`${import.meta.env.VITE_API_URL}/api/top3`).then(response => response.json());
   // console.log(top3)
-  const themes = await fetch("http://localhost:3000/api/theme").then(response => response.json());
+  const themes = await fetch(`${import.meta.env.VITE_API_URL}/api/theme`).then(response => response.json());
   return {top3, themes};
 }
 

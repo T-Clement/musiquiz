@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { useContext } from 'react';
+import { AuthContext } from '../../App';
 // import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent, setUser, setOpen}) {
+export default function UserLoginForm({setModalContent, setOpen}) {
 
-
+    const {user, setUser} =  useContext(AuthContext);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +33,7 @@ export default function UserLoginForm({setModalContent, setUser, setOpen}) {
         
         try {
             
-            const response = await fetch('http://localhost:3000/api/user/login', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-type' : 'application/json'

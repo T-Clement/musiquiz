@@ -4,13 +4,16 @@ import { AuthContext } from '../../App';
 import Modal from '../Modal';
 import UserLoginForm from './UserLoginForm';
 import UserRegisterForm from './UserRegisterForm';
+import Logout from './Logout';
+import Nav from './Nav';
 
 export function Header() {
 
+  console.log("render Header");
 
-  const {user, setUser } = useContext(AuthContext);
+  // const {user, setUser } = useContext(AuthContext);
 
-  console.log("Le contexte" , user);
+  // console.log("Le contexte" , user);
 
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState("login");
@@ -24,24 +27,8 @@ export function Header() {
         </h1>
 
         
-
-        <nav className='hidden md:block'>
-            
-          { user !== null ? 
-          ( <ul className='flex gap-x-6'>
-              <li>Parcourir</li>
-              <li>Compte</li>
-              <li>Se déconnecter</li>
-          </ul> ) 
-          : ( <ul className='flex gap-x-6'>
-                <li>
-                  <button type='button' onClick = {() => setOpen(true)} className='py-2 px-4 font-semibold shadow-md rounded-lg bg-slate-400'>
-                    Se connecter / S'inscrire
-                  </button>
-                </li>
-            </ul> )
-          }
-        </nav>
+        <Nav setOpen={setOpen}/>
+        
 
         <Modal open={open} onClose={() => {setOpen(false)}}>
           <div className='text-center w-72'>
@@ -70,7 +57,7 @@ export function Header() {
               // toggle 4 renderings ??? why ?????
               modalContent === "login" ? 
               (
-                <UserLoginForm setModalContent={setModalContent} setUser={setUser} setOpen={setOpen}/>
+                <UserLoginForm setModalContent={setModalContent} setOpen={setOpen}/>
               ) 
               : 
               (

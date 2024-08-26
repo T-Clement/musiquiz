@@ -7,6 +7,7 @@ import { HomePage, loader as homeLoader } from './pages/Home/HomePage';
 import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
 import { ThemePage, loader as themePageLoader } from './pages/Theme/ThemePage';
+import { action as logoutAction } from './components/Header/Logout';
 import { createContext, useState } from 'react';
 
 
@@ -47,6 +48,10 @@ export function App() {
         {
           path : "*", 
           element: <Page404 />
+        },
+        {
+          path: "user/logout",
+          action: logoutAction
         }
       ]
     }
