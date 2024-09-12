@@ -1,18 +1,29 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+
+const cookies = require("cookie-parser");
+
 // const config = require("./config.json");
 
 // const mongoose = require('mongoose');
 
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 // const { body, validationResult, matchedData } = require("express-validator");
-
-
 
 const userRoutes = require('./routes/user');
 const themeRoutes = require('./routes/theme');
 const roomRoutes = require('./routes/room');
 
+const User = require('./models/User');
+const utils = require('./utils/utils');
+
+// const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+// const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY;
+// const TOKEN_EXPIRATION = '15m';
+// const REFRESH_EXPIRATION = '7d';
 
 
 
@@ -22,20 +33,181 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+app.use(cookies());
 
-app.use((req, res, next) => { // middleware pour le CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();
+
+const {authenticateJWT} = require('./middleware/Auth');
+
+
+// app.use((req, res, next) => { // middleware pour le CORS
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+//     next();
+// });
+// console.log(`http://localhost:${process.env.DOCKER_PORT_FRONT}`);
+app.use(cors({
+    // origin: `http://localhost:${process.env.DOCKER_PORT_FRONT}`,
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+}));
+
+
+
+
+// CSRF 
+
+
+// use to check api healthcheck
+app.get('/api/ping', (req, res) => {
+    res.status(200).json({message: 'pong'})
+})
+
+
+app.get('/api/refresh-token', (req, res) => {
+
+
+
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Non authentifié' });
+    }
+
+    // Vérifier le refresh token
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
+        }
+
+        // Générer un nouveau access token
+        const newAccessToken = jwt.sign(
+            { userId: user.userId, pseudo: user.pseudo, email: user.email }, 
+            process.env.JWT_SECRET_KEY, 
+            { expiresIn: '15m' }
+        );
+
+        // Stocker le nouveau JWT dans un cookie httpOnly
+        res.cookie('jwtToken', newAccessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 15 * 60 * 1000  // 15 minutes en ms
+        });
+
+        res.status(200).json({ message: "Token renouvelé" });
+    });
 });
 
-// app.use(cors({
-//     origin: 'http://localhost:8080',
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//     credentials: true,
-// }));
 
+// validation middleware  
+const { body, validationResult, matchedData } = require("express-validator");
+
+const validateLogin = [
+    body('email')
+        .trim()
+        .escape()
+        .isEmail().withMessage('L\'email doit être valide')
+        .notEmpty().withMessage('L\'email est requis'),
+    body('password')
+        .trim()
+        .escape()
+        .isString().withMessage('Le mot de passe doit être une chaîne de caractères')
+        .notEmpty().withMessage('Le mot de passe est requis'),
+];
+
+app.post("/api/login", validateLogin, async (req, res, next) => {
+
+
+    // get errors comming from express-validator
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
+    // get validated data
+    const validatedData = matchedData(req);
+
+    const { email, password } = validatedData;
+
+    console.log(email, password);
+
+    // check if user exists with the credentials comming from post request and validated with validator
+    User.findUserByMail(email).then(async user => {
+        // no user
+        if(user === null) {
+            console.log("No user for this email");
+            return res.status(401).json({message: "Paire identifiant/mot de passe incorrect"})
+        } else {
+            // a user with this email has been found
+            // check passwords hashs
+            const valid = bcrypt.compare(password, user.password)
+            
+            if(!valid) {
+                console.log("Invalid comparison of hashed passwords");
+                res.status(500).json({ message: "Paire identifiant/mot de passe incorrect" });
+            } else {
+                console.log("Match, a user with correct credentials is found");
+
+                user = new User(user.id, user.pseudo, null, user.email, user.createdAt, user.updatedAt);
+
+                try {
+
+                    // generate accessToken
+                    const accessToken = await utils.generateAccessToken(user, process.env.JWT_SECRET_KEY, process.env.TOKEN_EXPIRATION);
+                    console.log(accessToken);
+
+                    // generate refreshToken
+                    const refreshToken = await utils.generateRefreshToken(user, process.env.JWT_REFRESH_SECRET_KEY, process.env.REFRESH_EXPIRATION);
+                    console.log(refreshToken);
+
+                    // send cookies
+                    res.cookie('refreshToken', refreshToken, { httpOnly: false,}); // secure to true if https
+                    // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'Strict' }); // secure to true if https
+                    res.cookie('accessToken', accessToken, {httpOnly: false});
+                    // res.cookie('jwtToken', accessToken, {httpOnly: true, sameSite: 'Strict'});
+                    
+                    res.status(200).json({message: "Connexion Réussie", accessToken: accessToken, refreshToken: refreshToken});
+                        
+
+                } catch(error) {
+                    console.log("ERROR");
+                    console.log(error);
+                    res.status(500).json({error});
+                }
+            }
+           
+        };
+    })
+    .catch(error => res.status(500).json({error}));
+    
+
+});
+
+app.post('/api/logout', authenticateJWT, (req, res) => {
+    res.cookie('accessToken', '', {
+        httpOnly: true,
+        expires: new Date(0)
+    });
+    res.cookie('refreshToken', '', {
+        httpOnly: true,
+        expires: new Date(0)
+    });
+
+    res.status(200).json({ message: 'Déconnexion réussie, cookies supprimés' });
+});
+
+
+
+app.get("/api/me", authenticateJWT, (req, res) => {
+    if(!req.user) {
+        return res.status(401).json({message: "Non authentifié"});
+    }
+    res.status(200).json({message: "in user connected route", user: req.user});
+
+})
 
 
 

@@ -56,6 +56,6 @@ router.get('/:id', userCtrl.show);
 
 router.post("/register", validateRegisterUser, userCtrl.create);
 
-router.post("/login", validateLogin, userCtrl.login);
+// router.post("/login", validateLogin, userCtrl.login);
 
 module.exports = router;

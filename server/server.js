@@ -14,9 +14,12 @@ const normalizePort = val => {
     }
     return false;
 };
+// console.log("ici");
 
+console.log("FRONT " + process.env.DOCKER_PORT_FRONT);
+console.log("SERVER API " + process.env.DOCKER_PORT_API);
 
-const port = normalizePort(process.env.DOCKER_PORT_API || '3000'); // get port from env variables
+const port = normalizePort(process.env.DOCKER_PORT_API); // get port from env variables
 app.set('port', port); // set port of app server
 
 
@@ -40,7 +43,7 @@ const errorHandler = error => {
 
 
         case 'EADDRINUSE':
-            console.error(bind+ 'is already in use.');
+            console.error(bind + 'is already in use.');
             process.exit(1);
             break;
 

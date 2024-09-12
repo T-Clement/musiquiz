@@ -1,6 +1,7 @@
 // const dbCo = require("../db");
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const utils = require('../utils/utils');
 
@@ -90,46 +91,71 @@ exports.create = async (req, res, next) => {
 
 
 
-exports.login = async (req, res, next) => {
-    const errors = validationResult(req);
+// exports.login = async (req, res, next) => {
 
-    if(!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-    }
 
-    const validatedData = matchedData(req);
+//     // get errors comming from express-validator
+//     const errors = validationResult(req);
 
-    const { email, password } = validatedData;
+//     if(!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() })
+//     }
 
-    console.log(email, password);
+//     // get validated data
+//     const validatedData = matchedData(req);
 
-    User.findUserByMail(email).then(user => {
-        if(user === null) {
-            console.log("No user for this email");
-            return res.status(401).json({message: "Paire identifiant/mot de passe incorrect"})
-        } else {
-            bcrypt.compare(password, user.password)
-            .then(valid => {
-                if(!valid) {
-                    console.log("Invalid comparison of hashed passwords");
-                    res.status(500).json({ message: "Paire identifiant/mot de passe incorrect" });
-                } else {
-                    console.log("Match, a user with correct credentials is found");
-                    res.status(200).json(new User(user.id, user.pseudo, null, user.email, user.createdAt, user.updatedAt));
-                }
-            })
-            .catch(error => res.status(500).json({ error }));
-        };
-    })
-    .catch(error => res.status(500).json({error}));
+//     const { email, password } = validatedData;
+
+//     console.log(email, password);
+
+//     // check if user exists with the credentials comming from post request and validated with validator
+//     User.findUserByMail(email).then(user => {
+//         // no user
+//         if(user === null) {
+//             console.log("No user for this email");
+//             return res.status(401).json({message: "Paire identifiant/mot de passe incorrect"})
+//         } else {
+//             // a user with this email has been found
+//             // check passwords hashs
+//             bcrypt.compare(password, user.password)
+//             .then(valid => {
+//                 if(!valid) {
+//                     console.log("Invalid comparison of hashed passwords");
+//                     res.status(500).json({ message: "Paire identifiant/mot de passe incorrect" });
+//                 } else {
+//                     console.log("Match, a user with correct credentials is found");
+                    
+//                     const user = new User(user.id, user.pseudo, null, user.email, user.createdAt, user.updatedAt);
+
+//                     try {
+//                         console.log(process.env.TOKEN_SENTENCE);
+
+//                         // generate accessToken
+//                         const accessToken = utils.generateAccessToken(user, process.env.JWT_SECRET_KEY, process.env.TOKEN_EXPIRATION);
+                        
+//                         // generate refreshToken
+//                         const refreshToken = utils.generateRefreshToken(user, process.env.JWT_REFRESH_SECRET_KEY, process.env.REFRESH_EXPIRATION);
+
+//                         // send cookies
+//                         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'Strict' }); // secure to true if https
+//                         res.cookie('jwtToken', accessToken, {httpOnly: true, sameSite: 'Strict'});
+
+//                         res.status(200).json({message: "Connexion Réussie"});
+                         
+
+//                     } catch(error) {
+//                         console.log(error);
+//                         res.status(500).json({error});
+//                     }
+//                 }
+//             })
+//             .catch(error => res.status(500).json({ error }));
+//         };
+//     })
+//     .catch(error => res.status(500).json({error}));
     
 
-
-
-
-    // console.log(email, password);
-    // res.status(200).json({message: "Data received"});
-}
+// }
 
 
 // exports.login = (req, res, next) => {
