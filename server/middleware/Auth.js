@@ -12,12 +12,13 @@ exports.authenticateJWT = async (req, res, next) => {
         if (!refreshToken) {
             return res.status(401).json({ message: 'Non authentifié' });
         }
-
+        
         jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => { // user in payload of token
             if (err) {
                 return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
             }
-
+            
+            const utils = require('../utils/utils');
             // Générer un nouveau access token
             const newAccessToken = utils.generateAccessToken({ userId: user.userId, pseudo: user.pseudo }, process.env.JWT_SECRET_KEY, '15m');
             res.cookie('accessToken', newAccessToken, {
@@ -41,7 +42,6 @@ exports.authenticateJWT = async (req, res, next) => {
 
             req.user = { userId: user.userId, pseudo: user.pseudo };
             next();
-            // res.status(200).json({ user: { userId: user.userId, pseudo: user.pseudo } });
         });
     }
 };
