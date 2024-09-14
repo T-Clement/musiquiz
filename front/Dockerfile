@@ -1,32 +1,49 @@
-# Utiliser une image Node.js comme image de base pour la phase de build
+# utilise une image Node.js comme image de base pour la phase de build
 FROM node:18 AS build
 
-# Définir le répertoire de travail
+# définit le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers package.json et package-lock.json
+# copie les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Installer les dépendances
+# installe les dépendances
 RUN npm install
 
-# Copier tout le code source
+# copie tout le code source
 COPY . .
 
-# Vérifier la variable d'environnement
-RUN echo "REACT_APP_API_URL is $REACT_APP_API_URL"
 
-# Construire l'application React avec Vite
+
+# -------------------------------------------------
+# -------------------------------------------------
+# POUR DES FICHIERS STATIQUES
+# -------------------------------------------------
+# -------------------------------------------------
+
+# construit l'application React avec Vite
 RUN npm run build
 
-# Utiliser une image Nginx pour servir l'application
+# utilise une image Nginx pour faire tourner l'application
 FROM nginx:alpine
 
-# Copier les fichiers buildés dans le répertoire de Nginx
+# copie les fichiers buildés dans le répertoire de Nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Exposer le port 80 pour accéder à l'application
+# expose le port 80 pour accéder à l'application
 EXPOSE 80
 
-# Démarrer Nginx
+# démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+
+# -------------------------------------------------
+# -------------------------------------------------
+# POUR DU DEV
+# -------------------------------------------------
+# -------------------------------------------------
+# # expose le port pour Vite
+# EXPOSE 5173
+
+# # commande pour lancer l'application en mode développement
+# CMD ["npm", "run", "dev"]

@@ -10,12 +10,28 @@ import { ThemePage, loader as themePageLoader } from './pages/Theme/ThemePage';
 import { action as logoutAction } from './components/Header/Logout';
 import { createContext, useState } from 'react';
 
+import { AuthContextProvider } from './hooks/authContext';
 
-export const AuthContext = createContext(null);
+// import apiAxios from './libs/axios';
+
+// export const AuthContext = createContext(null);
+
+// async function AppLoader() {
+//   try {
+//     // const response = await apiAxios.get('/api/me');
+  
+//     return { user: response.data };
+
+//   } catch (error) {
+//     console.error('Error in AppLoader : ', error);
+//     return { user: null };
+
+//   }
+// }
 
 export function App() {
 
-   const [user, setUser] = useState(null);
+  //  const [user, setUser] = useState(null);
 
 
 
@@ -25,11 +41,15 @@ export function App() {
       path: "/",
       element: <DefaultLayout />,
       errorElement: <ErrorPage />,
+      // loader: AppLoader,
       children: [
         {
           index: true, 
           element: <HomePage />,
-          loader: homeLoader
+          loader: homeLoader,
+          // shouldRevalidate: ({currentUrl, nextUrl}) => {
+          //   return false;
+          // },
         },
         {
           path: "room/:id",
@@ -57,9 +77,12 @@ export function App() {
     }
   ])
 
-  return <AuthContext.Provider value = { { user, setUser }}>
-            <RouterProvider router = {router} />
-          </AuthContext.Provider>
+  return <AuthContextProvider><RouterProvider router = {router} fallbackElement={ <div>Loading ...</div> }/></AuthContextProvider>
+
+
+  // return <AuthContext.Provider value = { { user, setUser }}>
+  //           <RouterProvider router = {router} />
+  //         </AuthContext.Provider>
 //   <RouterProvider
 //   router={Router}
 //   fallbackElement={

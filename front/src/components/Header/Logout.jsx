@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
-import { useFetcher } from 'react-router-dom'
-import { AuthContext } from '../../App';
+// import { useFetcher } from 'react-router-dom'
+// import { AuthContext } from '../../App';
 
 export function action () {
 
@@ -8,35 +8,16 @@ export function action () {
 }
 
 
-export default function Logout() {
+export default function Logout({setIsLoggedIn, user}) {
 
-    // const fetcher = useFetcher();
-    const { setUser } = useContext(AuthContext);
-  
-    // useEffect(() => {
-
-    //   console.log("fetcher state:", fetcher.state);
-    //   console.log("fetcher type:", fetcher.type);
-    //   console.log("fetcher data:", fetcher.data);
-    // //   if (fetcher.state === 'idle' && fetcher.type === 'done' && !fetcher.data) {
-    // //     console.log("dans le if");
-    // //     setUser(null);
-    // // }
-    //   if (fetcher.state === 'idle') {
-    //     console.log("dans le if");
-    //     setUser(null);
-    // }
-    // }, [fetcher.state, fetcher.type, fetcher.data, setUser]);
-  
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     setUser(null);
-    //     fetcher.submit(e.currentTarget);
-    // }
+    // const { setUser } = useContext(AuthContext);
+    
+    
     const handleSubmit = (e) => {
         e.preventDefault();
-        setUser(null);
+        // setIsLoggedIn(false);
+        // setUser(null);
+        console.log(user, 'to deconnect');
     }
 
 

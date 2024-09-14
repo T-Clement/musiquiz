@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
-import { useContext } from 'react';
-import { AuthContext } from '../../App';
+import apiAxios from '../../libs/axios';
+// import { useContext } from 'react';
+// import { AuthContext } from '../../App';
+// import { useAuth } from '../../hooks/useAuth';
 // import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent, setOpen}) {
+export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, setUser}) {
 
-    const {user, setUser} =  useContext(AuthContext);
+    // const {user, setUser} =  useContext(AuthContext);
 
+    // const {login} = useAuth();
+
+    const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // const isSubmitting = fetcher.state === 'submitting';
@@ -28,20 +33,32 @@ export default function UserLoginForm({setModalContent, setOpen}) {
         const email = formData.get('email');
         const password = formData.get('password');
 
-        console.log("email : " + email);
-        console.log("password : " + password);
+        
         
         try {
             
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/login`, {
-                method: 'POST',
+            const response = await apiAxios.post(`${import.meta.env.VITE_API_URL}/api/login`, {
+                email: email,
+                password: password
+            }, 
+            {
                 headers: {
-                    'Content-type' : 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-                
+                    "Content-Type": 'application/json'
+                }
             });
+            // const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-type' : 'application/json'
+            //     },
+            //     body: JSON.stringify({ email, password })
+                
+            // });
 
+
+            
+            // const response = await login(email, password);
+            console.warn(response);
 
             if(response.status === 500 || response.status === 401) {
                 console.error("Connection failed");
@@ -50,13 +67,14 @@ export default function UserLoginForm({setModalContent, setOpen}) {
             }
 
             // get response
-            const userData = await response.json();
-            console.log('User data:', userData);
+            // const userData = await response.data();
+            console.log('User data:', response.data);
 
 
+            setIsLoggedIn(true);
 
             // update context
-            setUser(userData);
+            setUser(response.data);
 
             
             // reset form values
@@ -68,6 +86,7 @@ export default function UserLoginForm({setModalContent, setOpen}) {
 
         } catch(error) {
             console.error('Error during form submission : ', error);
+            setError('Connexion échouée. Vérifiez vos identifiants et essayez à nouveau.');
         } finally {
             setIsSubmitting(false);
         }
@@ -121,6 +140,7 @@ export default function UserLoginForm({setModalContent, setOpen}) {
             ) 
             : "Se connecter"}
         </button>
+        { error && <p className='text-red-600'>{error}</p> }
         </div>
         <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscivez vous</a></p>
     </form>

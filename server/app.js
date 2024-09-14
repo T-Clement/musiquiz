@@ -20,12 +20,8 @@ const roomRoutes = require('./routes/room');
 const User = require('./models/User');
 const utils = require('./utils/utils');
 
-// const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-// const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY;
-// const TOKEN_EXPIRATION = '15m';
-// const REFRESH_EXPIRATION = '7d';
 
-
+const {authenticateJWT} = require('./middleware/Auth');
 
 const app = express();
 
@@ -36,7 +32,12 @@ app.use(express.json());
 app.use(cookies());
 
 
-const {authenticateJWT} = require('./middleware/Auth');
+app.use(cors({
+    // origin: `http://localhost:${process.env.DOCKER_PORT_FRONT}`,
+    origin: `http://localhost:${process.env.NODE_ENV === 'prod' ? process.env.DOCKER_PORT_FRONT : 5173}`,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+}));
 
 
 // app.use((req, res, next) => { // middleware pour le CORS
@@ -46,59 +47,15 @@ const {authenticateJWT} = require('./middleware/Auth');
 //     next();
 // });
 // console.log(`http://localhost:${process.env.DOCKER_PORT_FRONT}`);
-app.use(cors({
-    // origin: `http://localhost:${process.env.DOCKER_PORT_FRONT}`,
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-}));
-
 
 
 
 // CSRF 
 
-
 // use to check api healthcheck
 app.get('/api/ping', (req, res) => {
     res.status(200).json({message: 'pong'})
 })
-
-
-app.get('/api/refresh-token', (req, res) => {
-
-
-
-    const refreshToken = req.cookies.refreshToken;
-
-    if (!refreshToken) {
-        return res.status(401).json({ message: 'Non authentifié' });
-    }
-
-    // Vérifier le refresh token
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
-        }
-
-        // Générer un nouveau access token
-        const newAccessToken = jwt.sign(
-            { userId: user.userId, pseudo: user.pseudo, email: user.email }, 
-            process.env.JWT_SECRET_KEY, 
-            { expiresIn: '15m' }
-        );
-
-        // Stocker le nouveau JWT dans un cookie httpOnly
-        res.cookie('jwtToken', newAccessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
-            maxAge: 15 * 60 * 1000  // 15 minutes en ms
-        });
-
-        res.status(200).json({ message: "Token renouvelé" });
-    });
-});
 
 
 // validation middleware  
@@ -164,12 +121,13 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
                     console.log(refreshToken);
 
                     // send cookies
-                    res.cookie('refreshToken', refreshToken, { httpOnly: false,}); // secure to true if https
+                    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false}); // secure to true if https
                     // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'Strict' }); // secure to true if https
-                    res.cookie('accessToken', accessToken, {httpOnly: false});
+                    res.cookie('accessToken', accessToken, {httpOnly: true, secure: false});
                     // res.cookie('jwtToken', accessToken, {httpOnly: true, sameSite: 'Strict'});
-                    
-                    res.status(200).json({message: "Connexion Réussie", accessToken: accessToken, refreshToken: refreshToken});
+                    res.cookie('test', 'test', {secure: false});
+                    res.status(200).json({message: "Connexion Réussie", userId: user.id });
+                    // res.status(200).json({message: "Connexion Réussie", accessToken: accessToken, refreshToken: refreshToken});
                         
 
                 } catch(error) {
@@ -187,10 +145,12 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
 });
 
 app.post('/api/logout', authenticateJWT, (req, res) => {
+    // set cookie to passed Date to delete it
     res.cookie('accessToken', '', {
         httpOnly: true,
         expires: new Date(0)
     });
+    // set cookie to passed Date to delete it
     res.cookie('refreshToken', '', {
         httpOnly: true,
         expires: new Date(0)
@@ -199,8 +159,43 @@ app.post('/api/logout', authenticateJWT, (req, res) => {
     res.status(200).json({ message: 'Déconnexion réussie, cookies supprimés' });
 });
 
+// NOT TESTED
+app.get('/api/refresh-token', (req, res) => {
 
 
+
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Non authentifié' });
+    }
+
+    // Vérifier le refresh token
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
+        }
+
+        // Générer un nouveau access token
+        const newAccessToken = jwt.sign(
+            { userId: user.userId, pseudo: user.pseudo, email: user.email }, 
+            process.env.JWT_SECRET_KEY, 
+            { expiresIn: process.env.TOKEN_EXPIRATION }
+        );
+
+        // Stocker le nouveau JWT dans un cookie httpOnly
+        res.cookie('accessToken', newAccessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 15 * 60 * 1000  // 15 minutes en ms
+        });
+
+        res.status(200).json({ message: "Token renouvelé !", user: user.id });
+    });
+});
+
+console.log("TEST");
 app.get("/api/me", authenticateJWT, (req, res) => {
     if(!req.user) {
         return res.status(401).json({message: "Non authentifié"});
@@ -300,3 +295,11 @@ app.get('*', (req, res, next) => {
 
 module.exports = app; // export pour pouvoir avoir accès à cette constante depuis les autres fichiers, notamment celui de notre server Node
 
+
+
+
+// check if user is not already in room before launching one.
+// avoid users to be connected on multiples devices
+// add a table in database to allow a way to revoke refresh tokens
+// update to postgre instead of mysql
+// add a csrf cookie to each post route to avoid CSRF attacks with the use of http-only cookies || add option 'SameSite' to cookies

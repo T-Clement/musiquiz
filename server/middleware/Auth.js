@@ -20,7 +20,7 @@ exports.authenticateJWT = async (req, res, next) => {
 
             // Générer un nouveau access token
             const newAccessToken = utils.generateAccessToken({ userId: user.userId, pseudo: user.pseudo }, process.env.JWT_SECRET_KEY, '15m');
-            res.cookie('jwtToken', newAccessToken, {
+            res.cookie('accessToken', newAccessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'Strict',
