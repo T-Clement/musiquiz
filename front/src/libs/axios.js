@@ -18,7 +18,7 @@ apiAxios.interceptors.response.use(
                 return apiAxios(originalRequest);
             } catch (refreshError) {
                 console.error("Erreur lors de la tentative de refresh token", refreshError);
-                // Gérer la déconnexion ou la redirection ici
+                // gérer la déconnexion ou la redirection ici
                 return Promise.reject(refreshError);
             }
         }

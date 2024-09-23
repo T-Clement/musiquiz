@@ -2,7 +2,7 @@ import './App.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ErrorPage } from './pages/ErrorPage';
 import { DefaultLayout } from './layouts/DefaultLayout';
-import { WaitingRoom } from './pages/WaitingRoom';
+import { WaitingRoom, loader as waitingRoomLoader } from './pages/WaitingRoom';
 import { HomePage, loader as homeLoader } from './pages/Home/HomePage';
 import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
@@ -55,6 +55,11 @@ export function App() {
           path: "room/:id",
           element: <RoomPage />,
           loader: roomPageLoader
+        },
+        {
+          path: 'game/:id/waiting-room',
+          element: <WaitingRoom />,
+          loader: waitingRoomLoader
         },
         {
           path: "waiting-room/:id",

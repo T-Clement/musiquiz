@@ -1,5 +1,6 @@
 import React from 'react'
-import { useLoaderData, useParams } from 'react-router-dom';
+import { Navigate, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import apiAxios from '../../libs/axios';
 
 export async function loader({ request, params }) {
     // console.log(request, params);
@@ -13,6 +14,7 @@ export async function loader({ request, params }) {
 
 
 export function RoomPage() {
+    const navigate = useNavigate();
 
     console.log("Render Home Page");
 
@@ -33,7 +35,65 @@ export function RoomPage() {
 
 
 
+
+
     // add datas related to previous games in this room (history of parties ??)
+
+
+    const handleCreateGame = async () => {
+
+
+        try {
+            const response = await apiAxios.post('/api/create-game', {
+                roomId: roomData.id
+            });
+
+
+            const { gameId } = response.data;
+
+            navigate(`/game/${gameId}/waiting-room`);
+
+            
+        } catch (error) {
+            console.error('Error creating game : ', error);
+        }
+
+
+
+
+
+        // appel api qui récupère les données de la room et genère un document avec les données
+        // nécessaires (identifiant api playlist, joueurs, date de création, identi)
+
+        // {
+        //     "gameId": "unique_game_id",
+        //     "host": {
+        //       "userId": "host_user_id",
+        //       "pseudo": "host_pseudo"
+        //     },
+        //     "players": [
+        //       {
+        //         "userId": "player_1_id",
+        //         "pseudo": "player_1_pseudo"
+        //       },
+        //       {
+        //         "userId": "player_2_id",
+        //         "pseudo": "player_2_pseudo"
+        //       }
+        //     ],
+        //     "status": "waiting", // 'waiting', 'in_progress', 'completed'
+        //     "createdAt": "2024-09-12T12:34:56Z",
+        //     "settings": {
+        //       "maxPlayers": 10,
+        //       "gameMode": "classic",
+        //       "playlist": "playlist_id"
+        //     }
+        //   }
+
+
+
+    };
+
 
 
     return (
@@ -79,7 +139,7 @@ export function RoomPage() {
                 <div className='w-full md:w-1/2 flex flex-col justify-center items-center'>
                     <h3>Multijoueur</h3>
                     <div className='flex flex-col gap-3 mt-6'>
-                        <button type='button' className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700'>Créer une partie</button>
+                        <button type='button' className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' onClick={handleCreateGame}>Créer une partie</button>
                         <button type='button' className='cursor-not-allowed text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' disabled>Créer une partie <br /> personnalisée</button>
                     </div>
                 </div>
