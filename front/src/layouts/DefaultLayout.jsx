@@ -17,7 +17,7 @@ export function DefaultLayout() {
     return <div>Chargement ...</div>
   }
 
-
+  console.log("User in DefaultLayout : ", user);
 
   return (
     <>

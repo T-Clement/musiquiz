@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLoaderData } from 'react-router-dom'
 // import { AuthContext } from '../../App';
 import Modal from '../Modal';
@@ -10,19 +10,21 @@ import Nav from './Nav';
 export function Header({user, setUser}) {
 
   console.log("render Header");
-
-  // const {user, setUser } = useContext(AuthContext);
-
-  // console.log("Le contexte" , user);
-
-
-  // const { user } = useContext();
-  console.log("In Header : ", user);
-
-
+  console.log(user);
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState("login");
-  const [isLoggedIn, setIsLoggedIn] = useState(user.user);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // get value of user as default isLoggedIn state
+
+  const userInfo = user && Object.keys(user.user).length > 0 ? user : null;
+
+
+  useEffect(() => {
+    if(user && user.user && Object.keys(user.user).length > 0) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [user]);
 
 
   return (
@@ -63,7 +65,7 @@ export function Header({user, setUser}) {
               // toggle 4 renderings ??? why ?????
               modalContent === "login" ? 
               (
-                <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>
+                <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo}/>
               ) 
               : 
               (

@@ -14,6 +14,8 @@ export async function loader({ request, params }) {
 
 export function RoomPage() {
 
+    console.log("Render Home Page");
+
     let { id } = useParams();
 
     console.log(`In room page id ${id}`);

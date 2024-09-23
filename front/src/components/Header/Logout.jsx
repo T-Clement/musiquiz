@@ -8,15 +8,20 @@ export function action () {
 }
 
 
-export default function Logout({setIsLoggedIn, user}) {
+export default function Logout({setIsLoggedIn, user, setUser}) {
 
-    // const { setUser } = useContext(AuthContext);
     
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        // setIsLoggedIn(false);
-        // setUser(null);
+        setIsLoggedIn(false);
+        setUser(null);
+
+
+
+
+
+
         console.log(user, 'to deconnect');
     }
 

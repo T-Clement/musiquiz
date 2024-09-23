@@ -3,7 +3,7 @@ import { useLoaderData } from 'react-router-dom';
 import { RoomItem } from '../../components/RoomItem';
 
 
-export async function loader({requset, params}) {
+export async function loader({request, params}) {
     const theme = await fetch(`${import.meta.env.VITE_API_URL}/api/theme/${params.id}`).then(response => response.json());
     return {theme};
 }
@@ -12,6 +12,8 @@ export async function loader({requset, params}) {
 
 
 export function ThemePage() {
+
+    console.log("Render ThemePage");
 
     const { theme } = useLoaderData();
     console.log(theme);

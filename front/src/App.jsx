@@ -8,7 +8,7 @@ import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
 import { ThemePage, loader as themePageLoader } from './pages/Theme/ThemePage';
 import { action as logoutAction } from './components/Header/Logout';
-import { createContext, useState } from 'react';
+import { createContext, useMemo, useState } from 'react';
 
 import { AuthContextProvider } from './hooks/authContext';
 
@@ -34,9 +34,9 @@ export function App() {
   //  const [user, setUser] = useState(null);
 
 
+  console.log("Render App");
 
-
-  const router = createBrowserRouter([
+  const router = useMemo(() => createBrowserRouter([
     {
       path: "/",
       element: <DefaultLayout />,
@@ -75,7 +75,7 @@ export function App() {
         }
       ]
     }
-  ])
+  ]), []);
 
   return <AuthContextProvider><RouterProvider router = {router} fallbackElement={ <div>Loading ...</div> }/></AuthContextProvider>
 

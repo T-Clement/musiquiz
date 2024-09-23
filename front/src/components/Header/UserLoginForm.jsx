@@ -5,7 +5,7 @@ import apiAxios from '../../libs/axios';
 // import { useAuth } from '../../hooks/useAuth';
 // import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, setUser}) {
+export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, user}) {
 
     // const {user, setUser} =  useContext(AuthContext);
 
@@ -74,7 +74,7 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
             setIsLoggedIn(true);
 
             // update context
-            setUser(response.data);
+            // setUser(response.data);
 
             
             // reset form values
