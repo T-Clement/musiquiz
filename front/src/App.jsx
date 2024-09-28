@@ -11,7 +11,8 @@ import { action as logoutAction } from './components/Header/Logout';
 import { createContext, useMemo, useState } from 'react';
 
 import { AuthContextProvider } from './hooks/authContext';
-import ChooseRole, {loader as ChooseRoleLoader} from './pages/ChooseRole';
+import ChooseRole, {loader as chooseRoleLoader} from './pages/ChooseRole';
+import { GameLayout } from './layouts/GameLayout';
 
 // import apiAxios from './libs/axios';
 
@@ -57,20 +58,20 @@ export function App() {
           element: <RoomPage />,
           loader: roomPageLoader
         },
-        {
-          path: 'game/:id/choose-role',
-          element: <ChooseRole />,
-          loader: ChooseRoleLoader
-        },
-        {
-          path: 'game/:id/waiting-room',
-          element: <WaitingRoom />,
-          loader: waitingRoomLoader
-        },
-        {
-          path: "waiting-room/:id",
-          element: <WaitingRoom />
-        },
+        // {
+        //   path: 'game/:id/choose-role',
+        //   element: <ChooseRole />,
+        //   loader: chooseRoleLoader
+        // },
+        // {
+        //   path: 'game/:id/waiting-room',
+        //   element: <WaitingRoom />,
+        //   loader: waitingRoomLoader
+        // },
+        // {
+        //   path: "waiting-room/:id",
+        //   element: <WaitingRoom />
+        // },
         {
           path: "theme/:id",
           element: <ThemePage />,
@@ -83,6 +84,25 @@ export function App() {
         {
           path: "user/logout",
           action: logoutAction
+        }
+      ]
+    }, 
+    {
+      path: "/game/",
+      element: <GameLayout />,
+      children: [
+        // {
+        //   path:
+        // },
+        {
+          path: ":id/choose-role",
+          element: <ChooseRole />,
+          loader: chooseRoleLoader
+        }, 
+        {
+          path: ":id/waiting-room",
+          element: <WaitingRoom />,
+          loader: waitingRoomLoader
         }
       ]
     }

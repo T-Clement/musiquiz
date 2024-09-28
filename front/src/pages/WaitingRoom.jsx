@@ -1,27 +1,27 @@
 import axios from 'axios';
-import React from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useLoaderData, useLocation, useParams } from 'react-router-dom'
 
 
 // PROTECTED PAGE
 // ONLY ACCESSIBLE IF IS CONNCETED / IS AUTH
 
 export async function loader({params}) {
-  const {idGame} = params;
+  const {id} = params;
 
   // get data from game in MongoDB database
-  const game = await axios.get(`${import.meta.env.VITE_API_URL}/api/game/${idGame}`, {
+  const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/game/${id}`, {
     headers: {
         "Content-Type": 'application/json'
     }
   });
 
-  if(!game || game.status !== 'waiting') {
+
+  if(!response || response.data.game.status !== 'waiting') {
     throw new Response('Game not found or not in waiting status', {status: 403});
   }
 
-
-  return { game };
+  return response.data;
 
 }
 
@@ -31,11 +31,27 @@ export async function loader({params}) {
 
 export function WaitingRoom() {
 
-  let { id } = useParams();
-  console.log(id);
-  // const { state } = useLocation();
-  // const { waitingRoomId, roomId, roomName } = state.room;
-  // console.log(state);
+
+  // CHANGE LAYOUT ???
+  // CHANGE LAYOUT ???
+  // CHANGE LAYOUT ???
+  // CHANGE LAYOUT !!!!
+  // IF ARRIVED HERE, PLAYER IS A USER 
+  // OR NOT CONNECTED DEVICE CAN ONLY BE A PRESENTATOR
+
+
+
+    // check for {userId: value, websocketId, value} when page connection (connection lost, reload of page, ...)
+
+
+  const { game } = useLoaderData();
+  console.log(game);
+
+
+  const [players, setPlayers] = useState(null);
+
+
+
 
   // console.warn(waitingRoomId);
 

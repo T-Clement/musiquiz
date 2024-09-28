@@ -19,6 +19,17 @@ const GameSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    presentator : {
+        type: String,
+        default: {
+            userId: null, // really needed if only socketId is user ??????
+            socketId: String
+        }
+    },
+    players: {
+        type: Array,
+        default: []
+    }
 
 })
 

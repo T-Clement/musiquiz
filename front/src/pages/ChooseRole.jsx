@@ -1,6 +1,7 @@
 import React from 'react'
 import apiAxios from '../libs/axios';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 // j'utilise tailwind pour le style de l'interface
 
@@ -21,6 +22,9 @@ export async function loader(){
     console.log(user);
     return user ;
 
+
+    // check if user is not already in game ? (prev in navigator go back to role selection page ...)
+
 }
 
 
@@ -30,6 +34,11 @@ function ChooseRole() {
     const user = useLoaderData();
     console.warn(user)
 
+    const { id } = useParams();
+
+    const navigate = useNavigate();
+
+
     if(!user) {
         console.log('user not connected');
     } else {
@@ -38,14 +47,33 @@ function ChooseRole() {
 
 
 
-    const handleChooseRole = (role) => {
+    const handleChooseRole = async (role) => {
         console.log('choix du rôle : ', role);
         console.log(user)
         
-        // send role to server
+        
+        try {
+            // send role to server
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/add-user-to-game`, {
+                role: role,
+                userId: user.userId,
+                gameId: id
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
 
+            // console.log(response);
+            // if response is ok, redirect to waiting room
+            if(response.data) {
+                navigate(`/game/${id}/waiting-room`, {state: {game: response.data}});
+            } 
 
-        // if response is ok, redirect to waiting room
+        } catch(error) {
+            console.error('Error in ChooseRole page', error);
+            // navigate('/');
+        }
 
 
 
