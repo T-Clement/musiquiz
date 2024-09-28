@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 
@@ -9,7 +10,11 @@ export async function loader({params}) {
   const {idGame} = params;
 
   // get data from game in MongoDB database
-  const game = await fetchGameById(idGame);
+  const game = await axios.get(`${import.meta.env.VITE_API_URL}/api/game/${idGame}`, {
+    headers: {
+        "Content-Type": 'application/json'
+    }
+  });
 
   if(!game || game.status !== 'waiting') {
     throw new Response('Game not found or not in waiting status', {status: 403});

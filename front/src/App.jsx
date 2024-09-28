@@ -11,6 +11,7 @@ import { action as logoutAction } from './components/Header/Logout';
 import { createContext, useMemo, useState } from 'react';
 
 import { AuthContextProvider } from './hooks/authContext';
+import ChooseRole, {loader as ChooseRoleLoader} from './pages/ChooseRole';
 
 // import apiAxios from './libs/axios';
 
@@ -55,6 +56,11 @@ export function App() {
           path: "room/:id",
           element: <RoomPage />,
           loader: roomPageLoader
+        },
+        {
+          path: 'game/:id/choose-role',
+          element: <ChooseRole />,
+          loader: ChooseRoleLoader
         },
         {
           path: 'game/:id/waiting-room',

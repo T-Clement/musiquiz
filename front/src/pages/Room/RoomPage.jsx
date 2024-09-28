@@ -1,6 +1,7 @@
+import axios from 'axios';
 import React from 'react'
 import { Navigate, useLoaderData, useNavigate, useParams } from 'react-router-dom';
-import apiAxios from '../../libs/axios';
+// import apiAxios from '../../libs/axios';
 
 export async function loader({ request, params }) {
     // console.log(request, params);
@@ -40,20 +41,28 @@ export function RoomPage() {
     // add datas related to previous games in this room (history of parties ??)
 
 
-    const handleCreateGame = async () => {
-
-
+    const handleCreateGame = async (roomId) => {
+        console.warn(roomId);
         try {
-            const response = await apiAxios.post('/api/create-game', {
-                roomId: roomData.id
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-game`, {
+                roomId: roomId 
+            }, 
+            {
+                headers: {
+                    "Content-Type": 'application/json'
+                }
             });
+            
 
+
+            
 
             const { gameId } = response.data;
 
-            navigate(`/game/${gameId}/waiting-room`);
+            // navigate(`/game/${gameId}/waiting-room`);
+            navigate(`/game/${gameId}/choose-role`);
 
-            
+
         } catch (error) {
             console.error('Error creating game : ', error);
         }
@@ -139,7 +148,7 @@ export function RoomPage() {
                 <div className='w-full md:w-1/2 flex flex-col justify-center items-center'>
                     <h3>Multijoueur</h3>
                     <div className='flex flex-col gap-3 mt-6'>
-                        <button type='button' className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' onClick={handleCreateGame}>Créer une partie</button>
+                        <button type='button' className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' onClick={() => handleCreateGame(id)}>Créer une partie</button>
                         <button type='button' className='cursor-not-allowed text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' disabled>Créer une partie <br /> personnalisée</button>
                     </div>
                 </div>

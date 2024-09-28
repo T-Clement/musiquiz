@@ -2,11 +2,31 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const {v4:uuidv4} = require('uuid');
+
 const cookies = require("cookie-parser");
 
 // const config = require("./config.json");
 
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const uri = "mongodb+srv://toquetclement:BkhoRSWPHIm0syqH@musiquiz-rooms.jkx6g.mongodb.net/?retryWrites=true&w=majority&appName=musiquiz-rooms";
+const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+async function run() {
+  try {
+    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
+    await mongoose.connect(uri, clientOptions);
+    await mongoose.connection.db.admin().command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    // await mongoose.disconnect();
+  }
+}
+run().catch(console.dir);
+
+
+
+
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -60,6 +80,13 @@ app.get('/api/ping', (req, res) => {
 
 // validation middleware  
 const { body, validationResult, matchedData } = require("express-validator");
+
+const Game = require('./schema/Game');
+// const validateCreateRoom = [
+//     body('idRoom').isNumeric('L\'identifiant doit être un entier');
+// ]
+
+
 
 const validateLogin = [
     body('email')
@@ -195,7 +222,6 @@ app.get('/api/refresh-token', (req, res) => {
     });
 });
 
-console.log("TEST");
 app.get("/api/me", authenticateJWT, (req, res) => {
     if(!req.user) {
         return res.status(401).json({message: "Non authentifié"});
@@ -274,6 +300,76 @@ app.get('/api/top3', async (req, res, next) => {
 
 app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
+
+
+
+app.post('/api/create-game', async (req, res, next) => {
+    
+    
+    try {
+
+        console.log(req.body);
+
+        const {roomId} = req.body;
+        console.log(roomId);
+
+
+        // get data in mysql database
+        // api playlist id, name
+        
+
+
+
+        // to store in mongoDb
+        const gameId = uuidv4();
+
+        const newGame = new Game({
+            _id: gameId,
+            roomId: parseInt(roomId),
+            status: 'waiting',
+            createdAt: new Date()
+        });
+
+
+        await newGame.save();
+
+        res.status(201).json({ gameId: newGame._id })
+
+
+
+    } catch (error) {
+        console.error('Error creating new Game', error);
+        res.status(500).json({error: 'Failed to create game'});
+    }
+});
+
+app.get('/api/game/:id', async (req, res, next) => {
+
+    // create websocket instance / room // chanel
+
+    const {id} = req.params;
+
+    const game = await Game.findById(id);
+
+    if(!game) {
+        return res.status(404).json({message: "Game not found"});
+    }
+
+
+
+    
+    return res.status(200).json({game: game}); 
+
+    
+
+    // return data from room
+
+
+
+});
+
+
+
 
 
 // error handling middleware
