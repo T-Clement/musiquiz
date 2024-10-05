@@ -44,6 +44,29 @@ class User {
     }
 
 
+    static async getUserForGame(id) {
+        
+        const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
+        const values = [id];
+        
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+
+
+            if (rows.length === 0) {
+                console.log("No User found with id: " + id);
+                return null;
+            }
+
+
+            const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
+            return { id, pseudo };
+            // return new User(...rows[0]);
+        } catch (error) {
+            console.error('Error finding user for game : ' + error.message);
+
+        }
+    }
 
 
     static async findOneUser(pseudo, passwordHash) {

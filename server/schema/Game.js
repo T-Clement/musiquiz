@@ -1,5 +1,25 @@
 const mongoose = require('mongoose');
 
+const PlayerSchema = new mongoose.Schema({
+    userId: {
+        type: Number,
+        required: true
+    },
+    pseudo: {
+        type: String,
+        required: true
+    },
+    socketId: {
+        type: String,
+        // required: true
+    },
+    score: {
+        type: Number,
+        default: 0
+    }
+}, { _id: false });
+
+
 
 const GameSchema = new mongoose.Schema({
     _id: {
@@ -19,19 +39,54 @@ const GameSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    presentator : {
-        type: String,
-        default: {
-            userId: null, // really needed if only socketId is user ??????
-            socketId: String
+    startedAt: {
+        type: Date
+    },
+    endedAt: {
+        type: Date
+    },
+    sharingCode : {
+        type: String
+    },
+    presentator: {
+        // userId: {
+        //     type: Number,
+        //     // required: true
+        // }, //NOT NEEDED ????????
+        socketId: {
+            type: String,
+            // required: true
         }
     },
-    players: {
-        type: Array,
-        default: []
-    }
-
-})
-
+    players: [PlayerSchema],
+    currentRound: {
+        type: Number,
+        default: 0
+    },
+    totalRounds: {
+        type: Number,
+        default: 10,
+        // required: true
+    },
+    // playlist: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Playlist',
+    //     required: true
+    // },
+    // currentSong: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Song'
+    // },
+    // settings: {
+    //     maxPlayers: {
+    //         type: Number,
+    //         default: 10
+    //     },
+    //     roundDuration: {
+    //         type: Number,
+    //         default: 30 // seconds
+    //     }
+    // }
+});
 
 module.exports = mongoose.model('Game', GameSchema);

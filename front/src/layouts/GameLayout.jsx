@@ -4,6 +4,10 @@ import { AuthContext } from '../hooks/authContext';
 
 export function GameLayout() {
 
+
+    // websocket connection here
+
+
   const { user, setUser, loading } = useContext(AuthContext);
 
 

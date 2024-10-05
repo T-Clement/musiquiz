@@ -8,21 +8,7 @@ const cookies = require("cookie-parser");
 
 // const config = require("./config.json");
 
-const mongoose = require('mongoose');
-const uri = "mongodb+srv://toquetclement:BkhoRSWPHIm0syqH@musiquiz-rooms.jkx6g.mongodb.net/?retryWrites=true&w=majority&appName=musiquiz-rooms";
-const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
-async function run() {
-  try {
-    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
-    await mongoose.connect(uri, clientOptions);
-    await mongoose.connection.db.admin().command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    // await mongoose.disconnect();
-  }
-}
-run().catch(console.dir);
+
 
 
 
@@ -36,6 +22,8 @@ const jwt = require('jsonwebtoken');
 const userRoutes = require('./routes/user');
 const themeRoutes = require('./routes/theme');
 const roomRoutes = require('./routes/room');
+const gameRoutes = require('./routes/game');
+
 
 const User = require('./models/User');
 const utils = require('./utils/utils');
@@ -302,6 +290,7 @@ app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
 
 
+app.use('/api/game', gameRoutes);
 
 app.post('/api/create-game', async (req, res, next) => {
     
@@ -343,67 +332,7 @@ app.post('/api/create-game', async (req, res, next) => {
     }
 });
 
-app.get('/api/game/:id', async (req, res, next) => {
 
-    // create websocket instance / room // chanel
-
-    const {id} = req.params;
-
-    const game = await Game.findById(id);
-
-    if(!game) {
-        return res.status(404).json({message: "Game not found"});
-    }
-
-
-
-    
-    return res.status(200).json({game: game}); 
-
-    
-
-    // return data from room
-
-
-
-});
-
-
-app.post('/api/add-user-to-game', async (req, res, next) => {
-
-    try {
-        
-        const { gameId, userId, role } = req.body;
-        
-        const filter = { _id: gameId };
-        console.log(gameId);
-        let update = {};
-        
-        // get user id and put it in game to presentator or in user Array
-        if(req.body.role === "player") {
-            update = { $addToSet: { players: userId } }
-    
-        } else if (req.body.role === "presentator") {
-            update = { $set: { presentator: userId } }
-        } else {
-            return res.status(400).json({message: "Invalid role specified"});
-        }
-    
-        const updatedGame = await Game.findOneAndUpdate(filter, update);
-        console.log(updatedGame);
-        if(!updatedGame) {
-            return res.status(404).json({message: "Game not found"});
-        }
-
-        return res.status(200).json({message: "Player and role updated successfully", game: updatedGame });
-
-    } catch (error) {
-        console.error("Error updating game role: ", error);
-        res.status(500).json({message: "Error updating game role"});
-
-
-    }
-});
 
 
 // error handling middleware
