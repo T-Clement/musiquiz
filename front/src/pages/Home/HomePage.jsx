@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import JoinGameSection from './JoinGameSection';
 import { Link, useLoaderData } from 'react-router-dom';

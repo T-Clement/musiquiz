@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import apiAxios from '../libs/axios';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -15,11 +15,31 @@ import axios from 'axios';
 
 export async function loader() {
     console.log("choose role loader")
-    const response = await apiAxios.get(`${import.meta.env.VITE_API_URL}/api/me`);
-    console.warn(response.data);
-    const user = response.data.user ?? null; // if no user, return null
-    console.log(user);
-    return user;
+    try {
+        const response = await apiAxios.get(`${import.meta.env.VITE_API_URL}/api/me`);
+        console.warn(response.data);
+        return response.data.user || null;
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            console.log("User not authenticated");
+            return null;
+        }else {
+            console.error("dans le else");
+            console.error(error);
+        }
+        throw error; // Rethrow other errors
+    }
+    // const response = await apiAxios.get(`${import.meta.env.VITE_API_URL}/api/me`);
+    // console.warn(response.data);
+
+    // if(response.data) {
+    //     return response.data.user;
+    // } else if (response.status === 401) {
+    //     return null;
+    // }
+    // const user = response.data.user ?? null; // if no user, return null
+    // console.log(user);
+    // return user;
 
 
     // check if user is not already in game ? (prev in navigator go back to role selection page ...)
@@ -69,7 +89,7 @@ function ChooseRole() {
             // console.log(response);
             // if response is ok, redirect to waiting room
             if (response.data) {
-                navigate(`/game/${id}/waiting-room`, { state: { game: response.data, userId: user.userId } });
+                navigate(`/game/${id}/waiting-room`, { state: { game: response.data, userId: user ? user.userId : null, role } });
             }
 
         } catch (error) {

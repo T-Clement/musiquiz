@@ -36,6 +36,35 @@ router.get('/:id', async (req, res, next) => {
 });
 
 
+router.post('/check-sharing-code', async (req, res, next) => {
+
+    const { sharingCode } = req.body;
+
+
+    const filter = { sharingCode: sharingCode };
+
+
+    try {
+
+        const game = await Game.findOne(filter);
+
+        if(!game) {
+           return res.status(404).json({message: "Pas de partie en cours avec ce code"});
+        }
+
+        return res.status(200).json({message: "", game: game});
+
+
+    } catch(error) {
+        console.log('Error in check sharing code ', error);
+        res.status(500).json({message: "Error in check sharing code"});
+    }
+
+});
+
+
+
+
 router.post('/add-user-to-game', async (req, res, next) => {
 
     try {

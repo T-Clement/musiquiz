@@ -60,7 +60,9 @@ export function RoomPage() {
             const { gameId } = response.data;
 
             // navigate(`/game/${gameId}/waiting-room`);
-            navigate(`/game/${gameId}/choose-role`);
+
+            // send gameId (_id) to next page
+            navigate(`/game/${gameId}/choose-role`, {state: {gameId}});
 
 
         } catch (error) {

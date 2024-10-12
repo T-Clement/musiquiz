@@ -319,6 +319,8 @@ app.post('/api/create-game', async (req, res, next) => {
             createdAt: new Date()
         });
 
+        // use method of Schema to create random sharing code starting with roomId
+        newGame.generateSharingCode();
 
         await newGame.save();
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 const PlayerSchema = new mongoose.Schema({
     userId: {
@@ -88,5 +89,16 @@ const GameSchema = new mongoose.Schema({
     //     }
     // }
 });
+
+
+// method to generate a sharing code
+GameSchema.methods.generateSharingCode = function () {
+    const roomId = this.roomId;
+
+    // generate 4 randoms characters
+    const randomPart = crypto.randomBytes(2).toString('hex');
+    this.sharingCode = (roomId + randomPart).toUpperCase();
+    return this.sharingCode; 
+}
 
 module.exports = mongoose.model('Game', GameSchema);

@@ -1,11 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useLoaderData, useLocation, useParams } from 'react-router-dom'
-import io from 'socket.io-client';
 
 
-// PROTECTED PAGE
-// ONLY ACCESSIBLE IF IS CONNCETED / IS AUTH
+
+
 
 export async function loader({params}) {
   const {id} = params;
@@ -19,7 +18,7 @@ export async function loader({params}) {
 
 
   if(!response || response.data.game.status !== 'waiting') {
-    throw new Response('Game not found or not in waiting status', {status: 403});
+    throw new Response('Game not found or not in waiting status', {status: 404});
   }
 
   return response.data;
@@ -45,7 +44,7 @@ export function WaitingRoom() {
 
   const { state } = useLocation();
   const { userId, pseudo } = state;
-// console.log(state);
+console.error(state);
 
 
 
@@ -54,27 +53,31 @@ export function WaitingRoom() {
 
 
   const [players, setPlayers] = useState([]);
+  
+  const [socketId, setSocketId ] = useState(null);
 
-  useEffect(() => {
-    const socket = io('http://localhost:3000');
+  // useEffect(() => {
+  //   const socket = io('http://localhost:3000');
 
-    socket.emit('join-room', game._id, userId, socket.id ); /// gameId, userId, socketId
-                                                              // !!!!!!!!!!
-    socket.on('update-players', (newPlayer) => {
-      console.log("in update-players");
-      console.warn(newPlayer);
-      setPlayers(prevPlayers => [...prevPlayers, newPlayer]); // to modify !!!!
+  //   socket.emit('join-room', game._id, userId, socket.id ); /// gameId, userId, socketId
+                                                             
+  //   socket.on('update-players', (newPlayer) => {
+  //     console.log("in update-players");
+  //     console.warn(newPlayer);
+  //     setPlayers(prevPlayers => [...prevPlayers, newPlayer]); 
 
-    });
+  //     setSocketId(newPlayer.socketId);
 
-    console.log(players);
+  //   });
 
-    // cleanup function
-    return () => {
-      socket.disconnect();
-    }
+  //   console.log(players);
 
-  }, [game.idGame]);
+  //   // cleanup function
+  //   return () => {
+  //     socket.disconnect();
+  //   }
+
+  // }, [game.idGame]);
 
 
   // console.warn(waitingRoomId);
@@ -83,6 +86,7 @@ export function WaitingRoom() {
     <>
       <Link to={'/'} className='link'>Go back to Home</Link>
       <div>Welcome to the WaitingRoom !</div>
+      <h2>Code pour rejoindre la partie : { game.sharingCode }</h2>
       {/* <div>
         <p>ID : {waitingRoomId}</p>
         <p>RoomID : {roomId}</p>
@@ -96,7 +100,7 @@ export function WaitingRoom() {
       {players && players.length > 0 ? (
         <ul>
           {players.map(player => (
-            <li key={player.userId}>{player.pseudo} (add you)</li>
+            <li key={player.userId}>{player.pseudo} {player.socketId === socketId ? "(You)" : ""}</li>
           ))}
         </ul>
       ) : (
@@ -104,6 +108,10 @@ export function WaitingRoom() {
       )}
 
 
+
+      <h2>Présentateur :</h2>
+      <input type='checkbox' 
+      />
 
 
 

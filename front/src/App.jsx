@@ -90,6 +90,7 @@ export function App() {
     {
       path: "/game/",
       element: <GameLayout />,
+      errorElement: <ErrorPage />,
       children: [
         // {
         //   path:
