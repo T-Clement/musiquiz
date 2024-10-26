@@ -1,7 +1,15 @@
-import { useContext, useEffect } from 'react';
-import { useNavigate, Outlet, useLocation } from 'react-router-dom';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useNavigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from '../hooks/authContext';
 import { io } from 'socket.io-client';
+import axios from 'axios';
+
+
+
+// create websocket context
+const WebSocketContext = createContext();
+
+
 
 export function GameLayout() {
 
@@ -10,6 +18,7 @@ export function GameLayout() {
       //  --> returns a 404 in waiting-room
     
     
+
     
   // websocket connection here
 
@@ -17,12 +26,17 @@ export function GameLayout() {
 
   
   const { user, setUser, loading } = useContext(AuthContext);
-
-
-
   const navigate = useNavigate();
-
   const {state} = useLocation();
+
+
+  const {id : gameId} = useParams();
+
+
+  const [socket, setSocket] = useState(null);
+
+
+
   // console.warn("Ca MARCHE ???", state);
 
   useEffect(() => {
@@ -35,10 +49,21 @@ export function GameLayout() {
 
     const socket = io('http://localhost:3000');
 
-    // socket.
+    // update state
+    setSocket(socket);
 
-    console.log(state.gameId, user??user.user.userId, user??user, socket, role);
-    socket.emit('join-room', state.gameId, user.user.userId, socket.id);
+    // console.log(state.gameId, user??user.user.userId, user??user, socket, role);
+    
+    // socket.emit('join-room', gameId, user.user.userId, socket.id);
+
+
+    // quit gameLayout view and redirect to home
+    socket.on('quit-game', (message) => {
+      console.warn(message);
+      navigate("/");
+    })
+
+
 
     return () => {
       socket.disconnect();
@@ -47,15 +72,62 @@ export function GameLayout() {
 
   }, [user, loading, navigate]);
 
+
+  const handleDeleteGame = async () => {
+    // console.log("test")
+    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/game/${gameId}/delete`, {}, {
+      headers: 
+      {
+        "Content-Type": "application/json"
+      }}
+    );
+
+    console.log(response);
+    if(response.data) {
+
+
+      // emit delete event to redirect all other users
+      socket.emit('delete-game', gameId);
+
+
+      // navigate to home
+      navigate(`/`);
+
+    }
+
+
+
+  }
+
+
+
+
+
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading in GameLayout...</div>;
   }
 
   return (
-    <div className="game-layout">
-        <p>GameLayout</p>
-
-      <Outlet />
-    </div>
+    <WebSocketContext.Provider value={socket}>
+      <div className="game-layout">
+          <p>GameLayout</p>
+          <p>
+            <button 
+            className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900' 
+            type='button' 
+            onClick={handleDeleteGame}
+            >
+              Supprimer la partie
+              </button>
+            </p>
+        <Outlet />
+      </div>
+    </WebSocketContext.Provider>
   );
+}
+
+
+export function useWebSocket() {
+  return useContext(WebSocketContext);
 }

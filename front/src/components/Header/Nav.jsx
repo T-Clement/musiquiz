@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 export default function Nav({setOpen, isLoggedIn, setIsLoggedIn, user}) {
 
   console.log("Render Nav")
-  console.log(user);
+  // console.log(user);
 
   return (
     <nav className='hidden md:block'>

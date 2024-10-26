@@ -10,7 +10,7 @@ import Nav from './Nav';
 export function Header({user, setUser}) {
 
   console.log("render Header");
-  console.log(user);
+  // console.log(user);
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState("login");
   const [isLoggedIn, setIsLoggedIn] = useState(false); // get value of user as default isLoggedIn state

@@ -2,6 +2,8 @@
 import apiAxios from '../libs/axios';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
+import { useWebSocket } from '../layouts/GameLayout';
 
 
 // vérifier si le joueur est connecté
@@ -29,17 +31,6 @@ export async function loader() {
         }
         throw error; // Rethrow other errors
     }
-    // const response = await apiAxios.get(`${import.meta.env.VITE_API_URL}/api/me`);
-    // console.warn(response.data);
-
-    // if(response.data) {
-    //     return response.data.user;
-    // } else if (response.status === 401) {
-    //     return null;
-    // }
-    // const user = response.data.user ?? null; // if no user, return null
-    // console.log(user);
-    // return user;
 
 
     // check if user is not already in game ? (prev in navigator go back to role selection page ...)
@@ -53,9 +44,12 @@ function ChooseRole() {
     const user = useLoaderData();
     // console.warn(user)
 
-    const { id } = useParams();
+    const { id: gameId } = useParams();
 
     const navigate = useNavigate();
+
+
+    const socket = useWebSocket();
 
 
     if (!user) {
@@ -64,7 +58,9 @@ function ChooseRole() {
         // console.log('user connected');
     }
 
+    // if(!socket) return <div>Loading ...</div>;
 
+    console.warn(socket);
 
     const handleChooseRole = async (role) => {
         console.log('choix du rôle : ', role);
@@ -76,7 +72,8 @@ function ChooseRole() {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/game/add-user-to-game`, {
                 role: role,
                 userId: user ? user.userId : "",
-                gameId: id
+                gameId: gameId,
+                socketId: socket.id || null
             }, {
                 headers: {
                     "Content-Type": "application/json"
@@ -89,7 +86,12 @@ function ChooseRole() {
             // console.log(response);
             // if response is ok, redirect to waiting room
             if (response.data) {
-                navigate(`/game/${id}/waiting-room`, { state: { game: response.data, userId: user ? user.userId : null, role } });
+
+                // after valid api response, emit websocket event
+                socket.emit('join-room', gameId, user ? user.userId : null, role);
+
+
+                navigate(`/game/${gameId}/waiting-room`, { state: { game: response.data, userId: user ? user.userId : null, role } });
             }
 
         } catch (error) {

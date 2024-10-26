@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link, useLoaderData, useLocation, useParams } from 'react-router-dom'
+import { Link, Navigate, useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useWebSocket } from '../layouts/GameLayout';
 
 
 
@@ -8,7 +9,7 @@ import { Link, useLoaderData, useLocation, useParams } from 'react-router-dom'
 
 export async function loader({params}) {
   const {id} = params;
-
+  console.log("id:", id);
   // get data from game in MongoDB database
   const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/game/${id}`, {
     headers: {
@@ -32,6 +33,27 @@ export async function loader({params}) {
 export function WaitingRoom() {
 
 
+  const socket = useWebSocket();
+  const { game } = useLoaderData();
+  const { state } = useLocation();
+  const { userId, pseudo, role } = state;
+  const [players, setPlayers] = useState(game.players || []);
+  const [presentator, setPresentator] = useState(game.presentator || null);
+
+
+  const { id: gameId } = useParams();
+
+  console.log("gameId :", gameId)
+
+
+  const navigate = useNavigate();
+
+
+  console.log("User role : " ,role);
+  //
+
+
+
   // CHANGE LAYOUT !!!!
   // IF ARRIVED HERE, PLAYER IS A USER 
   // OR NOT CONNECTED DEVICE CAN ONLY BE A PRESENTATOR
@@ -42,57 +64,104 @@ export function WaitingRoom() {
 
 
 
-  const { state } = useLocation();
-  const { userId, pseudo } = state;
-console.error(state);
+// console.error(state);
 
 
 
-  const { game } = useLoaderData();
   console.log(game);
 
 
-  const [players, setPlayers] = useState([]);
   
-  const [socketId, setSocketId ] = useState(null);
 
-  // useEffect(() => {
-  //   const socket = io('http://localhost:3000');
-
-  //   socket.emit('join-room', game._id, userId, socket.id ); /// gameId, userId, socketId
-                                                             
-  //   socket.on('update-players', (newPlayer) => {
-  //     console.log("in update-players");
-  //     console.warn(newPlayer);
-  //     setPlayers(prevPlayers => [...prevPlayers, newPlayer]); 
-
-  //     setSocketId(newPlayer.socketId);
-
-  //   });
-
-  //   console.log(players);
-
-  //   // cleanup function
-  //   return () => {
-  //     socket.disconnect();
-  //   }
-
-  // }, [game.idGame]);
+  useEffect(() => {
+    if(socket) {
 
 
-  // console.warn(waitingRoomId);
+      // player join room
+      socket.on('player-joined', (newPlayer) => {
+        console.log("A new player joined the room")
+        setPlayers(((prevPlayers) => [...prevPlayers, newPlayer]));
+      })
+
+      // player quit room
+      socket.on('player-left', (userId) => {
+        setPlayers((prevPlayers) => prevPlayers.filter(player => player.userId != userId));
+      })
+
+      // presentator join room
+      socket.on('presentator-updated', (newPresentator) => {
+        setPresentator(newPresentator);
+      })
+
+
+      // player join room emission event
+      // gameId, userId, socketId
+      // socket.emit('join-room', gameId, userId, socket.id);
+
+
+    }
+
+    return () => {
+      if(socket) {
+        
+        socket.off("player-left");
+        socket.off("player-joined");
+        socket.off('presentator-updated');
+      }
+    }
+
+    
+  }, [socket, gameId, userId]);
+
+  
+
+  const handleQuitRoom = (userId, role) => {
+    console.log("L'utilisateur souhaite quitter la partie");
+
+
+    if(role === 'player') {
+      socket.emit('player-left', gameId, userId);
+
+      // optional because where are leaving ???
+      setPlayers((prevPlayers) => prevPlayers.filter(player => player.userId !== userId));
+      
+      navigate('/');
+    } 
+    
+    if(role === 'presentator')  {
+      socket.emit('presentator-left', gameId);
+      
+      
+      // optional because where are leaving ???
+      setPresentator(null);
+
+      navigate('/');
+
+    }
+
+
+
+  }
+
+
+  
+  if (!socket && !players) {
+    return <div>Loading in WaitingRoom...</div>;
+  }
+  
+  console.log(players);
+  // alert(socket.id);
+  // console.log(socket)
 
   return (
     <>
       <Link to={'/'} className='link'>Go back to Home</Link>
       <div>Welcome to the WaitingRoom !</div>
       <h2>Code pour rejoindre la partie : { game.sharingCode }</h2>
-      {/* <div>
-        <p>ID : {waitingRoomId}</p>
-        <p>RoomID : {roomId}</p>
-        <p>Playlist : {roomName}</p>
-      </div> */}
 
+
+      <h3 className='font-bold'>Role utilisateur: {role}</h3>
+      <p>Socket: {socket.id}</p>
 
 {/* AFFICHER de manière distinctive le joueur connecté dans la liste des joueurs de la room */}
 
@@ -100,7 +169,7 @@ console.error(state);
       {players && players.length > 0 ? (
         <ul>
           {players.map(player => (
-            <li key={player.userId}>{player.pseudo} {player.socketId === socketId ? "(You)" : ""}</li>
+            <li key={player.userId}>{player.pseudo} {player.socketId === socket.id ? "(You)" : ""} - {player.socketId}</li>
           ))}
         </ul>
       ) : (
@@ -108,12 +177,19 @@ console.error(state);
       )}
 
 
+      <div className='flex gap-2'>
+        <h2>Présentateur :</h2>
+        <input type='checkbox' checked={presentator != null} readOnly/>
+      </div>
 
-      <h2>Présentateur :</h2>
-      <input type='checkbox' 
-      />
 
-
+      <button 
+        type="button" 
+        onClick={() =>handleQuitRoom(userId, role)}
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+      >
+        Quitter
+      </button>
 
 
     </>

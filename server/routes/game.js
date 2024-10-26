@@ -16,8 +16,13 @@ router.get('/:id', async (req, res, next) => {
 
     const {id} = req.params;
 
+
+    console.log("in /game/:id");
+
     const game = await Game.findById(id);
 
+
+    console.log(game);
     if(!game) {
         return res.status(404).json({message: "Game not found"});
     }
@@ -70,31 +75,37 @@ router.post('/add-user-to-game', async (req, res, next) => {
     try {
         
         // put body data in variables
-        const { gameId, userId, role } = req.body;
+        const { gameId, userId, role, socketId } = req.body;
         
-
+        // SQL DATA
         const userData = await User.getUserForGame(userId);
 
 
         const filter = { _id: gameId };
-        console.log(gameId);
+        // console.log(gameId);
         let update = {};
         
         // get user id and put it in game to presentator or in user Array
         if(role === "player") {
-            update = { $addToSet: { players: {userId: userData.id, pseudo: userData.pseudo} } };
+            update = { $addToSet: { players: {userId: userData.id, pseudo: userData.pseudo, socketId: socketId} } };
     
         } else if (role === "presentator") { // NEED TO BE UPDATED
-            update = { $set: { presentator: userId } };
+            update = { $set: { presentator: {userId, socketId: socketId} } };
         } else {
             return res.status(400).json({message: "Invalid role specified"});
         }
     
         const updatedGame = await Game.findOneAndUpdate(filter, update);
-        console.log(updatedGame);
+        
+        console.log("User added");
+        console.log(`Game ${gameId} updated`, updatedGame);
+
+
         if(!updatedGame) {
             return res.status(404).json({message: "Game not found"});
         }
+
+        
 
         return res.status(200).json({message: "Player and role updated successfully", game: updatedGame, role: role, user: role === "player" ?  {userId: userData.id, pseudo: userData.pseudo} : {} });
 
@@ -105,6 +116,29 @@ router.post('/add-user-to-game', async (req, res, next) => {
 
     }
 });
+
+
+router.delete('/:id/delete', async(req, res, next) => {
+
+
+    const gameId = req.params.id;
+    
+    try {
+        const deletedGame = await Game.findByIdAndDelete(gameId);
+    
+        if(!deletedGame) {
+            return res.status(404).json({message: "Game not found"});
+        }
+
+
+
+        return res.status(201).json({message: "Game successfully deleted"});
+
+    } catch (error) {
+        console.error("Error during Game delete action : ", error);
+    }
+
+})
 
 
 

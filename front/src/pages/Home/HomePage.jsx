@@ -45,7 +45,7 @@ export function HomePage() {
   // get data coming from react-router loader
   const { top3, themes } = useLoaderData();
 
-  console.log(top3, themes);
+  // console.log(top3, themes);
   
 
   

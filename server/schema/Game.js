@@ -50,10 +50,10 @@ const GameSchema = new mongoose.Schema({
         type: String
     },
     presentator: {
-        // userId: {
+        userId: {
         //     type: Number,
         //     // required: true
-        // }, //NOT NEEDED ????????
+        }, //NOT NEEDED ????????
         socketId: {
             type: String,
             // required: true

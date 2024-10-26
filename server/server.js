@@ -55,7 +55,8 @@ const errorHandler = error => {
 };
 
 
-
+const Game = require('./schema/Game');
+const User = require('./models/User');
 
 const server = http.createServer(app);
 
@@ -71,64 +72,191 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("Nouvelle connexion WS établie : ", socket.id);
 
-  socket.on('join-room',  async (gameId, userId, socketId) => {
+
+  // -------------------------------------
+  // -------------------------------------
+  // ---------------- JOIN ROOM ----------
+  // -------------------------------------
+  // -------------------------------------
+  socket.on('join-room',  async (gameId, userId, role) => {
+
+    console.log("dans la connection socket");
+
+    const socketId = socket.id;
 
     // comportement différent selon joueur ou présentateur
-    console.log(gameId, userId, socketId);
+    console.log(gameId, userId, role);
     
-
-
-    const Game = require('./schema/Game');
-    const User = require('./models/User');
-
     
     try {
+      // console.log(gameId);
       const game = await Game.findById(gameId); // Mongoose Schema
       const user = await User.getUserForGame(userId); // SQL Object
+
       console.log(game, user);
       if(!game) {
         console.error(`Game not found : ${gameId}`);
         return;
       }
-      
-      
+
+      // associate websocket in game 
       socket.join(gameId);
+
+
+
       console.log(`Socket ${socket.id} (user: ${user.pseudo}) rejoint la room : ${gameId}`);
       
-      // add socketId to user in database
-      const playerIndex = game.players.findIndex(player => player.userId === userId);
-      if(playerIndex !== -1) {
-        game.players[playerIndex].socketId = socket.id;
-      } else {
-        // // Player doesn't exist, add them to the game
-        // game.players.push({
-        //   userId: userId,
-        //   pseudo: user.pseudo,
-        //   socketId: socketId,
-        //   score: 0
-        // });
-      }     
+
+      if(role === 'player') {
+
+        // add socketId to user in database
+        await Game.updateOne(
+          { _id: gameId, 'players.userId': userId },
+          { $set: { 'players.$.socketId': socket.id } }
+        );
+
+        const playerIndex = game.players.findIndex(player => player.userId === userId);
+        if(playerIndex !== -1) {
+          // game.players[playerIndex].socketId = socket.id;
+
+          await Game.updateOne(
+            { _id: gameId, 'players.userId': userId },
+            { $set: { 'players.$.socketId': socket.id } }
+          );
+
+        }     
+
+        socket.broadcast.to(gameId).emit('player-joined', {
+          userId: user.id,
+          pseudo: user.pseudo,
+          role: role,
+          socketId: socketId
+        });
 
 
-      await game.save();
+        
+      } else if(role === 'presentator') {
+        // game.presentator = {userId, socketId: socket.id};  
+
+        await Game.updateOne(
+          { _id: gameId },
+          { $set: { presentator: { userId, socketId: socket.id } } }
+        );
+
+        socket.broadcast.to(gameId).emit('presentator-joined', {
+          userId: userId, // can be null
+          role: role
+        });
+
+
+
+
+      } 
+      
       
       // send to all clients websocket instance in this room
-      io.to(gameId).emit('update-players', { socketId: socket.id, userId: user.id, pseudo: user.pseudo,  });
+      console.log(`emit to game ${gameId} : a new user has joined the room`);
+      
+      
+      // socket.broadcast.to(gameId).emit('player-joined', { socketId: socket.id, userId: user.id, pseudo: user.pseudo,  });
       
  
 
     } catch(error) {
       console.error("Error in join-room: " , error);
+      socket.emit('error', { message: 'Une erreur est survenue lors de la connexion à la room.' });
+
     }
     
 
   });
 
+  // -------------------------------------
+  // -------------------------------------
+  // ---------------- PLAYER-LEFT ----------
+  // -------------------------------------
+  // -------------------------------------
+  socket.on('player-left', async (gameId, userId, socketId) => {
+
+
+    try {
+      const filterPullPlayer = {
+        "games._id": gameId
+      };
+    
+      const updatePullPlayer = {
+        $pull: {
+          players: {userId: userId}
+        }
+      };
+  
+      const result = await Game.updateOne(filterPullPlayer, updatePullPlayer);
+  
+  
+      if(result.modifiedCount > 0) {
+        console.log(`Player ${userId} has been removed from the game ${gameId}`);
+      
+        // notify other users in room
+        io.to(gameId).emit('update-players', { userId, action: 'left'});
+      
+      }
+
+    } catch(error) {
+
+      console.error("Error in player-left : ", error);
+
+    }
+
+  })
+
+
+  socket.on('presentator-left', async (gameId) => {
+    try {
+
+      const filterPullPresentator = {
+        "games._id": gameId
+      };
+    
+      const updatePullPresentator = {
+        $set: {
+          presentator: null
+        }
+      };
+
+
+      const result = await Game.updateOne(filterPullPresentator, updatePullPresentator);
+  
+  
+      if(result.modifiedCount > 0) {
+        console.log(`Presentator leaved game ${gameId}`);
+      
+        // notify other users in room
+        io.to(gameId).emit('update-presentator', { userId, action: 'left'});
+      
+      }
+
+    } catch (error) {
+      console.error('Error in presentator-left : ', error);
+    }
+  })
+
+
+  socket.on('delete-game', (gameId) => {
+    socket.broadcast.to(gameId).emit('quit-game', {
+      message: "La partie a été supprimée, retour vers la page d'accueil."
+    });
+  })
+
+
   socket.on('disconnect', () => {
     console.log(`Socket ${socket.id} s'est déconnectée`);
   })
 
-})
+});
+
+
+
+
 
 server.on('error', errorHandler);
 server.on('listening', () => {

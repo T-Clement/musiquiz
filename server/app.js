@@ -297,7 +297,7 @@ app.post('/api/create-game', async (req, res, next) => {
     
     try {
 
-        console.log(req.body);
+        // console.log(req.body);
 
         const {roomId} = req.body;
         // console.log(roomId);
