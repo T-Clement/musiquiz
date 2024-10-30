@@ -65,7 +65,8 @@ function ChooseRole() {
     const handleChooseRole = async (role) => {
         console.log('choix du rôle : ', role);
         console.log(user)
-
+        console.log(gameId);
+        console.log(socket.id);
 
         try {
             // send role to server
@@ -108,7 +109,9 @@ function ChooseRole() {
 
 
 
-
+    if(!socket) {
+        return <p>Waiting for websocket ...</p>
+    }
 
 
 

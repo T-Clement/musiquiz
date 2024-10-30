@@ -13,7 +13,7 @@ const WebSocketContext = createContext();
 
 export function GameLayout() {
 
-
+  console.log("Render Game Layout");
   // check if game passed in GET request exists
       //  --> returns a 404 in waiting-room
     
@@ -45,12 +45,23 @@ export function GameLayout() {
     //   navigate('/', { replace: true });
     // }
 
-    if(loading || !user) return;
+    // if(loading || !user) return;
+
+    if(loading) return;
+
 
     const socket = io('http://localhost:3000');
 
-    // update state
-    setSocket(socket);
+
+
+
+    
+    socket.on('connect', () => {
+      console.log("Connected with socket id :", socket.id);
+      // update state
+      setSocket(socket);
+    })
+
 
     // console.log(state.gameId, user??user.user.userId, user??user, socket, role);
     
@@ -66,11 +77,13 @@ export function GameLayout() {
 
 
     return () => {
+      socket.off("connect");
+      socket.off("quit-game");
       socket.disconnect();
     }
 
 
-  }, [user, loading, navigate]);
+  }, [ navigate]);
 
 
   const handleDeleteGame = async () => {
