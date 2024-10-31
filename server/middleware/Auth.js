@@ -20,14 +20,13 @@ exports.authenticateJWT = async (req, res, next) => {
             }
             
             const utils = require('../utils/utils');
-            // Générer un nouveau access token
+            // generate a new accessToken
             const newAccessToken = utils.generateAccessToken({ userId: user.userId, pseudo: user.pseudo }, process.env.JWT_SECRET_KEY, '15m');
             res.cookie('accessToken', newAccessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'Strict',
-                // maxAge: 15 * 60 * 1000  // 15 minutes
-                maxAge: 1 * 60 * 1000// 1 minute de vallidité
+                maxAge: 15 * 60 * 1000// 15 minutes validation
             });
 
             req.user = { userId: user.userId, pseudo: user.pseudo };
@@ -36,7 +35,7 @@ exports.authenticateJWT = async (req, res, next) => {
             // return res.status(200).json({ user: { userId: user.userId, pseudo: user.pseudo } });
         });
     } else {
-        // si l'access token est valide
+        // if accessToken is valid
         jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
             if (err) {
                 return res.status(403).json({ message: 'Token expiré ou invalide' });

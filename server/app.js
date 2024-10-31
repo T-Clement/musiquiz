@@ -137,12 +137,12 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
 
                     // send cookies
                     res.cookie('refreshToken', refreshToken, { 
-                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiration
                         httpOnly: true,
                         secure: false
                     }); // secure to true if https
                     res.cookie('accessToken', accessToken, {
-                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                        expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes expiration
                         httpOnly: true, 
                         secure: false
                     });
@@ -191,25 +191,25 @@ app.get('/api/refresh-token', (req, res) => {
         return res.status(401).json({ message: 'Non authentifié' });
     }
 
-    // Vérifier le refresh token
+    // verify refresh token
     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => {
         if (err) {
             return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
         }
 
-        // Générer un nouveau access token
+        // generate a new acces token
         const newAccessToken = jwt.sign(
             { userId: user.userId, pseudo: user.pseudo, email: user.email }, 
             process.env.JWT_SECRET_KEY, 
             { expiresIn: process.env.TOKEN_EXPIRATION }
         );
 
-        // Stocker le nouveau JWT dans un cookie httpOnly
+        // store new JWT in httpOnly cookie
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict',
-            maxAge: 15 * 60 * 1000  // 15 minutes en ms
+            maxAge: 15 * 60 * 1000  // 15 minutes in ms
         });
 
         res.status(200).json({ message: "Token renouvelé !", user: user.id });
