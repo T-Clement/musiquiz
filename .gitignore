@@ -1,0 +1,6 @@
+.env
+docker-compose.yml
+docker-compose.yml.old
+*.sql
+exportedsqlfile.sql:Zone.Identifier
+node_modules

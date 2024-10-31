@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import apiAxios from "../libs/axios";
+import { authService } from "../services/authService";
 
 
 
@@ -18,7 +19,7 @@ export const AuthContextProvider = ({children}) => {
           setUser(userData);
         } catch (error) {
           console.error("Erreur lors de la mise à jour des données utilisateur", error);
-          // Gérer l'erreur (par exemple, déconnecter l'utilisateur)
+          // gérer l'erreur (par exemple, déconnecter l'utilisateur)
         }
       }, []);
 
