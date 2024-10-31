@@ -104,7 +104,7 @@ io.on("connection", (socket) => {
 
 
 
-      console.log(`Socket ${socket.id} (user: ${user.pseudo}) rejoint la room : ${gameId}`);
+      console.log(`Socket ${socket.id} (user: ${user?.pseudo}) rejoint la room : ${gameId}`);
       
 
       if(role === 'player') {
@@ -138,10 +138,20 @@ io.on("connection", (socket) => {
       } else if(role === 'presentator') {
         // game.presentator = {userId, socketId: socket.id};  
 
+        // if already a presentator, request is not possible
+        // if(game.presentator) {
+        //   console.error(`Game ${gameId} already has a presentator.`);
+          
+        //   // socket or res of a post ?
+        //   // socket.emit('error', {message: 'Un présentateur est déjà connecté à cette partie.'});
+        // }
+        
+        
         await Game.updateOne(
           { _id: gameId },
           { $set: { presentator: { userId, socketId: socket.id } } }
         );
+
 
         socket.broadcast.to(gameId).emit('presentator-joined', {
           userId: userId, // can be null
@@ -155,7 +165,7 @@ io.on("connection", (socket) => {
       
       
       // send to all clients websocket instance in this room
-      console.log(`emit to game ${gameId} : a new user has joined the room`);
+      console.log(`emit to game ${gameId} : a new ${role} has joined the room`);
       
       
       // socket.broadcast.to(gameId).emit('player-joined', { socketId: socket.id, userId: user.id, pseudo: user.pseudo,  });
@@ -203,6 +213,7 @@ io.on("connection", (socket) => {
       
         // notify other users in room
         io.to(gameId).emit('update-players', { userId, action: 'left'});
+        // io.to(gameId).emit('player-left', userId);
       
       } else {
         console.log("no updates in game collection");
@@ -221,7 +232,7 @@ io.on("connection", (socket) => {
     try {
 
       const filterPullPresentator = {
-        "games._id": gameId
+        _id : gameId
       };
     
       const updatePullPresentator = {
@@ -233,7 +244,8 @@ io.on("connection", (socket) => {
 
       const result = await Game.updateOne(filterPullPresentator, updatePullPresentator);
   
-  
+      console.log("before presentator result.modified");
+      console.log(result);
       if(result.modifiedCount > 0) {
         console.log(`Presentator leaved game ${gameId}`);
       

@@ -96,6 +96,7 @@ export function WaitingRoom() {
 
       // presentator join room
       socket.on('presentator-left', (data) => {
+        console.log("presentator left game", data);
         setPresentator(null);
       })
 
@@ -109,8 +110,6 @@ export function WaitingRoom() {
         }
       })
 
-
-
     }
 
     return () => {
@@ -120,6 +119,7 @@ export function WaitingRoom() {
         socket.off("player-joined");
         socket.off('presentator-joined');
         socket.off('presentator-left');
+        socket.off('update-players');
       }
     }
 
