@@ -88,15 +88,27 @@ export function WaitingRoom() {
         setPlayers((prevPlayers) => prevPlayers.filter(player => player.userId != userId));
       })
 
-      // presentator join room
-      socket.on('presentator-updated', (newPresentator) => {
+
+      // presentator join room 
+      socket.on("presentator-joined", (newPresentator) => {
         setPresentator(newPresentator);
       })
 
+      // presentator join room
+      socket.on('presentator-left', (data) => {
+        setPresentator(null);
+      })
 
-      // player join room emission event
-      // gameId, userId, socketId
-      // socket.emit('join-room', gameId, userId, socket.id);
+
+      socket.on('update-players', data => {
+        console.log(data); // userId, action properties in object
+        if(data.action ==='left') {
+          
+          setPlayers((prevPlayers) => prevPlayers.filter(player => player.userId !== data.userId));
+
+        }
+      })
+
 
 
     }
@@ -106,7 +118,8 @@ export function WaitingRoom() {
         
         socket.off("player-left");
         socket.off("player-joined");
-        socket.off('presentator-updated');
+        socket.off('presentator-joined');
+        socket.off('presentator-left');
       }
     }
 
@@ -120,6 +133,7 @@ export function WaitingRoom() {
 
 
     if(role === 'player') {
+      
       socket.emit('player-left', gameId, userId);
 
       // optional because where are leaving ???

@@ -177,13 +177,17 @@ io.on("connection", (socket) => {
   // -------------------------------------
   // -------------------------------------
   socket.on('player-left', async (gameId, userId, socketId) => {
-
+    console.log('player-left');
+    console.log(gameId, userId);
 
     try {
       const filterPullPlayer = {
-        "games._id": gameId
+        _id : gameId
       };
     
+      console.log("la partie");
+      console.log(filterPullPlayer);
+
       const updatePullPlayer = {
         $pull: {
           players: {userId: userId}
@@ -192,6 +196,7 @@ io.on("connection", (socket) => {
   
       const result = await Game.updateOne(filterPullPlayer, updatePullPlayer);
   
+      console.log(result);
   
       if(result.modifiedCount > 0) {
         console.log(`Player ${userId} has been removed from the game ${gameId}`);
@@ -199,6 +204,8 @@ io.on("connection", (socket) => {
         // notify other users in room
         io.to(gameId).emit('update-players', { userId, action: 'left'});
       
+      } else {
+        console.log("no updates in game collection");
       }
 
     } catch(error) {
@@ -231,7 +238,7 @@ io.on("connection", (socket) => {
         console.log(`Presentator leaved game ${gameId}`);
       
         // notify other users in room
-        io.to(gameId).emit('update-presentator', { userId, action: 'left'});
+        io.to(gameId).emit('presentator-left', { action: 'left'});
       
       }
 
