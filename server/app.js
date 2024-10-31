@@ -129,20 +129,26 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
 
                     // generate accessToken
                     const accessToken = await utils.generateAccessToken(user, process.env.JWT_SECRET_KEY, process.env.TOKEN_EXPIRATION);
-                    console.log(accessToken);
+                    // console.log(accessToken);
 
                     // generate refreshToken
                     const refreshToken = await utils.generateRefreshToken(user, process.env.JWT_REFRESH_SECRET_KEY, process.env.REFRESH_EXPIRATION);
-                    console.log(refreshToken);
+                    // console.log(refreshToken);
 
                     // send cookies
-                    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false}); // secure to true if https
-                    // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: 'Strict' }); // secure to true if https
-                    res.cookie('accessToken', accessToken, {httpOnly: true, secure: false});
-                    // res.cookie('jwtToken', accessToken, {httpOnly: true, sameSite: 'Strict'});
-                    res.cookie('test', 'test', {secure: false});
+                    res.cookie('refreshToken', refreshToken, { 
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                        httpOnly: true,
+                        secure: false
+                    }); // secure to true if https
+                    res.cookie('accessToken', accessToken, {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                        httpOnly: true, 
+                        secure: false
+                    });
+                    
+                    
                     res.status(200).json({message: "Connexion Réussie", userId: user.id });
-                    // res.status(200).json({message: "Connexion Réussie", accessToken: accessToken, refreshToken: refreshToken});
                         
 
                 } catch(error) {

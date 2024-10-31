@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'
+import apiAxios from '../../libs/axios';
 // import { useFetcher } from 'react-router-dom'
 // import { AuthContext } from '../../App';
 
@@ -12,10 +13,24 @@ export default function Logout({setIsLoggedIn, user, setUser}) {
 
     
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsLoggedIn(false);
-        setUser(null);
+        
+        
+        try {
+
+            // api call to reset accessToken and refreshToken cookies to 0
+            const response = await apiAxios.post(`${import.meta.env.VITE_API_URL}/api/logout`);
+
+            if(response.status) {
+                setIsLoggedIn(false);
+                setUser(null);
+
+            }
+        } catch(error) {
+            console.error("Error during logout : ", error);
+        }
+        
 
 
 

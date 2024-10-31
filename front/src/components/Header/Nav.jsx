@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 import Logout from './Logout';
 import { Link } from 'react-router-dom';
 
-export default function Nav({setOpen, isLoggedIn, setIsLoggedIn, user}) {
+export default function Nav({setOpen, isLoggedIn, setIsLoggedIn, user, setUser}) {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -19,8 +19,8 @@ export default function Nav({setOpen, isLoggedIn, setIsLoggedIn, user}) {
 
           ( <ul className='flex gap-x-6'>
               <li>Parcourir</li>
-              <li><Link to={`/user/${user.user.userId}`}>Compte</Link></li>
-              <li><Logout setIsLoggedIn={setIsLoggedIn} user={user}/></li>
+              <li><Link to={`/user/${user.user.userId || ''}`}>Compte</Link></li>
+              <li><Logout setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/></li>
             </ul> 
           ) 
 

@@ -35,7 +35,7 @@ export function Header({user, setUser}) {
         </h1>
 
         
-        <Nav setOpen={setOpen} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user}/>
+        <Nav setOpen={setOpen} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/>
         
 
         <Modal open={open} onClose={() => {setOpen(false)}}>
@@ -65,7 +65,7 @@ export function Header({user, setUser}) {
               // toggle 4 renderings ??? why ?????
               modalContent === "login" ? 
               (
-                <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo}/>
+                <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo} />
               ) 
               : 
               (
