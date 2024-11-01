@@ -198,7 +198,7 @@ export function WaitingRoomPage() {
         role === 'presentator' ?
           <WaitingRoomPresentator players={players} presentator={presentator} socket={socket} />
           :
-          <WaitingRoomPlayer socket={socket} />
+          <WaitingRoomPlayer socket={socket} presentator={presentator}/>
       }
 
 
