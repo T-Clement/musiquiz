@@ -2,7 +2,6 @@ import './App.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ErrorPage } from './pages/ErrorPage';
 import { DefaultLayout } from './layouts/DefaultLayout';
-import { WaitingRoom, loader as waitingRoomLoader } from './pages/WaitingRoom';
 import { HomePage, loader as homeLoader } from './pages/Home/HomePage';
 import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
@@ -11,8 +10,10 @@ import { action as logoutAction } from './components/Header/Logout';
 import { createContext, useMemo, useState } from 'react';
 
 import { AuthContextProvider } from './hooks/authContext';
-import ChooseRole, {loader as chooseRoleLoader} from './pages/ChooseRole';
+
 import { GameLayout } from './layouts/GameLayout';
+import ChooseRole, {loader as chooseRoleLoader} from './pages/ChooseRole';
+import { WaitingRoomPage, loader as waitingRoomLoader } from './pages/WaitingRoom/WaitingRoomPage';
 
 // import apiAxios from './libs/axios';
 
@@ -102,7 +103,7 @@ export function App() {
         }, 
         {
           path: ":id/waiting-room",
-          element: <WaitingRoom />,
+          element: <WaitingRoomPage />,
           loader: waitingRoomLoader
         }
       ]

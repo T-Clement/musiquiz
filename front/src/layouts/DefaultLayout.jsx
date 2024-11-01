@@ -20,10 +20,10 @@ export function DefaultLayout() {
   console.log("User in DefaultLayout : ", user);
 
   return (
-    <>
-    <Header user={user} setUser={setUser}/>
-      <p>DefaultLayout</p>
-    <Outlet/>
-    </>
+    <div className='max-w-screen-xl	mx-auto'>
+      <Header user={user} setUser={setUser}/>
+        <p>DefaultLayout</p>
+      <Outlet/>
+    </div>
   )
 }

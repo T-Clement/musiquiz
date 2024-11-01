@@ -15,22 +15,22 @@ export function GameLayout() {
 
   console.log("Render Game Layout");
   // check if game passed in GET request exists
-      //  --> returns a 404 in waiting-room
-    
-    
+  //  --> returns a 404 in waiting-room
 
-    
+
+
+
   // websocket connection here
 
 
 
-  
+
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
-  const {state} = useLocation();
+  const { state } = useLocation();
 
 
-  const {id : gameId} = useParams();
+  const { id: gameId } = useParams();
 
 
   const [socket, setSocket] = useState(null);
@@ -47,7 +47,7 @@ export function GameLayout() {
 
     // if(loading || !user) return;
 
-    if(loading) return;
+    if (loading) return;
 
 
     const socket = io('http://localhost:3000');
@@ -55,7 +55,7 @@ export function GameLayout() {
 
 
 
-    
+
     socket.on('connect', () => {
       console.log("Connected with socket id :", socket.id);
       // update state
@@ -64,7 +64,7 @@ export function GameLayout() {
 
 
     // console.log(state.gameId, user??user.user.userId, user??user, socket, role);
-    
+
     // socket.emit('join-room', gameId, user.user.userId, socket.id);
 
 
@@ -83,20 +83,21 @@ export function GameLayout() {
     }
 
 
-  }, [ navigate]);
+  }, [navigate]);
 
 
   const handleDeleteGame = async () => {
     // console.log("test")
     const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/game/${gameId}/delete`, {}, {
-      headers: 
+      headers:
       {
         "Content-Type": "application/json"
-      }}
+      }
+    }
     );
 
     console.log(response);
-    if(response.data) {
+    if (response.data) {
 
 
       // emit delete event to redirect all other users
@@ -123,17 +124,18 @@ export function GameLayout() {
 
   return (
     <WebSocketContext.Provider value={socket}>
-      <div className="game-layout">
-          <p>GameLayout</p>
-          <p>
-            <button 
-            className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900' 
-            type='button' 
+      {/* maybe issue for presentator if height is full screen */}
+      <div className="game-layout h-screen md:h-full">
+        <p>GameLayout</p>
+        <div className='mx-auto flex items-center justify-center'>
+          <button
+            className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+            type='button'
             onClick={handleDeleteGame}
-            >
-              Supprimer la partie
-              </button>
-            </p>
+          >
+            Supprimer la partie
+          </button>
+        </div>
         <Outlet />
       </div>
     </WebSocketContext.Provider>

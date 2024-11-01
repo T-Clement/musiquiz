@@ -51,13 +51,6 @@ function ChooseRole() {
 
     const socket = useWebSocket();
 
-
-    if (!user) {
-        // console.log('user not connected');
-    } else {
-        // console.log('user connected');
-    }
-
     // if(!socket) return <div>Loading ...</div>;
 
     console.warn(socket);
