@@ -451,12 +451,12 @@ app.post('/api/create-game', async (req, res, next) => {
             }
 
             // set choices to "ArtistName - TrackNane" 
-            const choices = shuffle([`${correctTrack.artist.name} - ${correctTrack.title}`, ...incorretChoices.map(track => `${track.artist.name} - ${track.title}`)]);
+            const choices = shuffle([`${correctTrack.artist.name} - ${correctTrack.title_short}`, ...incorretChoices.map(track => `${track.artist.name} - ${track.title_short}`)]);
 
             rounds.push({
                 audioPreviewUrl: correctTrack.preview,
                 choices: choices,
-                correctAnswer: `${correctTrack.artist.name} - ${correctTrack.title}` // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
+                correctAnswer: `${correctTrack.artist.name} - ${correctTrack.title_short}` // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
             });
         }
 
