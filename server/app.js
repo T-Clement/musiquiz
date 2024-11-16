@@ -302,6 +302,8 @@ app.post('/api/create-game', async (req, res, next) => {
     
     
     try {
+        // SQL Model
+        const Room = require("./models/Room");
 
         // console.log(req.body);
 
@@ -310,9 +312,12 @@ app.post('/api/create-game', async (req, res, next) => {
 
 
         // get data in mysql database
-        // api playlist id, name
-        
+            // api playlist id, name, ..
+        const roomData = await Room.findOneRoomById(roomId, true);
 
+        console.log('Fetch des Données SQL');
+        
+        console.log(roomData);
 
 
         // to store in mongoDb
@@ -322,7 +327,10 @@ app.post('/api/create-game', async (req, res, next) => {
             _id: gameId,
             roomId: parseInt(roomId),
             status: 'waiting',
-            createdAt: new Date()
+            createdAt: new Date(),
+            playlistId: roomData.api_id_playlist,
+            roomName: roomData.name,
+            roomDescription: roomData.description,
         });
 
         // use method of Schema to create random sharing code starting with roomId

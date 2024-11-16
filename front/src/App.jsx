@@ -14,6 +14,8 @@ import { AuthContextProvider } from './hooks/authContext';
 import { GameLayout } from './layouts/GameLayout';
 import ChooseRole, {loader as chooseRoleLoader} from './pages/ChooseRole';
 import { WaitingRoomPage, loader as waitingRoomLoader } from './pages/WaitingRoom/WaitingRoomPage';
+import InGamePlayerPage from './pages/InGame/InGamePlayerPage';
+import InGamePresentatorPage from './pages/InGame/InGamePresentatorPage';
 
 // import apiAxios from './libs/axios';
 
@@ -105,6 +107,14 @@ export function App() {
           path: ":id/waiting-room",
           element: <WaitingRoomPage />,
           loader: waitingRoomLoader
+        },
+        {
+          path: ':id/in-game/player',
+          element: <InGamePlayerPage />
+        },
+        {
+          path: ':id/in-game/presentator',
+          element: <InGamePresentatorPage />
         }
       ]
     }

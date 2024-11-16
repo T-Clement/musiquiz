@@ -28,6 +28,12 @@ export function RoomPage() {
     console.log(roomData);
 
 
+    // if user is connected, get id of user to compare if user is in list of table
+    // const user = useContext(AuthContext);
+    
+
+
+
     // count of parties played
 
     // room classement

@@ -163,6 +163,19 @@ export function WaitingRoomPage() {
 
 
 
+  const handleLaunchGame = () => {
+    console.log("La partie est lancée");
+
+    // post api call to update in noSQL database game state
+
+
+    // if success, emit to all players in room to navigate in 'game/:id/:role' view / component
+
+    // at witch time data for game is fetch ?
+  }
+
+
+
   if (!socket || !players) {
     return <div>Loading in WaitingRoom...</div>;
   }
@@ -196,7 +209,7 @@ export function WaitingRoomPage() {
 
       {
         role === 'presentator' ?
-          <WaitingRoomPresentator players={players} presentator={presentator} socket={socket} />
+          <WaitingRoomPresentator players={players} presentator={presentator} socket={socket} handleLaunchGame={handleLaunchGame}/>
           :
           <WaitingRoomPlayer socket={socket} presentator={presentator}/>
       }

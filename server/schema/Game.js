@@ -21,13 +21,26 @@ const PlayerSchema = new mongoose.Schema({
 }, { _id: false });
 
 
+const RoundSchema = new mongoose.Schema({
+    questionId: { type: Number},
+    audioUrl: {type: String},
+    choices: [String],
+    correctAnswer: {type: Number},
+    playersResponses: {
+        userId: {type: Number},
+        choice: {type: Number},
+        // time: {type: Number}
+    } 
+})
+
+
 
 const GameSchema = new mongoose.Schema({
     _id: {
         type: String,
         required: true
     },
-    roomId: {
+    roomId: { // game document related to this roomId
         type: Number,
         required: true
     },
@@ -40,6 +53,9 @@ const GameSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    playlistId: {type: String, required: true},
+    roomName: {type: String},
+    roomDescription: {type: String},
     startedAt: {
         type: Date
     },
@@ -69,6 +85,10 @@ const GameSchema = new mongoose.Schema({
         default: 10,
         // required: true
     },
+    gameStartTime: {
+        type: Date,
+    },
+    rounds:  [RoundSchema]
     // playlist: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Playlist',
