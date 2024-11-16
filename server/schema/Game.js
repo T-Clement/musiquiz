@@ -23,9 +23,9 @@ const PlayerSchema = new mongoose.Schema({
 
 const RoundSchema = new mongoose.Schema({
     questionId: { type: Number},
-    audioUrl: {type: String},
+    audioPreviewUrl: {type: String},
     choices: [String],
-    correctAnswer: {type: Number},
+    correctAnswer: {type: String},
     playersResponses: {
         userId: {type: Number},
         choice: {type: Number},
@@ -46,7 +46,7 @@ const GameSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['waiting', 'in_progress', 'finished'],
+        enum: ['waiting', 'in_progress', 'finished', 'failed'],
         default: 'waiting'
     },
     createdAt: {
@@ -88,7 +88,8 @@ const GameSchema = new mongoose.Schema({
     gameStartTime: {
         type: Date,
     },
-    rounds:  [RoundSchema]
+    rounds:  [RoundSchema],
+    message: {type: String}
     // playlist: {
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Playlist',

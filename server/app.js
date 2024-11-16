@@ -315,13 +315,157 @@ app.post('/api/create-game', async (req, res, next) => {
             // api playlist id, name, ..
         const roomData = await Room.findOneRoomById(roomId, true);
 
-        console.log('Fetch des Données SQL');
-        
-        console.log(roomData);
 
+        //-------------------------------------------------------------------------------
+        // prepare datas for game rounds
+
+
+        // to update in the future when customs games will be deployed
+        const roundsNumber = 10;
+        const numberOfResponsePropositions = 4;
+
+        console.log("API MUSIC PROVIDER CALL");
+
+
+
+        const apiMusicResponse = await fetch(`https://api.deezer.com/playlist/${roomData.api_id_playlist}`);
+
+        const apiMusicData = await apiMusicResponse.json();
+
+        console.log(apiMusicData);
+
+        if(!apiMusicData || !apiMusicData.tracks) {
+            throw new Error('Impossible de récupérer les données de la playlist depuis l\'API');
+        }
+
+
+        // check if there is enough tracks to play game with the settings setted
+        function checkIfTrackIsReadable(listOfTracks) {
+            return listOfTracks.filter(track => track.readable && track.preview && track.preview != '');
+        }
+
+
+        const listOfTracks = checkIfTrackIsReadable(apiMusicData.tracks.data);
+
+
+        // check if enough game are available
+            // each track can only be used 1 time as a choice, after that it's removed from trackList pool
+        if(listOfTracks.length < numberOfResponsePropositions * roundsNumber) {
+
+            const gameId = uuidv4();
+
+            // // store game with failing infos
+            const newGame = new Game({
+                _id: gameId,
+                roomId: parseInt(roomId),
+                status: 'failed',
+                createdAt: new Date(),
+                playlistId: roomData.api_id_playlist,
+                roomName: roomData.name,
+                roomDescription: roomData.description,
+                totalRounds: roundsNumber,
+                message: `Not enough tracks available and redabled, required : ${numberOfResponsePropositions * roundsNumber}    available: ${listOfTracks.length} `
+            });
+
+            await newGame.save();
+
+            return res.status(400).json({
+                error: "Il n'y a pas assez de pistes disponibles pour lancer une partie",
+                message: `Requis : ${numberOfResponsePropositions * roundsNumber}, disponibles : ${listOfTracks.length}`
+            });
+
+        }
+
+
+        
+
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function getRandomIncorrectChoices(tracks, correctAnswer, numberOfChoices) {
+            // const incorrectTracks = tracks.filter(track => track.title !== correctAnswer && track.preview && track.preview !== '');
+            const incorrectTracks = tracks.filter(track => track.title !== correctAnswer);
+            const shuffledIncorrectTracks = shuffle(incorrectTracks);
+            return shuffledIncorrectTracks.slice(0, numberOfChoices).map(track => track.title);
+        }
+
+
+
+
+        // ------------------------------------------------------
+        // REGISTER NEW DOCUMENT IN MONGODB
+        // ------------------------------------------------------
 
         // to store in mongoDb
         const gameId = uuidv4();
+
+
+
+        // ----------------------------------------------------------------
+        // ----------------------------------------------------------------
+        // WITHOUT REMOVING INCORRECTS TRACKS OF TRAKCSPOOL
+        // ----------------------------------------------------------------
+        // ----------------------------------------------------------------
+
+        // randomize order of array
+        // const shuffledTracks = shuffle(listOfTracks);
+
+        // // slice selected tracks from list of tracks
+        // const selectedTracks = shuffledTracks.slice(0, roundsNumber);
+
+
+        // // generate rounds
+        //     // remove incorrect answers of pool of tracks
+        // const rounds = selectedTracks.map(track => {
+        //     const correctAnswer = track.title;
+        //     const incorretChoices = getRandomIncorrectChoices(listOfTracks, correctAnswer, numberOfResponsePropositions - 1);
+        //     const choices = shuffle([correctAnswer, ...incorretChoices]);
+
+        //     return {
+        //         audioPreviewUrl: track.preview,
+        //         choices: choices,
+        //         correctAnswer: correctAnswer
+        //     };
+        // })
+
+
+
+        let availableTracks = listOfTracks;
+
+        const rounds = [];
+
+        for (let i= 0; i < roundsNumber; i++) {
+
+            // shuffle tracks
+            availableTracks = shuffle(availableTracks);
+
+            // take first item of array as the correct answer + remove it from availableTracks array
+            const correctTrack = availableTracks.shift();
+
+            const incorretChoices = [];
+
+            for (let j= 0; j < numberOfResponsePropositions - 1; j++) {
+                incorretChoices.push(availableTracks.shift());
+            }
+
+
+            const choices = shuffle([`${correctTrack.artist.name} - ${correctTrack.title}`, ...incorretChoices.map(track => `${track.artist.name} - ${track.title}`)]);
+
+            rounds.push({
+                audioPreviewUrl: correctTrack.preview,
+                choices: choices,
+                correctAnswer: `${correctTrack.artist.name} - ${correctTrack.title}`
+            });
+        }
+
+
+
+
+
+
+
 
         const newGame = new Game({
             _id: gameId,
@@ -331,6 +475,8 @@ app.post('/api/create-game', async (req, res, next) => {
             playlistId: roomData.api_id_playlist,
             roomName: roomData.name,
             roomDescription: roomData.description,
+            totalRounds: roundsNumber,
+            rounds: rounds
         });
 
         // use method of Schema to create random sharing code starting with roomId
