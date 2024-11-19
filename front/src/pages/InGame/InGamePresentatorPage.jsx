@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useWebSocket } from '../../layouts/GameLayout';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 
 // export function loader() {
@@ -13,7 +13,8 @@ export default function InGamePresentatorPage() {
   const {id : gameId} = useParams();
   const socket = useWebSocket();
   
-  
+  const {role, setRole} = useOutletContext();
+
   const [musicExtracts, setMusicExtracts] = useState([]);
   const [audioElements, setAudioElements] = useState([]);
   const [currentRound, setCurrentRound] = useState(0);
@@ -58,7 +59,11 @@ export default function InGamePresentatorPage() {
 
   return (
     <div>
+
+
       <p>InGamePresentatorPage</p>
+      <p>Socket: {socket.id}</p>
+      <p>Role: {role}</p>
 
       <button onClick={() => startRound}>Lancer le Round</button>
 

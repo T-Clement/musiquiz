@@ -11,7 +11,7 @@ const WebSocketContext = createContext();
 
 
 
-export function GameLayout() {
+export default function GameLayout() {
 
   console.log("Render Game Layout");
   // check if game passed in GET request exists
@@ -23,8 +23,8 @@ export function GameLayout() {
   // websocket connection here
 
 
-  const [gameData, setGameDate] = useState({});
-  const [audioExtracts, setAudioExtracts] = useState([]);
+  // const [gameData, setGameDate] = useState({});
+  // const [audioExtracts, setAudioExtracts] = useState([]);
 
 
 
@@ -38,6 +38,8 @@ export function GameLayout() {
 
   const [socket, setSocket] = useState(null);
 
+  // role to in childrens components
+  const [role, setRole] = useState(null);
 
 
   // console.warn("Ca MARCHE ???", state);
@@ -78,22 +80,22 @@ export function GameLayout() {
     })
 
 
-    // redirect to game component
-    socket.on("move-in-game", (data) => {
+    // // redirect to game component
+    // socket.on("move-in-game", (data) => {
 
-      console.warn("WS : Move in game socket Event");
+    //   console.warn("WS : Move in game socket Event");
 
-      // // navigate user to related role's component / view 
-      // if(data.role === "presentator") {
-      //   navigate(`/game/${gameId}/play/presentator`);
-      // } else {
-      //   navigate(`/game/${gameId}/play/player`);
-      // }
+    //   // // navigate user to related role's component / view 
+    //   // if(data.role === "presentator") {
+    //   //   navigate(`/game/${gameId}/play/presentator`);
+    //   // } else {
+    //   //   navigate(`/game/${gameId}/play/player`);
+    //   // }
 
-      navigate(`/game/${gameId}/play/${data.socketId === socket.id ? "presentator" : "player"}`);
+    //   navigate(`/game/${gameId}/play/${data.socketId === socket.id ? "presentator" : "player"}`);
 
 
-    })
+    // })
 
 
 
@@ -163,7 +165,7 @@ export function GameLayout() {
             Supprimer la partie
           </button>
         </div>
-        <Outlet />
+        <Outlet context={{role, setRole}} />
       </div>
     </WebSocketContext.Provider>
   );

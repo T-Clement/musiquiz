@@ -1,6 +1,6 @@
 // import React from 'react'
 import apiAxios from '../libs/axios';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { useLoaderData, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { useWebSocket } from '../layouts/GameLayout';
@@ -39,7 +39,15 @@ export async function loader() {
 
 
 
-function ChooseRole() {
+export default function ChooseRole() {
+    
+    const {role, setRole} = useOutletContext();
+    
+    console.log('Choose role component Choose role value', role);
+
+    // return;
+
+
 
     const user = useLoaderData();
     // console.warn(user)
@@ -53,10 +61,10 @@ function ChooseRole() {
 
     // if(!socket) return <div>Loading ...</div>;
 
-    console.warn(socket);
+    // console.warn(socket);
 
-    const handleChooseRole = async (role) => {
-        console.log('choix du rôle : ', role);
+    const handleChooseRole = async (roleInForm) => {
+        console.log('choix du rôle dans le formualaire: ', roleInForm);
         console.log(user)
         console.log(gameId);
         console.log(socket.id);
@@ -64,7 +72,7 @@ function ChooseRole() {
         try {
             // send role to server
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/game/add-user-to-game`, {
-                role: role,
+                role: roleInForm,
                 userId: user ? user.userId : "",
                 gameId: gameId,
                 socketId: socket.id || null
@@ -75,6 +83,9 @@ function ChooseRole() {
             });
 
 
+            console.log("role in form : ", roleInForm);
+            setRole(roleInForm);
+            console.log("ICI LE STATE", role);
 
 
             // console.log(response);
@@ -82,10 +93,13 @@ function ChooseRole() {
             if (response.data) {
 
                 // after valid api response, emit websocket event
-                socket.emit('join-room', gameId, user ? user.userId : null, role);
+                socket.emit('join-room', gameId, user ? user.userId : null, roleInForm); // not role because state updates 
+                                                                                         //are async and it can still be null by the time the data is send via ws event
 
 
-                navigate(`/game/${gameId}/waiting-room`, { state: { game: response.data, userId: user ? user.userId : null, role } });
+                navigate(`/game/${gameId}/waiting-room`, { 
+                    state: { game: response.data, userId: user ? user.userId : null } 
+                });
             }
 
         } catch (error) {
@@ -138,5 +152,3 @@ function ChooseRole() {
         </div>
     )
 }
-
-export default ChooseRole

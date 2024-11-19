@@ -11,9 +11,9 @@ import { createContext, useMemo, useState } from 'react';
 
 import { AuthContextProvider } from './hooks/authContext';
 
-import { GameLayout } from './layouts/GameLayout';
+import GameLayout from './layouts/GameLayout';
 import ChooseRole, {loader as chooseRoleLoader} from './pages/ChooseRole';
-import { WaitingRoomPage, loader as waitingRoomLoader } from './pages/WaitingRoom/WaitingRoomPage';
+import WaitingRoomPage, { loader as waitingRoomLoader } from './pages/WaitingRoom/WaitingRoomPage';
 import InGamePlayerPage from './pages/InGame/InGamePlayerPage';
 import InGamePresentatorPage from './pages/InGame/InGamePresentatorPage';
 
@@ -37,7 +37,6 @@ import InGamePresentatorPage from './pages/InGame/InGamePresentatorPage';
 export function App() {
 
   //  const [user, setUser] = useState(null);
-
 
   console.log("Render App");
 

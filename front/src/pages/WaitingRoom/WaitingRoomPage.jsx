@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Link, Navigate, useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useLoaderData, useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { useWebSocket } from '../../layouts/GameLayout';
 import WaitingRoomPresentator from './WaitingRoomPresentator';
 import WaitingRoomPlayer from './WaitingRoomPlayer';
@@ -32,19 +32,30 @@ export async function loader({ params }) {
 
 
 
-export function WaitingRoomPage() {
+export default function WaitingRoomPage() {
 
   // issue when page reload becaus state data is not available because there is no previous navigation
   const { state } = useLocation();
-  const { userId, pseudo, role } = state;
+  const { userId, pseudo } = state;
 
+
+  const {role, setRole} = useOutletContext();
+
+  console.log("LAAAAAAAAAAAAAAAAAAAAAAA", role);
+  // return ;
 
   const socket = useWebSocket();
+
+  // data coming from component loader
   const { game } = useLoaderData();
+
+  // initialization with players connected in 
   const [players, setPlayers] = useState(game.players || []);
+  
+  // state to display if there is a presentator in game
   const [presentator, setPresentator] = useState(game.presentator || null);
 
-
+  // id of game in url params
   const { id: gameId } = useParams();
 
   console.log("gameId :", gameId)
@@ -113,6 +124,24 @@ export function WaitingRoomPage() {
 
         }
       })
+
+
+        // redirect to game component
+    socket.on("move-in-game", (data) => {
+
+      console.warn("WS : Move in game socket Event");
+
+      // // navigate user to related role's component / view 
+      // if(data.role === "presentator") {
+      //   navigate(`/game/${gameId}/play/presentator`);
+      // } else {
+      //   navigate(`/game/${gameId}/play/player`);
+      // }
+
+      navigate(`/game/${gameId}/play/${role}`);
+
+
+    })
 
 
       // socket.on('')
