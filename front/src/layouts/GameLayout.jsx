@@ -23,6 +23,9 @@ export function GameLayout() {
   // websocket connection here
 
 
+  const [gameData, setGameDate] = useState({});
+  const [audioExtracts, setAudioExtracts] = useState([]);
+
 
 
   const { user, setUser, loading } = useContext(AuthContext);
@@ -42,7 +45,7 @@ export function GameLayout() {
   useEffect(() => {
     // if (!loading && !user) {
     // if (!loading && !user) {
-    //   navigate('/', { replace: true });
+    //   navigate('/', { replace: true })
     // }
 
     // if(loading || !user) return;
@@ -75,10 +78,34 @@ export function GameLayout() {
     })
 
 
+    // redirect to game component
+    socket.on("move-in-game", (data) => {
+
+      console.warn("WS : Move in game socket Event");
+
+      // // navigate user to related role's component / view 
+      // if(data.role === "presentator") {
+      //   navigate(`/game/${gameId}/play/presentator`);
+      // } else {
+      //   navigate(`/game/${gameId}/play/player`);
+      // }
+
+      navigate(`/game/${gameId}/play/${data.socketId === socket.id ? "presentator" : "player"}`);
+
+
+    })
+
+
+
+    socket.on("game-started", (data) => {
+      navigate(`/game/${gameId}/play/${socket.role}`)
+    })
+
 
     return () => {
       socket.off("connect");
       socket.off("quit-game");
+      socket.off("game-started");
       socket.disconnect();
     }
 

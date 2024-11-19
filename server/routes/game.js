@@ -138,7 +138,42 @@ router.delete('/:id/delete', async(req, res, next) => {
         console.error("Error during Game delete action : ", error);
     }
 
-})
+});
+
+
+
+router.post('/:id/launch-game', async(req, res, next) => {
+
+    // const gameId = req.params.id;
+
+
+
+    // try {
+
+    //     // select game document
+    //     const filter = { _id: gameId};
+
+
+    //     // update status of game
+    //     const update = {
+    //         $set: {status : "in_progress"}
+    //     };
+
+
+    //     const updateGame = await Game.findOneAndUpdate(filter, update);
+
+
+    //     return res.status(200).json({message: "Le status de la partie a bien été mis à jour, la partie est lancée"});
+
+
+
+    // } catch(error) {
+    //     console.error("An error as occured in launch game route");
+    //     return res.status(500).json({message: "A servor error as occured"});
+    // }
+
+
+});
 
 
 

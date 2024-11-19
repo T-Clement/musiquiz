@@ -109,11 +109,11 @@ export function App() {
           loader: waitingRoomLoader
         },
         {
-          path: ':id/in-game/player',
+          path: ':id/play/player',
           element: <InGamePlayerPage />
         },
         {
-          path: ':id/in-game/presentator',
+          path: ':id/play/presentator',
           element: <InGamePresentatorPage />
         }
       ]

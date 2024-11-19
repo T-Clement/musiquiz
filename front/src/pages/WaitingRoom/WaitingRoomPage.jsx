@@ -114,6 +114,10 @@ export function WaitingRoomPage() {
         }
       })
 
+
+      // socket.on('')
+
+
     }
 
     return () => {
@@ -164,7 +168,18 @@ export function WaitingRoomPage() {
 
 
   const handleLaunchGame = () => {
-    console.log("La partie est lancée");
+    
+    // ws event to launch game
+    
+    socket.emit("launch-game", gameId, () => {
+      
+      console.log("WS : La partie est lancée par le présentateur");
+
+      navigate(`/game/${gameId}/play/presentator`);
+    })
+
+
+
 
     // post api call to update in noSQL database game state
 

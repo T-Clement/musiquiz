@@ -327,7 +327,7 @@ app.post('/api/create-game', async (req, res, next) => {
         console.log("API MUSIC PROVIDER CALL");
 
 
-
+        // fetch data of playlist in music provider
         const apiMusicResponse = await fetch(`https://api.deezer.com/playlist/${roomData.api_id_playlist}`);
 
         const apiMusicData = await apiMusicResponse.json();
