@@ -19,7 +19,7 @@ router.get('/:id', async (req, res, next) => {
 
     console.log("in /game/:id");
 
-    const game = await Game.findById(id);
+    const game = await Game.findById(id, {rounds: 0, playlistId: 0, });
 
 
     console.log(game);

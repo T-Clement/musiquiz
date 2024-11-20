@@ -127,7 +127,7 @@ export default function WaitingRoomPage() {
 
 
         // redirect to game component
-    socket.on("move-in-game", (data) => {
+    socket.on("move-in-game", () => {
 
       console.warn("WS : Move in game socket Event");
 

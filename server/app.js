@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const {v4:uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 const cookies = require("cookie-parser");
 
@@ -29,12 +29,12 @@ const User = require('./models/User');
 const utils = require('./utils/utils');
 
 
-const {authenticateJWT} = require('./middleware/Auth');
+const { authenticateJWT } = require('./middleware/Auth');
 
 const app = express();
 
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cookies());
@@ -62,7 +62,7 @@ app.use(cors({
 
 // use to check api healthcheck
 app.get('/api/ping', (req, res) => {
-    res.status(200).json({message: 'pong'})
+    res.status(200).json({ message: 'pong' })
 })
 
 
@@ -95,7 +95,7 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
     // get errors comming from express-validator
     const errors = validationResult(req);
 
-    if(!errors.isEmpty()) {
+    if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
 
@@ -109,15 +109,15 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
     // check if user exists with the credentials comming from post request and validated with validator
     User.findUserByMail(email).then(async user => {
         // no user
-        if(user === null) {
+        if (user === null) {
             console.log("No user for this email");
-            return res.status(401).json({message: "Paire identifiant/mot de passe incorrect"})
+            return res.status(401).json({ message: "Paire identifiant/mot de passe incorrect" })
         } else {
             // a user with this email has been found
             // check passwords hashs
             const valid = bcrypt.compare(password, user.password)
-            
-            if(!valid) {
+
+            if (!valid) {
                 console.log("Invalid comparison of hashed passwords");
                 res.status(500).json({ message: "Paire identifiant/mot de passe incorrect" });
             } else {
@@ -136,32 +136,32 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
                     // console.log(refreshToken);
 
                     // send cookies
-                    res.cookie('refreshToken', refreshToken, { 
+                    res.cookie('refreshToken', refreshToken, {
                         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiration
                         httpOnly: true,
                         secure: false
                     }); // secure to true if https
                     res.cookie('accessToken', accessToken, {
                         expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes expiration
-                        httpOnly: true, 
+                        httpOnly: true,
                         secure: false
                     });
-                    
-                    
-                    res.status(200).json({message: "Connexion Réussie", userId: user.id });
-                        
 
-                } catch(error) {
+
+                    res.status(200).json({ message: "Connexion Réussie", userId: user.id });
+
+
+                } catch (error) {
                     console.log("ERROR");
                     console.log(error);
-                    res.status(500).json({error});
+                    res.status(500).json({ error });
                 }
             }
-           
+
         };
     })
-    .catch(error => res.status(500).json({error}));
-    
+        .catch(error => res.status(500).json({ error }));
+
 
 });
 
@@ -199,8 +199,8 @@ app.get('/api/refresh-token', (req, res) => {
 
         // generate a new acces token
         const newAccessToken = jwt.sign(
-            { userId: user.userId, pseudo: user.pseudo, email: user.email }, 
-            process.env.JWT_SECRET_KEY, 
+            { userId: user.userId, pseudo: user.pseudo, email: user.email },
+            process.env.JWT_SECRET_KEY,
             { expiresIn: process.env.TOKEN_EXPIRATION }
         );
 
@@ -217,10 +217,10 @@ app.get('/api/refresh-token', (req, res) => {
 });
 
 app.get("/api/me", authenticateJWT, (req, res) => {
-    if(!req.user) {
-        return res.status(401).json({message: "Non authentifié"});
+    if (!req.user) {
+        return res.status(401).json({ message: "Non authentifié" });
     }
-    res.status(200).json({message: "in user connected route", user: req.user});
+    res.status(200).json({ message: "in user connected route", user: req.user });
 
 })
 
@@ -269,7 +269,7 @@ app.get('/api/top3', async (req, res, next) => {
             // name of room
             room = await Room.findOneRoomById(game.getRoomId());
             room.name = room.getName();
-            
+
             // user name of game
             let user = await User.findOneUserById(game.getUserId());
             game.pseudo_user = user.getPseudo();
@@ -285,7 +285,7 @@ app.get('/api/top3', async (req, res, next) => {
 
     } catch (error) {
         console.error('Error getting room games: ' + error.message);
-        next(error); 
+        next(error);
     }
 
 });
@@ -299,20 +299,20 @@ app.use('/api/room/', roomRoutes);
 app.use('/api/game', gameRoutes);
 
 app.post('/api/create-game', async (req, res, next) => {
-    
-    
+
+
     try {
         // SQL Model
         const Room = require("./models/Room");
 
         // console.log(req.body);
 
-        const {roomId} = req.body;
+        const { roomId } = req.body;
         // console.log(roomId);
 
 
         // get data in mysql database
-            // api playlist id, name, ..
+        // api playlist id, name, ..
         const roomData = await Room.findOneRoomById(roomId, true);
 
 
@@ -329,12 +329,24 @@ app.post('/api/create-game', async (req, res, next) => {
 
         // fetch data of playlist in music provider
         const apiMusicResponse = await fetch(`https://api.deezer.com/playlist/${roomData.api_id_playlist}`);
+        // console.log()
+
+
+        if (!apiMusicResponse) {
+            const errorBody = await apiMusicResponse.text();
+            console.error('Erreur API Deezer :', {
+                status: apiMusicResponse.status,
+                statusText: apiMusicResponse.statusText,
+                responseBody: errorBody,
+            });
+            throw new Error(`Erreur API Deezer: ${apiMusicResponse.status} - ${apiMusicResponse.statusText}`);
+        }
+
 
         const apiMusicData = await apiMusicResponse.json();
+        // console.log(apiMusicData);
 
-        console.log(apiMusicData);
-
-        if(!apiMusicData || !apiMusicData.tracks) {
+        if (!apiMusicData || !apiMusicData.tracks) {
             throw new Error('Impossible de récupérer les données de la playlist depuis l\'API');
         }
 
@@ -349,8 +361,8 @@ app.post('/api/create-game', async (req, res, next) => {
 
 
         // check if enough game are available
-            // each track can only be used 1 time as a choice, after that it's removed from trackList pool
-        if(listOfTracks.length < numberOfResponsePropositions * roundsNumber) {
+        // each track can only be used 1 time as a choice, after that it's removed from trackList pool
+        if (listOfTracks.length < numberOfResponsePropositions * roundsNumber) {
 
             const gameId = uuidv4();
 
@@ -377,7 +389,7 @@ app.post('/api/create-game', async (req, res, next) => {
         }
 
 
-        
+
 
 
         function shuffle(array) {
@@ -436,7 +448,7 @@ app.post('/api/create-game', async (req, res, next) => {
 
         const rounds = [];
 
-        for (let i= 0; i < roundsNumber; i++) {
+        for (let i = 0; i < roundsNumber; i++) {
 
             // shuffle tracks
             availableTracks = shuffle(availableTracks);
@@ -446,7 +458,7 @@ app.post('/api/create-game', async (req, res, next) => {
 
             const incorretChoices = [];
 
-            for (let j= 0; j < numberOfResponsePropositions - 1; j++) {
+            for (let j = 0; j < numberOfResponsePropositions - 1; j++) {
                 incorretChoices.push(availableTracks.shift());
             }
 
@@ -489,8 +501,9 @@ app.post('/api/create-game', async (req, res, next) => {
 
 
     } catch (error) {
-        console.error('Error creating new Game', error);
-        res.status(500).json({error: 'Failed to create game'});
+        console.error('Error creating new Game', error.message);
+        // console.error()
+        res.status(500).json({ error: 'Failed to create game' });
     }
 });
 
@@ -502,7 +515,7 @@ app.use((err, req, res, next) => {
     console.log("In error middleware");
     console.log(err);
     console.error(err.stack);
-    res.status(500).json({ message: err.message});
+    res.status(500).json({ message: err.message });
 });
 
 
@@ -510,7 +523,7 @@ app.use((err, req, res, next) => {
 
 // 404 route to place at the end
 app.get('*', (req, res, next) => {
-    res.status(404).json({ message : "404, ressource not found" })
+    res.status(404).json({ message: "404, ressource not found" })
 })
 
 

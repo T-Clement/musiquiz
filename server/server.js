@@ -226,7 +226,7 @@ io.on("connection", (socket) => {
 
       // emit event to all users in this game
         // send socket id of presentator
-      io.to(gameId).emit("move-in-game", {socketId: socket.id});
+      io.to(gameId).emit("move-in-game");
 
 
 
@@ -240,6 +240,15 @@ io.on("connection", (socket) => {
 
   })
 
+
+  socket.on('request-extracts', async(gameId) => {
+
+    console.log("in le request-extracts event", gameId);
+
+    const gameExtracts = await Game.findById(gameId, {rounds: 1, totalRounds: 1});
+
+    socket.emit('receive-extracts', gameExtracts);
+  })
 
 
   socket.on('start-round', async (gameId, roundIndex) => {

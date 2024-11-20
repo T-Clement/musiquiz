@@ -40,6 +40,9 @@ export default function GameLayout() {
 
   // role to in childrens components
   const [role, setRole] = useState(null);
+  // const [rounds, setRounds] = useState(null);
+  // const [roundsNumber, setRoundsNumber] = useState(null);
+
 
 
   // console.warn("Ca MARCHE ???", state);
@@ -55,16 +58,16 @@ export default function GameLayout() {
     if (loading) return;
 
 
-    const socket = io('http://localhost:3000');
+    const socketInstance = io('http://localhost:3000');
 
 
 
 
 
-    socket.on('connect', () => {
-      console.log("Connected with socket id :", socket.id);
+    socketInstance.on('connect', () => {
+      console.log("Connected with socket id :", socketInstance.id);
       // update state
-      setSocket(socket);
+      setSocket(socketInstance);
     })
 
 
@@ -74,7 +77,7 @@ export default function GameLayout() {
 
 
     // quit gameLayout view and redirect to home
-    socket.on('quit-game', (message) => {
+    socketInstance.on('quit-game', (message) => {
       console.warn(message);
       navigate("/");
     })
@@ -99,20 +102,20 @@ export default function GameLayout() {
 
 
 
-    socket.on("game-started", (data) => {
+    socketInstance.on("game-started", (data) => {
       navigate(`/game/${gameId}/play/${socket.role}`)
     })
 
 
     return () => {
-      socket.off("connect");
-      socket.off("quit-game");
-      socket.off("game-started");
-      socket.disconnect();
+      socketInstance.off("connect");
+      socketInstance.off("quit-game");
+      socketInstance.off("game-started");
+      socketInstance.disconnect();
     }
 
 
-  }, [navigate]);
+  }, [navigate, loading, gameId]);
 
 
   const handleDeleteGame = async () => {
