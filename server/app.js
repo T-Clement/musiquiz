@@ -325,7 +325,7 @@ app.post('/api/create-game', async (req, res, next) => {
         const roundsNumber = 10;
         const numberOfResponsePropositions = 4;
 
-        console.log("API MUSIC PROVIDER CALL");
+        // console.log("API MUSIC PROVIDER CALL");
 
 
         // fetch data of playlist in music provider
@@ -415,36 +415,6 @@ app.post('/api/create-game', async (req, res, next) => {
         const gameId = uuidv4();
 
 
-
-        // ----------------------------------------------------------------
-        // ----------------------------------------------------------------
-        // WITHOUT REMOVING INCORRECTS TRACKS OF TRAKCSPOOL
-        // ----------------------------------------------------------------
-        // ----------------------------------------------------------------
-
-        // randomize order of array
-        // const shuffledTracks = shuffle(listOfTracks);
-
-        // // slice selected tracks from list of tracks
-        // const selectedTracks = shuffledTracks.slice(0, roundsNumber);
-
-
-        // // generate rounds
-        //     // remove incorrect answers of pool of tracks
-        // const rounds = selectedTracks.map(track => {
-        //     const correctAnswer = track.title;
-        //     const incorretChoices = getRandomIncorrectChoices(listOfTracks, correctAnswer, numberOfResponsePropositions - 1);
-        //     const choices = shuffle([correctAnswer, ...incorretChoices]);
-
-        //     return {
-        //         audioPreviewUrl: track.preview,
-        //         choices: choices,
-        //         correctAnswer: correctAnswer
-        //     };
-        // })
-
-
-
         let availableTracks = listOfTracks;
 
         const rounds = [];
@@ -466,14 +436,15 @@ app.post('/api/create-game', async (req, res, next) => {
 
             const incorretChoices = [];
 
+            // shift from songs pool a song and push it to incorrectChoices array fot this round
             for (let j = 0; j < numberOfResponsePropositions - 1; j++) {
                 incorretChoices.push(availableTracks.shift());
             }
 
-            // set choices to "ArtistName - TrackName" 
+            // set choices to Object 
             const choices = shuffle([
                 {
-                    choiceId: choiceId,
+                    choiceId: choiceId, // set manual generated ObjectId as value wich is the correct track ObjectId
                     artistName: correctTrack.artist.name,
                     title: correctTrack.title_short,
 
@@ -488,18 +459,11 @@ app.post('/api/create-game', async (req, res, next) => {
                 roundId: new mongoose.Types.ObjectId(),
                 audioPreviewUrl: correctTrack.preview,
                 choices: choices,
-                // correctAnswer: `${correctTrack.artist.name} - ${correctTrack.title_short}` // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
-                correctAnswer: correctTrack.choiceId // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
+                correctAnswer: correctTrack.choiceId // get correctTrack choiceId as the value
             });
         }
 
-
-
-
-
-
-
-
+        // store new Game in database
         const newGame = new Game({
             _id: gameId,
             roomId: parseInt(roomId),
@@ -508,8 +472,8 @@ app.post('/api/create-game', async (req, res, next) => {
             playlistId: roomData.api_id_playlist,
             roomName: roomData.name,
             roomDescription: roomData.description,
-            totalRounds: roundsNumber,
-            rounds: rounds
+            totalRounds: roundsNumber, // param of game
+            rounds: rounds // array of rounds
         });
 
         // use method of Schema to create random sharing code starting with roomId
