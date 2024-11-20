@@ -70,6 +70,7 @@ app.get('/api/ping', (req, res) => {
 const { body, validationResult, matchedData } = require("express-validator");
 
 const Game = require('./schema/Game');
+const { default: mongoose } = require('mongoose');
 // const validateCreateRoom = [
 //     body('idRoom').isNumeric('L\'identifiant doit être un entier');
 // ]
@@ -456,19 +457,39 @@ app.post('/api/create-game', async (req, res, next) => {
             // take first item of array as the correct answer + remove it from availableTracks array
             const correctTrack = availableTracks.shift();
 
+
+            // generate ObjectId
+            const choiceId = new mongoose.Types.ObjectId();
+
+            // add _id to correctTrack
+            correctTrack.choiceId = choiceId;
+
             const incorretChoices = [];
 
             for (let j = 0; j < numberOfResponsePropositions - 1; j++) {
                 incorretChoices.push(availableTracks.shift());
             }
 
-            // set choices to "ArtistName - TrackNane" 
-            const choices = shuffle([`${correctTrack.artist.name} - ${correctTrack.title_short}`, ...incorretChoices.map(track => `${track.artist.name} - ${track.title_short}`)]);
+            // set choices to "ArtistName - TrackName" 
+            const choices = shuffle([
+                {
+                    choiceId: choiceId,
+                    artistName: correctTrack.artist.name,
+                    title: correctTrack.title_short,
+
+                }, ...incorretChoices.map(track => ({
+                    choiceId: new mongoose.Types.ObjectId(),
+                    artistName: track.artist.name,
+                    title: track.title_short
+                }))
+            ]);
 
             rounds.push({
+                roundId: new mongoose.Types.ObjectId(),
                 audioPreviewUrl: correctTrack.preview,
                 choices: choices,
-                correctAnswer: `${correctTrack.artist.name} - ${correctTrack.title_short}` // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
+                // correctAnswer: `${correctTrack.artist.name} - ${correctTrack.title_short}` // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
+                correctAnswer: correctTrack.choiceId // correctAnswer as "ArtistName - TrackName", maybe replace with _id generated
             });
         }
 

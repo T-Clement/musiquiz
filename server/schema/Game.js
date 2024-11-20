@@ -21,17 +21,29 @@ const PlayerSchema = new mongoose.Schema({
 }, { _id: false });
 
 
+
+const ChoiceSchema = new mongoose.Schema({
+    choiceId: mongoose.Types.ObjectId,
+    artistName: {type: String},
+    title: {type: String},
+    
+}, {_id: false})
+
+
 const RoundSchema = new mongoose.Schema({
-    questionId: { type: Number},
+    roundId: mongoose.Types.ObjectId,
     audioPreviewUrl: {type: String},
-    choices: [String],
-    correctAnswer: {type: String},
+    choices: [ChoiceSchema],
+    // correctAnswer: {type: String},
+    correctAnswer: mongoose.Types.ObjectId,
     playersResponses: {
         userId: {type: Number},
-        choice: {type: Number},
+        userChoice: {type: Number},
         // time: {type: Number}
-    } 
-})
+    },
+    
+}, {_id: false});
+
 
 
 
