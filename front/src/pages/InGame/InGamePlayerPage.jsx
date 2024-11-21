@@ -22,6 +22,7 @@ export default function InGamePlayerPage() {
   const [roundChoices, setRoundChoices] = useState(null);
   const [choiceIsSubmited, setChoiceIsSubmited] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [revealChoices, setRevealChoices] = useState(false);
 
   useEffect(() => {
 
@@ -47,7 +48,7 @@ export default function InGamePlayerPage() {
     socket.on('prepare-round', ({roundNumber, roundData}) => {
       setCurrentRound(roundNumber);
       setRoundChoices(roundData.choices);
-
+      setRevealChoices(false);
 
 
       socket.emit('player-ready', {
@@ -56,6 +57,7 @@ export default function InGamePlayerPage() {
         roundNumber
       })
 
+      setIsLoading(false);
 
     });
 
@@ -63,10 +65,11 @@ export default function InGamePlayerPage() {
 
 
     // get event of beginning of round
-    socket.on('start-round-player', ({roundNumber}) => {
+    socket.on('start-round-players', ({roundNumber}) => {
       if(roundNumber === currentRound) {
         setIsLoading(false);
       }
+      setRevealChoices(true);
     });
 
 
@@ -86,7 +89,7 @@ export default function InGamePlayerPage() {
     return () => {
       // socket.off('load-round-choices');
       socket.off('prepare-round');
-      socket.off('start-round');
+      socket.off('start-round-player');
 
     };
 
@@ -107,15 +110,16 @@ export default function InGamePlayerPage() {
     });
 
     setChoiceIsSubmited(true);
-
+    setIsLoading(true);
   }
 
 
   if (isLoading) {
     return (
       <div className='flex flex-col items-center gap-4 mt-6'>
+      <p>Round n° {currentRound}</p>
         <Spinner />
-        <p>Le présentateur va lancer la partie sous peu !</p>
+        <p className='text-center'>Le présentateur va lancer le<br/>round, tenez vous prêt !</p>
         <p>Socket: {socket.id}</p>
 
       </div>
@@ -123,21 +127,29 @@ export default function InGamePlayerPage() {
   }
 
 
-
   return (
     <div>
-      <p>InGamePlayerPage</p>
 
-      <p>Round {currentRound + 1}</p>
 
-      <div className=''>
+      <div className='flex flex-col items-center mb-20'>
+        <p className='my-4'>InGamePlayerPage</p>
+
+        <p className=' p-4 bg-white text-violet-900 rounded-lg text-lg font-bold'>Round {currentRound}</p>
+
+      </div>
+
+      <div className='flex flex-col items-center gap-6'>
 
 
         {
           roundChoices.map(choice =>
           (
-            <button onClick={() => submitAnswer(choice.choiceId)}>
-              {choice.artistName} - {choice.songName}
+            <button 
+              className={`text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700`}
+              key={choice.choicId} 
+              onClick={() => submitAnswer(choice.choiceId)}
+            >
+              <span className={`${!revealChoices ? "blur-sm" : "" }`}>{choice.artistName} - {choice.title}</span>
             </button>
           )
           )
