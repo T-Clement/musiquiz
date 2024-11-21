@@ -29,6 +29,13 @@ const ChoiceSchema = new mongoose.Schema({
     
 }, {_id: false})
 
+const PlayerResponseSchema = new mongoose.Schema({
+    userId: {type: Number},
+    userChoice : {type: mongoose.Types.ObjectId},
+    time: {type: Number},
+
+}, {_id: false});
+
 
 const RoundSchema = new mongoose.Schema({
     roundId: mongoose.Types.ObjectId,
@@ -36,11 +43,8 @@ const RoundSchema = new mongoose.Schema({
     choices: [ChoiceSchema],
     // correctAnswer: {type: String},
     correctAnswer: mongoose.Types.ObjectId,
-    playersResponses: {
-        userId: {type: Number},
-        userChoice: {type: Number},
-        // time: {type: Number}
-    },
+    playersResponses: [PlayerResponseSchema],
+    playersReady: [Number] // array of userId / playerId when they are ready
     
 }, {_id: false});
 

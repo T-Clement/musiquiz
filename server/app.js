@@ -481,8 +481,8 @@ app.post('/api/create-game', async (req, res, next) => {
 
         await newGame.save();
 
-        res.status(201).json({ gameId: newGame._id })
 
+        res.status(201).json({ gameId: newGame._id })
 
 
     } catch (error) {

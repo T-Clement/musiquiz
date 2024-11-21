@@ -78,6 +78,7 @@ io.on("connection", (socket) => {
   // ---------------- JOIN ROOM ----------
   // -------------------------------------
   // -------------------------------------
+  // -------------------------------------
   socket.on('join-room', async (gameId, userId, role) => {
 
     console.log("dans la connection socket");
@@ -185,11 +186,152 @@ io.on("connection", (socket) => {
   });
 
 
+
+  // -------------------------------------
+  // -------------------------------------
+  // ---------------- IN GAME ------------
+  // -------------------------------------
+  // -------------------------------------
+
+
+socket.on('prepare-round-presentator', async({gameId, roundNumber}) => {
+  try {
+    // const roundsData = await Game.findById(gameId, { rounds: 1, totalRounds: 1, currentRound: 1 });
+
+    // io.to(gameId).emit('prepare-round', roundsData); // rounds, 
+    
+    // console.log(gameId,  roundNumber);
+
+
+    // console.log("COUCOU");
+    // console.log(gameId);
+    // console.log("Avant game");
+    const game = await Game.findById(gameId);
+    // console.log(game);
+    // console.log("Après game");
+    // console.log("Round Number", roundNumber);
+    const roundData = game.rounds[roundNumber];
+    // console.log("Round Data", roundData);
+    // console.log("Round Data", roundData)
+
+    // send data to players
+    io.to(gameId).emit('prepare-round', {
+      roundNumber,
+      roundData
+    });
+
+
+    // initiliasize playersReady array to empty fot this round
+    game.rounds[roundNumber].playersReady = [];
+    await game.save();
+
+
+    
+  } catch(error) {
+    console.error(`Error during round preparation for game ${gameId} at round ${roundNumber}`);
+    
+    socket.emit('error', {message: 'Erreur lors de la préparation du round pour la partie : ', gameId});
+  }
+})
+
+
+socket.on('player-ready', async ({gameId, userId, roundNumber}) => {
+  try {
+    const game = await Game.findById(gameId);
+
+    // add player to array of players ready for this round
+    if(!game.rounds[roundNumber].playersReady.includes(userId)) {
+      game.rounds[roundNumber].playersReady.push(userId);
+
+      await game.save();
+    }
+
+
+    // check if all players are ready
+    const allPlayersReady = game.players.every(player => 
+      game.rounds[roundNumber].playersReady.includes(player.userId)
+    );
+
+
+    if(allPlayersReady) {
+      // send event / notify presentator that all players are ready
+      // const presentatorSocketId = game.presentator.socketId;
+
+
+      // notify all users in room that all players are ready
+      io.to(gameId).emit('all-players-ready', {roundNumber});
+    }
+
+
+
+  } catch(error) {
+    console.error('Error in player ready / all players ready: ', error);
+  }
+})
+
+socket.on('start-round', ({gameId, roundNumber}) => {
+  // notify players that the round as begin
+  io.to(gameId).emit('start-round-players', {roundNumber});
+})
+
+
+socket.on('submit-answer', async ({ gameId, userId, roundNumber, choiceId }) => {
+
+
+  try {
+
+    const game = await Game.findById(gameId);
+
+    game.rounds[roundNumber].playersResponses.push({
+      userId, 
+      userChoice: choiceId,
+      // time
+    })
+
+    await game.save();
+
+    // notify socket player owner
+    
+    
+    // notify presentator
+    io.to(game.presentator.socketId).emit("player-responsed", {userId});
+
+
+
+
+  } catch(error) {
+    console.error('Error in submit-answer:', error);
+    socket.emit('error', { message: 'Erreur lors de la soumission de la réponse.' });  
+  }
+
+  // store choice in database
+
+
+
+  // emit socket event to trigger a rendering update to show 
+  // in presentator view that the user made a guess
+
+
+
+
+  // event only to presentator ?? -> request ?
+  // -> update and get last updated document
+
+
+});
+
+
+
+
+
+
+
+
   // event submited only if role is set to presentator
   socket.on('launch-game', async (gameId) => {
 
     // return quickly if socket role is not set to presentator
-    if(socket.role !== "presentator") {
+    if (socket.role !== "presentator") {
       // error event
 
       // socket.emit('error');
@@ -200,19 +342,19 @@ io.on("connection", (socket) => {
 
 
     try {
-      
+
       // select game document
       const filter = { _id: gameId };
-      
+
       // update status of game
       const update = {
         $set: { status: "in_progress" }
       };
-      
+
       // update document to put status at 'in-progress'
       const updatedGame = await Game.findOneAndUpdate(filter, update, { projection: {}, new: true });
-      
-      
+
+
       // get presentator ID
       // const userId = await computeUserIdFromHeaders(socket);
 
@@ -225,7 +367,7 @@ io.on("connection", (socket) => {
 
 
       // emit event to all users in this game
-        // send socket id of presentator
+      // send socket id of presentator
       io.to(gameId).emit("move-in-game");
 
 
@@ -236,44 +378,40 @@ io.on("connection", (socket) => {
       console.error(`Error in launch game socket event listener : `, error);
 
     }
-
-
-  })
-
-
-  socket.on('request-extracts', async(gameId) => {
+    
+    
+  });
+  
+  
+  socket.on('request-extracts', async ({gameId}) => {
 
     console.log("in le request-extracts event", gameId);
 
-    const gameExtracts = await Game.findById(gameId, {rounds: 1, totalRounds: 1});
+    const gameExtracts = await Game.findById(gameId, { rounds: 1, totalRounds: 1 });
 
     socket.emit('receive-extracts', gameExtracts);
   })
 
 
-  socket.on('start-round', async (gameId, roundIndex) => {
+  socket.on('load-to-player-round-data', async ({gameId, currentRound}) => {
 
-    io.to(gameId).emit('start-round', {roundIndex});
+    const conditions = {};
 
-  });
+    const projection = {};
 
-  socket.on('submit-answer', async ({gameId, roundIndex, choice}) => {
-
-    // store choice in database
+    const currentRoundChoices = await Game.findOne(gameId,)
 
 
-
-    // emit socket event to trigger a rendering update to show 
-    // in presentator view that the user made a guess
+  })
 
 
 
+  // socket.on('start-round', async (gameId, roundIndex) => {
 
-    // event only to presentator ?? -> request ?
-      // -> update and get last updated document
+  //   io.to(gameId).emit('start-round', { roundIndex });
 
+  // });
 
-  });
 
 
   socket.on('round-end', () => {
@@ -282,8 +420,8 @@ io.on("connection", (socket) => {
 
 
     //
-    
-    
+
+
 
 
 
