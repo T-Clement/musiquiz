@@ -41,8 +41,6 @@ export default function WaitingRoomPage() {
 
   const {role, setRole} = useOutletContext();
 
-  console.log("LAAAAAAAAAAAAAAAAAAAAAAA", role);
-  // return ;
 
   const socket = useWebSocket();
 
@@ -58,13 +56,13 @@ export default function WaitingRoomPage() {
   // id of game in url params
   const { id: gameId } = useParams();
 
-  console.log("gameId :", gameId)
+  // console.log("gameId :", gameId)
 
 
   const navigate = useNavigate();
 
 
-  console.log("User role : ", role);
+  // console.log("User role : ", role);
   //
 
 
@@ -83,7 +81,7 @@ export default function WaitingRoomPage() {
 
 
 
-  console.log(game);
+  // console.log(game);
 
 
 
@@ -224,9 +222,8 @@ export default function WaitingRoomPage() {
     return <div>Loading in WaitingRoom...</div>;
   }
 
-  console.log(players);
-  // alert(socket.id);
-  // console.log(socket)
+  // console.log(players);
+
 
   return (
     <div className='mt-5'>
@@ -244,11 +241,6 @@ export default function WaitingRoomPage() {
 
       <h3 className='font-bold'>Role utilisateur: {role}</h3>
       <p>Socket: {socket.id}</p>
-
-      {/* AFFICHER de manière distinctive le joueur connecté dans la liste des joueurs de la room */}
-
-
-
 
 
       {

@@ -323,7 +323,34 @@ socket.on('submit-answer', async ({ gameId, userId, roundNumber, choiceId }) => 
 
 
 
+// socket.on('get-room-sockets', (roomId) => {
+//   const room = io.sockets.adapter.rooms.get(roomId);
 
+//   if(room) {
+//     const sockets = Array.from(room); // convert Set to Array
+
+//     socket.emit("room-sockets-list", sockets);
+//   } else {
+//     console.log(`La room ${roomId} est vide ou n'existe pas`);
+//     socket.emit("room-sockets-list", []);
+//   }
+
+// })
+
+
+// io.in(roomId).emit('updateLeaderrBoard', leaderBoard);
+
+
+
+  socket.on('get-room-players', async(gameId) => {
+    const game = await Game.findById(gameId);
+
+    const players = game.players;
+
+    // respond only to the socket who makes the event ????
+    socket.emit('room-players-list', players);
+
+  });
 
 
 

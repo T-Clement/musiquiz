@@ -40,6 +40,8 @@ export default function GameLayout() {
 
   // role to in childrens components
   const [role, setRole] = useState(null);
+
+
   // const [rounds, setRounds] = useState(null);
   // const [roundsNumber, setRoundsNumber] = useState(null);
 
