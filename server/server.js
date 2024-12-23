@@ -454,6 +454,19 @@ socket.on('submit-answer', async ({ gameId, userId, roundNumber, choiceId }) => 
 
   })
 
+
+
+  socket.on('on-end-game', () => {
+
+    //   
+
+
+
+
+
+
+  })
+
   // -------------------------------------
   // -------------------------------------
   // ---------------- PLAYER-LEFT ----------

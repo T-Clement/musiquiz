@@ -1,6 +1,7 @@
 import axios from 'axios';
-import React from 'react'
+import React, { useState } from 'react'
 import { Navigate, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import Spinner from '../../components/Spinner';
 // import apiAxios from '../../libs/axios';
 
 export async function loader({ request, params }) {
@@ -24,6 +25,9 @@ export function RoomPage() {
     console.log(`In room page id ${id}`);
 
     const { roomData } = useLoaderData();
+    const [loading, setLoading] = useState(false);
+
+
 
     console.log(roomData);
 
@@ -48,6 +52,7 @@ export function RoomPage() {
 
 
     const handleCreateGame = async (roomId) => {
+        setLoading(true);
         console.warn(roomId);
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-game`, {
@@ -68,6 +73,7 @@ export function RoomPage() {
             // navigate(`/game/${gameId}/waiting-room`);
 
             // send gameId (_id) to next page
+            setLoading(false);
             navigate(`/game/${gameId}/choose-role`, {state: {gameId}});
 
 
@@ -156,7 +162,7 @@ export function RoomPage() {
                 <div className='w-full md:w-1/2 flex flex-col justify-center items-center'>
                     <h3>Multijoueur</h3>
                     <div className='flex flex-col gap-3 mt-6'>
-                        <button type='button' className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' onClick={() => handleCreateGame(id)}>Créer une partie</button>
+                        <button type='button' className='text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 flex flex-row-reverse items-center gap-4' onClick={() => handleCreateGame(id)}><span>{loading && <Spinner />}</span><span>Créer une partie</span></button>
                         <button type='button' className='cursor-not-allowed text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700' disabled>Créer une partie <br /> personnalisée</button>
                     </div>
                 </div>

@@ -4,6 +4,9 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import LeaderBoard from './LeaderBoard';
 
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+
+
 
 
 export default function InGamePresentatorPage() {
@@ -178,9 +181,9 @@ export default function InGamePresentatorPage() {
       {/*  */}
       <div className='flex justify-around'>
 
-      {/* Left */}
-        <div className='relative p-10'>
-          
+        {/* Left */}
+        <div className='relative p-10 '>
+
           <LeaderBoard players={players} />
 
         </div>
@@ -218,6 +221,18 @@ export default function InGamePresentatorPage() {
               ))
             }
           </ul>
+
+
+          <div>
+            <CountdownCircleTimer
+              isPlaying
+              duration={7}
+              colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+              colorsTime={[7, 5, 2, 0]}
+            >
+              {({ remainingTime }) => remainingTime}
+            </CountdownCircleTimer>
+          </div>
 
 
 
