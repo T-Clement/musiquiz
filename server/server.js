@@ -421,7 +421,7 @@ io.on("connection", (socket) => {
     console.log(`=== launch round ===> Round ${gameState.currentRound} - gameId: ${gameId}`);
     gameState.status = 'ROUND_IN_PROGRESS';
 
-    io.in('gameId').emit('round-started', {
+    io.in(gameId).emit('round-started', {
       roundNumber : gameState.currentRound,
       roundDuration : gameState.roundDuration,
       // add choices ???
@@ -444,6 +444,9 @@ io.on("connection", (socket) => {
 
     console.log(`=== endRound ==> Round ${gameState.currentRound} - gameId: ${gameId}`);
     gameState.status = "ROUND_ENDED";
+
+
+    // set 0 to players who dont have make a response to this round ???
 
     // calculate scores of players
     const updatedPlayers = calculateScores(gameId, gameState.currentRound);

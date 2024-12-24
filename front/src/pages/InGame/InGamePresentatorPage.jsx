@@ -58,6 +58,7 @@ export default function InGamePresentatorPage() {
 
     // server send data of round
     socket.on('round-loading', (data) => {
+      console.log("in round loading");
       setIsRoundOver(false);
       setRoundInProgress(false);
       setIsLoading(false);
@@ -76,7 +77,7 @@ export default function InGamePresentatorPage() {
       }
 
 
-    })
+    });
 
 
 
@@ -85,7 +86,7 @@ export default function InGamePresentatorPage() {
     // server has launched the round, round is officialy started
     socket.on('round-started', (data) => {
       // data: roundDuration ?, ..
-
+      console.log("in round started");
       setRoundInProgress(true);
       setIsRoundOver(false);
 
