@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useWebSocket } from '../../layouts/GameLayout';
 import { useOutletContext, useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
@@ -15,98 +15,121 @@ export default function InGamePresentatorPage() {
 
   const { id: gameId } = useParams();
   const socket = useWebSocket();
-
   const { role, setRole } = useOutletContext();
 
 
   // -------------------------------------------
   // STATES
   // -------------------------------------------
-  const [audioElements, setAudioElements] = useState([]);
-  const [currentRound, setCurrentRound] = useState(0);
-  const [rounds, setRounds] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [currentRound, setCurrentRound] = useState(1);
   const [roundsNumber, setRoundsNumber] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [playersReady, setPlayersReady] = useState(false);
+  // url of extract of currentRound
+  const [audioUrl, setAudioUrl] = useState(null);
+  // to handle reading of audio
+  const audioRef = useRef(null);
 
-  // to display scoreboard
-  const [players, setPlayers] = useState([]);
-
-
-
-
+  // to show if the round is in "loading state"
+  const [isLoading, setIsLoading] = useState(false);
 
 
+  //
+  const [roundInProgress, setRoundInProgress] = useState(false);
+  const [isRoundOver, setIsRoundOver] = useState(false);
+  // local counter but server is the single source of truth !!!
+  const [timeLeft, setTimeLeft] = useState(30);
 
-  // load music extract
-  useEffect(() => {
-    // get music extracts
 
-    // setMusicExtracts(data.extracts);
-  }, [gameId]);
+
 
   useEffect(() => {
     if (!socket) return;
 
-
+    // when component mounted, ask for players in game / room 
     socket.emit('get-room-players', gameId);
 
+    // handle reception of players in room
     socket.on('room-players-list', (players) => {
       setPlayers(players);
-    })
-
-    // socket.emit('get-room-sockets', gameId);
-
-    // socket.on('room-sockets-list', (sockets) => {
-    //   // setPlayers(sockets);
-    //   console.log("Liste des sockets connectées à la room", sockets);
-    // })
-
-
-
-
-
-    socket.emit('request-extracts', {
-      gameId,
-      currentRound
     });
 
-    //
-    socket.on('receive-extracts', data => {
-      //
-      setRoundsNumber(data.totalRounds);
 
 
-      // preload audio extracts ???
-      const audios = data.rounds.map(extract => {
-        const audio = new Audio(extract.audioPreviewUrl);
-        audio.load();
-        return audio
-      });
-
-      // only audio elements
-      setAudioElements(audios);
-      setRounds(data.rounds);
+    // server send data of round
+    socket.on('round-loading', (data) => {
+      setIsRoundOver(false);
+      setRoundInProgress(false);
       setIsLoading(false);
 
-    });
+
+      const { roundNumber, totalRounds, extractUrl } = data;
+      setCurrentRound(roundNumber);
+      setRoundsNumber(totalRounds);
+      setAudioUrl(extractUrl);
 
 
-    // listen to all players are ready
-    socket.on('all-players-ready', () => {
-      setPlayersReady(true);
+      // prepare audio locally
+      if(audioRef.current) {
+        audioRef.current.src = extractUrl;
+        audioRef.current.load();
+      }
+
+
     })
 
 
 
 
 
+    // server has launched the round, round is officialy started
+    socket.on('round-started', (data) => {
+      // data: roundDuration ?, ..
+
+      setRoundInProgress(true);
+      setIsRoundOver(false);
+
+
+      // start local counter
+      if(data.roundDuration) {
+        setTimeLeft(data.roundDuration);
+      } else {
+        setTimeLeft(30);
+      }
+
+
+      // play audio
+      if(audioRef.current) {
+        audioRef.current.play().catch(err => {
+          console.error(`Error playing audio : ${err}`);
+        })
+      }
+
+    });
+
+
+
+    //
+    socket.on('round-results', (resultsData) => {
+      // resultsData: correctAnswer, scores, nextRoundNumber, ...
+      
+      setRoundInProgress(false);
+      setIsRoundOver(true);
+
+      // update the leaderboard with new scores of players coming from server
+      if(resultsData.updatedPlayers) {
+        setPlayers(resultsData.updatedPlayers);
+      }
+
+
+    });
+
     return () => {
-      socket.off('receive-extracts');
-      socket.off('all-players-ready');
-      socket.off('room-sockets-list');
-    };
+      socket.off('room-players-list');
+      socket.off('round-started');
+      socket.off('round-results');
+      socket.off('round-loading');
+    }
 
 
 
@@ -114,48 +137,18 @@ export default function InGamePresentatorPage() {
 
   }, [socket, gameId]);
 
-
-  const prepareRound = () => {
-    socket.emit('prepare-round-presentator', {
-      gameId,
-      // roundData: rounds[currentRound],
-      roundNumber: currentRound
-    });
-
-    setPlayersReady(false);
+  // ------------------------------------
+  // -------- HANDLERS ------------------
 
 
-    // socket.emit('presentator-ready', {gameId, round: currentRound});
+  const handleAudioLoaded = () => {
+    console.log('Audio loaded, presentator is ready');
 
-
-  }
-
-
-
-  const startRound = () => {
-
-    // handle not all players are ready
-    if (!playersReady) {
-      console.log("Les joueurs ne sont pas tous prêts");
-      return;
-    }
-
-    console.log("round started");
-
-    // play audio extract
-    audioElements[currentRound].play();
-
-    // send event to players clients
-    socket.emit('start-round', {
+    socket.emit("presentator-ready", {
       gameId,
       roundNumber: currentRound
     });
-
-
-    // pass to next round
-    setCurrentRound(prev => prev + 1);
-    // setPlayersReady(false);
-  }
+  };
 
 
 
@@ -163,20 +156,26 @@ export default function InGamePresentatorPage() {
 
 
 
-  console.log(players);
-  console.log(rounds);
-  // return;
+  // console.log(players);
+  // console.log(rounds);
+  // // return;
 
   return (
     <div>
 
 
       <p>InGamePresentatorPage</p>
-      <p>Socket: {socket.id}</p>
+      <p>Socket: {socket?.id}</p>
       <p>Role: {role}</p>
 
-      <p className='text-center mb-10'>{roundsNumber} extraits sont prévus</p>
-      <p className='text-center mb-20'><span className='bg-white text-black rounded-md p-4'>Round {currentRound}</span></p>
+      <p className='text-center mb-20'>
+        <span className='bg-white text-black rounded-md p-4'>
+          Round {currentRound} / {roundsNumber ?? "..."}
+        </span>
+      </p>
+
+
+
 
       {/*  */}
       <div className='flex justify-around'>
@@ -188,47 +187,23 @@ export default function InGamePresentatorPage() {
 
         </div>
 
+
+
+
         {/* Right */}
         <div>
-          <button
-            className='focus:outline-none text-white bg-green-700 disabled:opacity-75 disabled:cursor-not-allowed hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
-            onClick={prepareRound}
-            disabled={isLoading || currentRound >= roundsNumber}
-          >
-            Préparer le round {currentRound}
-          </button>
+          
+          {/** Audio Ref */}
+          <audio ref={audioRef} onCanPlay={handleAudioLoaded} />
 
 
-
-          <button
-            className='focus:outline-none text-white bg-green-700 disabled:opacity-75 disabled:cursor-not-allowed  hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
-            onClick={startRound}
-            disabled={!playersReady}
-          >
-            Lancer le round {currentRound}
-          </button>
-
-
-
-          <ul>
-            {
-              rounds.map((round, index) => (
-                <li key={round.roundId}>
-                  <p>Round n°{index} - {round.correctAnswer} ({"roundId : " + round.roundId})</p>
-                  {/* <button onClick={() => handleClick(gameId, round.roundId, index)}>Test Round</button> */}
-                </li>
-
-              ))
-            }
-          </ul>
-
-
+          {/** Local counter */}
           <div>
             <CountdownCircleTimer
               isPlaying
-              duration={7}
+              duration={timeLeft}
               colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-              colorsTime={[7, 5, 2, 0]}
+              colorsTime={[timeLeft, timeLeft * 0.7, timeLeft * 0.3, 0]}
             >
               {({ remainingTime }) => remainingTime}
             </CountdownCircleTimer>

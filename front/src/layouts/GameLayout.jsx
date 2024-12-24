@@ -19,15 +19,6 @@ export default function GameLayout() {
 
 
 
-
-  // websocket connection here
-
-
-  // const [gameData, setGameDate] = useState({});
-  // const [audioExtracts, setAudioExtracts] = useState([]);
-
-
-
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -42,20 +33,10 @@ export default function GameLayout() {
   const [role, setRole] = useState(null);
 
 
-  // const [rounds, setRounds] = useState(null);
-  // const [roundsNumber, setRoundsNumber] = useState(null);
 
-
-
-  // console.warn("Ca MARCHE ???", state);
 
   useEffect(() => {
-    // if (!loading && !user) {
-    // if (!loading && !user) {
-    //   navigate('/', { replace: true })
-    // }
 
-    // if(loading || !user) return;
 
     if (loading) return;
 
@@ -73,37 +54,13 @@ export default function GameLayout() {
     })
 
 
-    // console.log(state.gameId, user??user.user.userId, user??user, socket, role);
-
-    // socket.emit('join-room', gameId, user.user.userId, socket.id);
-
-
     // quit gameLayout view and redirect to home
     socketInstance.on('quit-game', (message) => {
       console.warn(message);
       navigate("/");
     })
 
-
-    // // redirect to game component
-    // socket.on("move-in-game", (data) => {
-
-    //   console.warn("WS : Move in game socket Event");
-
-    //   // // navigate user to related role's component / view 
-    //   // if(data.role === "presentator") {
-    //   //   navigate(`/game/${gameId}/play/presentator`);
-    //   // } else {
-    //   //   navigate(`/game/${gameId}/play/player`);
-    //   // }
-
-    //   navigate(`/game/${gameId}/play/${data.socketId === socket.id ? "presentator" : "player"}`);
-
-
-    // })
-
-
-
+    //    
     socketInstance.on("game-started", (data) => {
       navigate(`/game/${gameId}/play/${socket.role}`)
     })
