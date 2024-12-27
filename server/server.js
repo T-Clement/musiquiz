@@ -404,10 +404,14 @@ io.on("connection", (socket) => {
       extractUrl
     });
 
+    // check correct event to start counter
+    // clearTimeOut if game is deleted before his end
+
 
     // wait 3 seconds before emit event 'launch-round'
     const LOADING_DELAY = 3000;
     gameState.timerId = setTimeout(() => {
+      console.log("round launched"),
       launchRound(gameId);
     }, LOADING_DELAY);
   
@@ -446,6 +450,9 @@ io.on("connection", (socket) => {
     gameState.status = "ROUND_ENDED";
 
 
+    // get correct answer of round
+
+
     // set 0 to players who dont have make a response to this round ???
 
     // calculate scores of players
@@ -455,6 +462,7 @@ io.on("connection", (socket) => {
     // emit event round-results to broadcast results of round in presentator view
     io.in(gameId).emit('round-results', {
       roundNumber: gameState.currentRound,
+      correctAnswer: "it's comming",
       updatedPlayers
     });
 

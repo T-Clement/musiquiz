@@ -58,7 +58,7 @@ export default function InGamePresentatorPage() {
 
     // server send data of round
     socket.on('round-loading', (data) => {
-      console.log("in round loading");
+      console.log("Round is loading");
       setIsRoundOver(false);
       setRoundInProgress(false);
       setIsLoading(false);
@@ -86,13 +86,15 @@ export default function InGamePresentatorPage() {
     // server has launched the round, round is officialy started
     socket.on('round-started', (data) => {
       // data: roundDuration ?, ..
-      console.log("in round started");
+      console.log("Round just started");
+      // console.log(data.roundDuration);
       setRoundInProgress(true);
       setIsRoundOver(false);
 
 
       // start local counter
       if(data.roundDuration) {
+        // console.log("if round duration");
         setTimeLeft(data.roundDuration);
       } else {
         setTimeLeft(30);
@@ -125,6 +127,12 @@ export default function InGamePresentatorPage() {
 
     });
 
+
+
+    socket.on('game-ended', (message) => {
+      console.warn(message);
+    })
+
     return () => {
       socket.off('room-players-list');
       socket.off('round-started');
@@ -145,10 +153,12 @@ export default function InGamePresentatorPage() {
   const handleAudioLoaded = () => {
     console.log('Audio loaded, presentator is ready');
 
-    socket.emit("presentator-ready", {
-      gameId,
-      roundNumber: currentRound
-    });
+
+    // do nothing in server side ...
+    // socket.emit("presentator-ready", {
+    //   gameId,
+    //   roundNumber: currentRound
+    // });
   };
 
 
@@ -159,7 +169,6 @@ export default function InGamePresentatorPage() {
 
   // console.log(players);
   // console.log(rounds);
-  // // return;
 
   return (
     <div>
@@ -201,7 +210,8 @@ export default function InGamePresentatorPage() {
           {/** Local counter */}
           <div>
             <CountdownCircleTimer
-              isPlaying
+              key={currentRound} // to rerender component in each round
+              isPlaying = {roundInProgress}
               duration={timeLeft}
               colors={['#004777', '#F7B801', '#A30000', '#A30000']}
               colorsTime={[timeLeft, timeLeft * 0.7, timeLeft * 0.3, 0]}
