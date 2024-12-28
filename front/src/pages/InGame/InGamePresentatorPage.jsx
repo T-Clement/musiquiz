@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
 import LeaderBoard from './LeaderBoard';
 
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import CountDownCircle from './CountDownCircle';
 
 
 
@@ -209,15 +209,7 @@ export default function InGamePresentatorPage() {
 
           {/** Local counter */}
           <div>
-            <CountdownCircleTimer
-              key={currentRound} // to rerender component in each round
-              isPlaying = {roundInProgress}
-              duration={timeLeft}
-              colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-              colorsTime={[timeLeft, timeLeft * 0.7, timeLeft * 0.3, 0]}
-            >
-              {({ remainingTime }) => remainingTime}
-            </CountdownCircleTimer>
+            <CountDownCircle currentRound = {currentRound} roundInProgress = {roundInProgress} timeLeft = {timeLeft} />
           </div>
 
 

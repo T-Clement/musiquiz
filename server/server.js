@@ -462,7 +462,7 @@ io.on("connection", (socket) => {
     // emit event round-results to broadcast results of round in presentator view
     io.in(gameId).emit('round-results', {
       roundNumber: gameState.currentRound,
-      correctAnswer: "it's comming",
+      correctAnswer: "it's comming soon, need to be dev",
       updatedPlayers
     });
 

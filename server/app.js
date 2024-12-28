@@ -116,8 +116,8 @@ app.post("/api/login", validateLogin, async (req, res, next) => {
         } else {
             // a user with this email has been found
             // check passwords hashs
-            const valid = bcrypt.compare(password, user.password)
-
+            const valid = await bcrypt.compare(password, user.password)
+            console.log(`validn value ${valid}`);
             if (!valid) {
                 console.log("Invalid comparison of hashed passwords");
                 res.status(500).json({ message: "Paire identifiant/mot de passe incorrect" });
