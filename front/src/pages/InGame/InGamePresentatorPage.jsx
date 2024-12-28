@@ -115,8 +115,8 @@ export default function InGamePresentatorPage() {
     //
     socket.on('round-results', (resultsData) => {
       // resultsData: correctAnswer, scores, nextRoundNumber, ...
-      
-      setRoundInProgress(false);
+      console.log("roundInProgress changed to:", roundInProgress)
+      // setRoundInProgress(false);
       setIsRoundOver(true);
 
       // update the leaderboard with new scores of players coming from server
