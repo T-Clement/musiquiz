@@ -445,6 +445,15 @@ io.on("connection", (socket) => {
     const gameState = inMemoryGames.get(gameId);
     if(!gameState) return;
 
+    
+    
+    // get the round correct choice object of the current round
+    const correctAnswerId = gameState.rounds[gameState.currentRound - 1].correctAnswer;
+    const correctRoundChoice = gameState.rounds[gameState.currentRound -1].choices.find(
+      // ObjectId are compared by reference and not value in js
+      // so it is compared after a toString on the objectId
+      (choice) => choice.choiceId.toString() === correctAnswerId.toString()
+    );
 
     console.log(`=== endRound ==> Round ${gameState.currentRound} - gameId: ${gameId}`);
     gameState.status = "ROUND_ENDED";
@@ -462,13 +471,14 @@ io.on("connection", (socket) => {
     // emit event round-results to broadcast results of round in presentator view
     io.in(gameId).emit('round-results', {
       roundNumber: gameState.currentRound,
-      correctAnswer: "it's comming soon, need to be dev",
+      correctAnswer: correctRoundChoice,
       updatedPlayers
     });
 
 
     // wait 5 seconds before next round is being played
-    const RESULTS_DELAY = 5000;
+      // see if this data is store in gameData
+    const RESULTS_DELAY = 7000;
     gameState.timerId = setTimeout(() => {
       startNextRound(gameId);
     }, RESULTS_DELAY);
@@ -512,24 +522,24 @@ io.on("connection", (socket) => {
 
 
 
-  socket.on("request-extracts", async ({ gameId }) => {
-    console.log("in le request-extracts event", gameId);
+  // socket.on("request-extracts", async ({ gameId }) => {
+  //   console.log("in le request-extracts event", gameId);
 
-    const gameExtracts = await Game.findById(gameId, {
-      rounds: 1,
-      totalRounds: 1,
-    });
+  //   const gameExtracts = await Game.findById(gameId, {
+  //     rounds: 1,
+  //     totalRounds: 1,
+  //   });
 
-    socket.emit("receive-extracts", gameExtracts);
-  });
+  //   socket.emit("receive-extracts", gameExtracts);
+  // });
 
-  socket.on("load-to-player-round-data", async ({ gameId, currentRound }) => {
-    const conditions = {};
+  // socket.on("load-to-player-round-data", async ({ gameId, currentRound }) => {
+  //   const conditions = {};
 
-    const projection = {};
+  //   const projection = {};
 
-    const currentRoundChoices = await Game.findOne(gameId);
-  });
+  //   const currentRoundChoices = await Game.findOne(gameId);
+  // });
 
   // socket.on('start-round', async (gameId, roundIndex) => {
 
@@ -537,14 +547,14 @@ io.on("connection", (socket) => {
 
   // });
 
-  socket.on("round-end", () => {
-    // animate / update leaderboard and show updating scores
-    //
-  });
+  // socket.on("round-end", () => {
+  //   // animate / update leaderboard and show updating scores
+  //   //
+  // });
 
-  socket.on("on-end-game", () => {
-    //
-  });
+  // socket.on("on-end-game", () => {
+  //   //
+  // });
 
   // -------------------------------------
   // -------------------------------------
