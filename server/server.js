@@ -252,20 +252,35 @@ io.on("connection", (socket) => {
 
   socket.on("submit-answer", async ({ gameId, userId, roundNumber, choiceId }) => {
       try {
+        // get game in database
         const game = await Game.findById(gameId);
+        
+        // get the timestamp of the beginning of the round 
+        const gameState = inMemoryGames.get(gameId);
+        const roundStart = gameState.roundStartTimeStamp;
 
+        // to calculate duration interval between player response and beginning of round (to calculate score)
+        const timeNow = Date.now();
+
+          // TODO: add a check to see if player already responded  
+            // an intersting test case !!!
         game.rounds[roundNumber].playersResponses.push({
           userId,
           userChoice: choiceId,
-          // time
+          responseTime: timeNow - roundStart
         });
 
+        // store response in round
         await game.save();
-
-        // notify socket player owner
-
+        
         // notify presentator
         io.to(game.presentator.socketId).emit("player-responsed", { userId });
+        
+        // notify socket player owner
+        // send event to player who makes the response that his choice is stored
+        socket.emit("answer-received", {success: true});
+
+
       } catch (error) {
         console.error("Error in submit-answer:", error);
         socket.emit("error", {
@@ -273,13 +288,6 @@ io.on("connection", (socket) => {
         });
       }
 
-      // store choice in database
-
-      // emit socket event to trigger a rendering update to show
-      // in presentator view that the user made a guess
-
-      // event only to presentator ?? -> request ?
-      // -> update and get last updated document
     }
   );
 
@@ -425,6 +433,10 @@ io.on("connection", (socket) => {
     console.log(`=== launch round ===> Round ${gameState.currentRound} - gameId: ${gameId}`);
     gameState.status = 'ROUND_IN_PROGRESS';
 
+    // store timestamp of beginning of round
+    gameState.roundStartTimeStamp = Date.now();
+
+
     io.in(gameId).emit('round-started', {
       roundNumber : gameState.currentRound,
       roundDuration : gameState.roundDuration,
@@ -433,29 +445,31 @@ io.on("connection", (socket) => {
     });
 
     // timer / counter for end of round in server side
-    gameState.timerId = setTimeout(() => {
-      endRound(gameId);
+    gameState.timerId = setTimeout(async() => {
+      await endRound(gameId);
     }, gameState.roundDuration * 1000); // ms to s
 
     
   }
 
 
-  function endRound(gameId) {
+  async function endRound(gameId) {
     const gameState = inMemoryGames.get(gameId);
     if(!gameState) return;
 
-    
+    const roundIndex = gameState.currentRound - 1;
     
     // get the round correct choice object of the current round
-    const correctAnswerId = gameState.rounds[gameState.currentRound - 1].correctAnswer;
-    const correctRoundChoice = gameState.rounds[gameState.currentRound -1].choices.find(
+    const correctAnswerId = gameState.rounds[roundIndex].correctAnswer;
+    const correctRoundChoice = gameState.rounds[roundIndex].choices.find(
       // ObjectId are compared by reference and not value in js
       // so it is compared after a toString on the objectId
       (choice) => choice.choiceId.toString() === correctAnswerId.toString()
     );
 
-    console.log(`=== endRound ==> Round ${gameState.currentRound} - gameId: ${gameId}`);
+
+
+    console.log(`=== endRound ==> Round ${roundIndex} - gameId: ${gameId}`);
     gameState.status = "ROUND_ENDED";
 
 
@@ -464,8 +478,12 @@ io.on("connection", (socket) => {
 
     // set 0 to players who dont have make a response to this round ???
 
+
+    const game = await Game.findById(gameId);
+    const playersResponses = game.rounds[roundIndex].playersResponses;
+
     // calculate scores of players
-    const updatedPlayers = calculateScores(gameId, gameState.currentRound);
+    const updatedPlayers = calculateScores(game, playersResponses, correctAnswerId, gameState.roundDuration);
 
 
     // emit event round-results to broadcast results of round in presentator view
@@ -510,10 +528,28 @@ io.on("connection", (socket) => {
 
   }
 
-  function calculateScores(gameId, roundNumber) {
-    // calculate and update the scores of players 
+  /**
+   * 
+   * @param {*} game mongodb game collection
+   * @param {*} playersResponses array of response of players for this round
+   * @param {*} correctAnswerId ObjectId of correct response for this round
+   * @param {*} roundDuration Duration of the round stored in the params of the game collection
+   */
+  function calculateScores(game, playersResponses, correctAnswerId, roundDuration) {
 
-    // returns an array of updatedPlayers sorted by score (userId, pseudo, score)
+    
+
+  }
+
+
+
+
+  function playerSendResponse (gameId, roundNumber) {
+    const gameState = inMemoryGames.get(gameId);
+
+    
+
+
   }
 
 
