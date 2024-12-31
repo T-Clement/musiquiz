@@ -436,11 +436,10 @@ io.on("connection", (socket) => {
     // store timestamp of beginning of round
     gameState.roundStartTimeStamp = Date.now();
 
-
+    // emit to everyone in the room this data
     io.in(gameId).emit('round-started', {
       roundNumber : gameState.currentRound,
       roundDuration : gameState.roundDuration,
-      // add choices ???
       choices: gameState.rounds[gameState.currentRound - 1].choices
     });
 
@@ -536,8 +535,22 @@ io.on("connection", (socket) => {
    * @param {*} roundDuration Duration of the round stored in the params of the game collection
    */
   function calculateScores(game, playersResponses, correctAnswerId, roundDuration) {
+      // score max : 1000
+      // decremente score after 1 second
+      
+      // iterate on each score of the round by taking all the players in game
+      // if there is no score for this player -> the player have not responded at this round so it's 0 points
 
-    
+      // check if the response of the player is the correct Response, if not it's 0 points
+
+      // if correct response, calculate score
+
+
+
+      // return updatedPlayers wich is an object 
+      // with userId, pseudo and score
+
+
 
   }
 
@@ -676,10 +689,6 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} s'est déconnectée`);
   });
 });
-
-
-
-
 
 
 

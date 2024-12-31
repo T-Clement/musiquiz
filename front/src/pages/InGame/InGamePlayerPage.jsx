@@ -75,6 +75,24 @@ export default function InGamePlayerPage() {
 
 
 
+
+    socket.on("round-loading", (data) => {
+      setCurrentRound(data.roundNumber);
+      // setIsLoading(true);
+    });
+    
+    
+    socket.on('round-started', (data) => {
+      setIsLoading(false);
+      setRoundChoices(data.choices);
+      
+    });
+
+
+    socket.on('round-results', () => {
+      setRoundChoices(null); // TODO: see if another way is possible to avoid rerendering of component ..
+    });
+
     // socket.on("load-round-choices", (data) => {
 
     //   setRoundChoices(data.choices);
@@ -149,7 +167,7 @@ export default function InGamePlayerPage() {
               key={choice.choicId} 
               onClick={() => submitAnswer(choice.choiceId)}
             >
-              <span className={`${!revealChoices ? "blur-sm" : "" }`}>{choice.artistName} - {choice.title}</span>
+              <span className="">{choice.artistName} - {choice.title}</span>
             </button>
           )
           )

@@ -170,7 +170,7 @@ export default function InGamePresentatorPage() {
                   Bonne réponse :
                 </p>
                 <span className="bg-white text-black rounded-md p-4">
-                  Round {correctAnswer.artistName} - {correctAnswer.title}
+                  {correctAnswer.artistName} - {correctAnswer.title}
                 </span>
 
               </div>
