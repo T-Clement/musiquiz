@@ -263,8 +263,9 @@ io.on("connection", (socket) => {
         const timeNow = Date.now();
 
           // TODO: add a check to see if player already responded  
+          // TODO: add a check if player is responded to the currentRound and not another one
             // an intersting test case !!!
-        game.rounds[roundNumber].playersResponses.push({
+        game.rounds[roundNumber - 1].playersResponses.push({
           userId,
           userChoice: choiceId,
           responseTime: timeNow - roundStart
