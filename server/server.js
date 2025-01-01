@@ -537,7 +537,7 @@ io.on("connection", (socket) => {
    */
   function calculateScores(game, playersResponses, correctAnswerId, roundDuration) {
       // score max : 1000
-      // decremente score after 1 second
+      // decremente score after 1 or 2 seconds
       
       // iterate on each score of the round by taking all the players in game
       // if there is no score for this player -> the player have not responded at this round so it's 0 points
