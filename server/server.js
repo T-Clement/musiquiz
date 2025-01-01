@@ -262,13 +262,30 @@ io.on("connection", (socket) => {
         // to calculate duration interval between player response and beginning of round (to calculate score)
         const timeNow = Date.now();
 
+        const responseTime = timeNow - roundStart;
+
+        // calculate score
+        const playerResponseIsCorrect = gameState.rounds[gameState.currentRound - 1].correctAnswer.toString() === choiceId;
+        
+        console.log(`is player response correct ${playerResponseIsCorrect}`);
+        let scoreRound;
+        if(!playerResponseIsCorrect) {
+          scoreRound = 0;
+        } else {
+          scoreRound = getScoreFromResponseTime(responseTime);
+        }
+        console.log(`Score player : ${scoreRound}`);
+        
+
+
           // TODO: add a check to see if player already responded  
           // TODO: add a check if player is responded to the currentRound and not another one
             // an intersting test case !!!
         game.rounds[roundNumber - 1].playersResponses.push({
           userId,
           userChoice: choiceId,
-          responseTime: timeNow - roundStart
+          responseTime: responseTime,
+          score: scoreRound // caculate score here ???
         });
 
         // store response in round
@@ -484,7 +501,9 @@ io.on("connection", (socket) => {
     const playersResponses = game.rounds[roundIndex].playersResponses;
 
     // calculate scores of players
-    const updatedPlayers = calculateScores(game, playersResponses, correctAnswerId, gameState.roundDuration, gameState.roundStartTimeStamp);
+    const updatedPlayers = await calculateScores(game, roundIndex);
+
+
 
 
     // emit event round-results to broadcast results of round in presentator view
@@ -532,93 +551,51 @@ io.on("connection", (socket) => {
   /**
    * 
    * @param {*} game mongodb game collection
-   * @param {*} playersResponses array of response of players for this round
-   * @param {*} correctAnswerId ObjectId of correct response for this round
-   * @param {*} roundDuration Duration of the round stored in the params of the game collection
-   * @param {*} roundStartTimeStamp TimeStamp og the beginning of the round
+   * @param {*} roundIndex index to target current round in rounds array
+   * @returns {Array} - desc sorted list of players with their scores 
    */
-  function calculateScores(game, roundPlayersResponses, correctAnswerId, roundDuration, roundStartTimeStamp) {
-      // score max : 1000
-      // decremente score after 1 or 2 seconds
+  async function calculateScores(game, roundIndex) {
       
-      // iterate on each score of the round by taking all the players in game
-      // if there is no score for this player -> the player have not responded at this round so it's 0 points
-      
-      
-      // check for each player the response
-
+      // all players in the game
       const gamePlayers = game.players;
-      gamePlayers.forEach(player => {
+      
+      // get all the responses made by the players in this round
+      const roundResponses = game.rounds[roundIndex].playersResponses;
 
-        // check if player has made a response to this round
-        // and if response is correct
-        const playerResponse = roundPlayersResponses.find(roundPlayerResponse => roundPlayerResponse.userId = player.userId);
-        console.log(playerResponse);
-        // if player is not find in responses for this round, put 0 at score for this round
-        if(!playerResponse) {
-          console.log(`${player.pseudo} has made no response for this round, score for round put to 0`);
+      // check for each player of the game if he has made a response in this round
+      gamePlayers.forEach((player) => {
+        const playerResponse = roundResponses.find(
+          (response) => response.userId === player.userId
+        );
+
+        // a response is found for this player
+        if(playerResponse) {
+
+          // add to score of player the new score wether it's a correct or incorrect answer 
+          player.score += playerResponse.score;
+
+        } else {
           
-          roundPlayersResponses.push({
+          // if player has not made a response at this round, put a default score to 0 for keeping history
+          roundResponses.push({
             userId: player.userId,
             score: 0
           });
-
-        } else  {
-          // player has made a response in this round
-            // check if response made is the correctResponse
-            if(playerResponse.userChoice.toString() === correctAnswerId.toString()) {
-              // const nowTimeStamp = Date.now();
-              // // calculate responseTime of player for this answer
-              // const responseTime = nowTimeStamp - roundStartTimeStamp;
-
-              // get responseTime of player to calculate
-
-              console.log(`Correct response for player ${player.pseudo} with a response time of ${playerResponse.responseTime}`);
-              
-              // calculate score related to response time of player
-              const score = getScoreFromResponseTime(playerResponse.responseTime);
-
-              console.log(`Score : ${score} points`);
-
-
-
-
-            } else {
-              // player made wrong answer so put score at 0
-              playerResponse.score = 0;
-
-            }
-
+          console.log(`${player.pseudo} has not make a response for this round`);
 
         }
 
-
-
-        
-      
-
-
-
-
-
       });        
 
-
-      // TODO : need to store updated scores in database !!!
-
-
+      // store updated game in database
+      await game.save();
 
 
-      // check if the response of the player is the correct Response, if not it's 0 points
-
-      // if correct response, calculate score
-
+      // sort locally scores
+      game.players.sort((a, b) => b.score - a.score);
 
 
-      // return updatedPlayers wich is an object 
-      // with userId, pseudo and score
-
-
+      return game.players;
 
   }
 
