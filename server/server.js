@@ -279,7 +279,7 @@ io.on("connection", (socket) => {
         
         // notify socket player owner
         // send event to player who makes the response that his choice is stored
-        socket.emit("answer-received", {success: true});
+        socket.emit("answer-received", {success: true, responseTime: timeNow - roundStart});
 
 
       } catch (error) {
@@ -576,7 +576,9 @@ io.on("connection", (socket) => {
               console.log(`Correct response for player ${player.pseudo} with a response time of ${playerResponse.responseTime}`);
               
               // calculate score related to response time of player
-              
+              const score = getScoreFromResponseTime(playerResponse.responseTime);
+
+              console.log(`Score : ${score} points`);
 
 
 
@@ -618,6 +620,27 @@ io.on("connection", (socket) => {
 
 
 
+  }
+
+
+  function getScoreFromResponseTime(tMs) {
+    const t = tMs / 1000; // convert ms to seconds
+    const MAX_SCORE = 1000;
+    const T = 20;
+    const THRESHOLD = 1.2; // if under or equals this value -> it's max score
+
+    //
+    if(t <= THRESHOLD) {
+      return MAX_SCORE;
+    }
+
+    // it's here but it should not be concerned
+    if(t >= T) {
+      return 0;
+    }
+
+    const slope = MAX_SCORE / (T - THRESHOLD);
+    return Math.max(0, MAX_SCORE - slope * (t-THRESHOLD));
   }
 
 
@@ -769,6 +792,7 @@ server.on("listening", () => {
 server.listen(port);
 
 const mongoose = require("mongoose");
+const { MAX } = require("uuid");
 const uri =
   "mongodb+srv://toquetclement:" +
   process.env.SECRET_MONGODB_ATLAS +
