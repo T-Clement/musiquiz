@@ -32,7 +32,8 @@ const ChoiceSchema = new mongoose.Schema({
 const PlayerResponseSchema = new mongoose.Schema({
     userId: {type: Number},
     userChoice : {type: mongoose.Types.ObjectId},
-    time: {type: Number},
+    responseTime: {type: Number},
+    score: {type: Number}
 
 }, {_id: false});
 

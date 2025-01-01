@@ -356,7 +356,8 @@ io.on("connection", (socket) => {
         roundDuration,
         status: 'NOT_STARTED',
         timerId : null,
-        rounds: foundGame.rounds // data foreach round
+        rounds: foundGame.rounds, // data foreach round,
+        players: foundGame.players
       });
 
 
@@ -469,7 +470,7 @@ io.on("connection", (socket) => {
 
 
 
-    console.log(`=== endRound ==> Round ${roundIndex} - gameId: ${gameId}`);
+    console.log(`=== endRound ==> Round ${gameState.currentRound} - gameId: ${gameId}`);
     gameState.status = "ROUND_ENDED";
 
 
@@ -483,7 +484,7 @@ io.on("connection", (socket) => {
     const playersResponses = game.rounds[roundIndex].playersResponses;
 
     // calculate scores of players
-    const updatedPlayers = calculateScores(game, playersResponses, correctAnswerId, gameState.roundDuration);
+    const updatedPlayers = calculateScores(game, playersResponses, correctAnswerId, gameState.roundDuration, gameState.roundStartTimeStamp);
 
 
     // emit event round-results to broadcast results of round in presentator view
@@ -534,13 +535,77 @@ io.on("connection", (socket) => {
    * @param {*} playersResponses array of response of players for this round
    * @param {*} correctAnswerId ObjectId of correct response for this round
    * @param {*} roundDuration Duration of the round stored in the params of the game collection
+   * @param {*} roundStartTimeStamp TimeStamp og the beginning of the round
    */
-  function calculateScores(game, playersResponses, correctAnswerId, roundDuration) {
+  function calculateScores(game, roundPlayersResponses, correctAnswerId, roundDuration, roundStartTimeStamp) {
       // score max : 1000
       // decremente score after 1 or 2 seconds
       
       // iterate on each score of the round by taking all the players in game
       // if there is no score for this player -> the player have not responded at this round so it's 0 points
+      
+      
+      // check for each player the response
+
+      const gamePlayers = game.players;
+      gamePlayers.forEach(player => {
+
+        // check if player has made a response to this round
+        // and if response is correct
+        const playerResponse = roundPlayersResponses.find(roundPlayerResponse => roundPlayerResponse.userId = player.userId);
+        console.log(playerResponse);
+        // if player is not find in responses for this round, put 0 at score for this round
+        if(!playerResponse) {
+          console.log(`${player.pseudo} has made no response for this round, score for round put to 0`);
+          
+          roundPlayersResponses.push({
+            userId: player.userId,
+            score: 0
+          });
+
+        } else  {
+          // player has made a response in this round
+            // check if response made is the correctResponse
+            if(playerResponse.userChoice.toString() === correctAnswerId.toString()) {
+              // const nowTimeStamp = Date.now();
+              // // calculate responseTime of player for this answer
+              // const responseTime = nowTimeStamp - roundStartTimeStamp;
+
+              // get responseTime of player to calculate
+
+              console.log(`Correct response for player ${player.pseudo} with a response time of ${playerResponse.responseTime}`);
+              
+              // calculate score related to response time of player
+              
+
+
+
+
+            } else {
+              // player made wrong answer so put score at 0
+              playerResponse.score = 0;
+
+            }
+
+
+        }
+
+
+
+        
+      
+
+
+
+
+
+      });        
+
+
+      // TODO : need to store updated scores in database !!!
+
+
+
 
       // check if the response of the player is the correct Response, if not it's 0 points
 
