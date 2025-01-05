@@ -31,7 +31,7 @@ export function ThemePage() {
         {theme.rooms.map((room, index) => 
             <li key={room.id} className='flex max-[320px]:flex-col min-[300px]:gap-y-4 sm:flex-row items-center gap-x-5'>
                        
-            {/* <RoomItem room = {room} /> */}
+            <RoomItem room = {room} />
             
 
             </li>

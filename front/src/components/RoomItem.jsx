@@ -5,7 +5,20 @@ import { Link } from 'react-router-dom'
 import svgPlay from '/assets/play.svg';
 import svgCup from '/assets/cup.svg'
 
+
+
 export function RoomItem({room}) {
+  
+  // conditionnal values because api responses are not in the same format ...
+  const roomId = room?.id ?? room?.room_id;
+  const roomName = room?.name ?? room?.room_name;
+  const bestPlayerPseudo = room?.game?.pseudo_user ?? room?.best_player?.pseudo;
+  const bestPlayerScore = room?.game?.score ?? room?.best_player?.best_score;
+
+
+
+
+
   return (
     <article className='flex flex-col gap-y-4'>
       <div className='flex flex-wrap'>
@@ -14,7 +27,7 @@ export function RoomItem({room}) {
         <div className='w-[280px] sm:w-[300px] bg-violet-900 flex rounded-lg items-stretch shadow-lg'>
 
           <div className='basis-1/2 flex justify-center items-center px-4 py-8'>
-            <Link className='relative p-5 rounded-full transform transition duration-500 hover:scale-125' to={`/room/${room.id}`}>
+            <Link className='relative p-5 rounded-full transform transition duration-500 hover:scale-125' to={`/room/${roomId}`}>
               <img src={svgPlay} alt="Play Icon" className="relative z-10 ps-1 w-8 h-8 fill-current text-white"/>
               <span className="absolute inset-0 rounded-full bg-white opacity-25"></span>
             </Link>
@@ -28,8 +41,8 @@ export function RoomItem({room}) {
             
             <ul className='flex flex-col z-10'>
 
-              <li className='truncate'>{room.game.pseudo_user}</li>
-              <li className='truncate'>{room.game.score} pts</li>
+              <li className='truncate'>{bestPlayerPseudo}</li>
+              <li className='truncate'>{bestPlayerScore} pts</li>
 
             </ul>
           </div>
@@ -37,7 +50,7 @@ export function RoomItem({room}) {
         </div>
       </div>
 
-      <h3 className='text-2xl'>{room.name}</h3>
+      <h3 className='text-2xl'>{roomName}</h3>
 
     </article>
   )

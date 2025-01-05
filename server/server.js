@@ -625,20 +625,6 @@ io.on("connection", (socket) => {
 
 
 
-  function playerSendResponse (gameId, roundNumber) {
-    const gameState = inMemoryGames.get(gameId);
-
-    
-
-
-  }
-
-
-
-
-
-
-
   // socket.on("request-extracts", async ({ gameId }) => {
   //   console.log("in le request-extracts event", gameId);
 
