@@ -59,7 +59,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+    origin: "http://192.168.1.26:5173",
+    // origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -762,11 +764,14 @@ io.on("connection", (socket) => {
 server.on("error", errorHandler);
 server.on("listening", () => {
   const address = server.address();
+  console.log(address);
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
   console.log("Listening on " + bind);
 });
+server.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${port}`);
+});
 
-server.listen(port);
 
 const mongoose = require("mongoose");
 const { MAX } = require("uuid");

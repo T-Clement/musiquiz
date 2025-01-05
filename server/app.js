@@ -41,8 +41,9 @@ app.use(cookies());
 
 
 app.use(cors({
-    // origin: `http://localhost:${process.env.DOCKER_PORT_FRONT}`,
-    origin: `http://localhost:${process.env.NODE_ENV === 'prod' ? process.env.DOCKER_PORT_FRONT : 5173}`,
+    origin: `http://192.168.1.26:5173`,
+    // origin: `*`,
+    // origin: `http://localhost:${process.env.NODE_ENV === 'prod' ? process.env.DOCKER_PORT_FRONT : 5173}`,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }));

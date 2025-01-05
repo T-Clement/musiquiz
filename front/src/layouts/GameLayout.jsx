@@ -41,7 +41,8 @@ export default function GameLayout() {
     if (loading) return;
 
 
-    const socketInstance = io('http://localhost:3000');
+    // const socketInstance = io('http://localhost:3000');
+    const socketInstance = io('http://192.168.1.26:3000');
 
 
 

@@ -147,7 +147,11 @@ export default function InGamePresentatorPage() {
       <div className="flex justify-around">
         {/* Left */}
         <div className="relative p-10 ">
-          <LeaderBoard players={players} />
+          
+          
+
+          <LeaderBoard players={players} setPlayers = { setPlayers }/>
+
         </div>
 
         {/* Right */}
