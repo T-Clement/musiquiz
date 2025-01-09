@@ -42,7 +42,9 @@ export default function GameLayout() {
 
 
     // const socketInstance = io('http://localhost:3000');
-    const socketInstance = io('http://192.168.1.26:3000');
+    // const socketInstance = io('http://192.168.1.26:3000');
+    // const socketInstance = io('http://192.168.2.113:3000');
+    const socketInstance = io(import.meta.env.VITE_API_URL);
 
 
 

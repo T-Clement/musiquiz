@@ -41,7 +41,9 @@ app.use(cookies());
 
 
 app.use(cors({
-    origin: `http://192.168.1.26:5173`,
+    // origin: `http://192.168.1.26:5173`,
+    // origin: `http://192.168.2.113:5173`,
+    origin: process.env.FRONT_URL,
     // origin: `*`,
     // origin: `http://localhost:${process.env.NODE_ENV === 'prod' ? process.env.DOCKER_PORT_FRONT : 5173}`,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
