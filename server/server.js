@@ -5,6 +5,11 @@ const { error } = require("console");
 
 const { Server } = require("socket.io");
 
+
+const connectDB = require('./db/mongo');
+
+connectDB();
+
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
 
@@ -760,26 +765,26 @@ server.listen(port, '0.0.0.0', () => {
 });
 
 
-const mongoose = require("mongoose");
-const { MAX } = require("uuid");
-const uri =
-  "mongodb+srv://toquetclement:" +
-  process.env.SECRET_MONGODB_ATLAS +
-  "?retryWrites=true&w=majority&appName=musiquiz-rooms";
-const clientOptions = {
-  serverApi: { version: "1", strict: true, deprecationErrors: true },
-};
-async function run() {
-  try {
-    // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
-    await mongoose.connect(uri, clientOptions);
-    await mongoose.connection.db.admin().command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    // await mongoose.disconnect();
-  }
-}
-run().catch(console.dir);
+// const mongoose = require("mongoose");
+// const { MAX } = require("uuid");
+// const uri =
+//   "mongodb+srv://toquetclement:" +
+//   process.env.SECRET_MONGODB_ATLAS +
+//   "?retryWrites=true&w=majority&appName=musiquiz-rooms";
+// const clientOptions = {
+//   serverApi: { version: "1", strict: true, deprecationErrors: true },
+// };
+// async function run() {
+//   try {
+//     // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
+//     await mongoose.connect(uri, clientOptions);
+//     await mongoose.connection.db.admin().command({ ping: 1 });
+//     console.log(
+//       "Pinged your deployment. You successfully connected to MongoDB!"
+//     );
+//   } finally {
+//     // Ensures that the client will close when you finish/error
+//     // await mongoose.disconnect();
+//   }
+// }
+// run().catch(console.dir);

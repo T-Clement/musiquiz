@@ -1,5 +1,5 @@
 {
   "scripts": {
-    "start": "bash start-project.sh"
+    "start": "node start.js"
   }
 }
