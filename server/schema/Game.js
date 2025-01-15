@@ -93,6 +93,10 @@ const GameSchema = new mongoose.Schema({
         }
     },
     players: [PlayerSchema],
+    roundDuration: {
+        type: Number,
+        default: 20
+    },
     currentRound: {
         type: Number,
         default: 0
