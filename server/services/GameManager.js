@@ -2,18 +2,23 @@ const Game = require("../schema/Game");
 
 class GameManager {
 
+
+    static inMemoryGames = new Map();
+
+    
+    
     /**
      * 
      * @param {Server} io - this is the Socket.io server 
-     */
-    constructor(io) {
-        this.io = io;
-        this.inMemoryGames = new Map();
+    */
+   constructor(io) {
+       this.io = io;
+    //    this.inMemoryGames = new Map();
     }
 
 
     initGame(gameId, gameData) {
-        this.inMemoryGames.set(gameId, {
+        GameManager.inMemoryGames.set(gameId, {
             currentRound: 0,
             totalRounds: gameData.totalRounds,
             roundDuration: gameData.roundDuration,
@@ -33,7 +38,7 @@ class GameManager {
 
 
     startGame(gameId) {
-        const gameState = this.inMemoryGames.get(gameId);
+        const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) {
             console.error(`startGame: Game not found : ${gameId}`);
             return;
@@ -52,7 +57,7 @@ class GameManager {
 
     // private method
     _startNextRound(gameId) {
-        const gameState = this.inMemoryGames.get(gameId);
+        const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
 
 
@@ -92,7 +97,7 @@ class GameManager {
 
 
     _launchRound(gameId) {
-        const gameState = this.inMemoryGames.get(gameId);
+        const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
 
         console.log(`=== launch round ===> Round ${gameState.currentRound} - gameId: ${gameId}`);
@@ -120,7 +125,7 @@ class GameManager {
 
 
     async _endRound(gameId) {
-        const gameState = this.inMemoryGames.get(gameId);
+        const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
 
         gameState.status = "ROUND_ENDED";
@@ -198,7 +203,7 @@ class GameManager {
 
 
     _endGame(gameId) {
-        this.inMemoryGames.delete(gameId);
+        GameManager.inMemoryGames.delete(gameId);
 
         console.log(`P=== endGame ===> End of game ${gameId}`);
 
@@ -211,10 +216,24 @@ class GameManager {
     }
 
 
+    static getGameState(gameId) {
+        return GameManager.inMemoryGames.get(gameId);
+    }
+
+    static killGameInstance(gameId) {
+        const gameState = GameManager.inMemoryGames.get(gameId);
+        if(!gameState) return; // nothing to kill
+        console.log("ICI");
+        console.log(gameState.timerId);
+        console.log("ICI");
+        clearTimeout(gameState.timerId);
+        this.inMemoryGames.delete(gameId);
+    }
+
 
     async submitAnswer(gameId, userId, choiceId) {
 
-        const gameState = this.inMemoryGames.get(gameId);
+        const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) throw new Error("Game not found in memory : " + gameId);
 
 
@@ -265,7 +284,7 @@ class GameManager {
 
     _getRoundExctractUrl(gameId, roundNumber) {
 
-        const round = this.inMemoryGames.get(gameId).rounds[roundNumber - 1];
+        const round = GameManager.inMemoryGames.get(gameId).rounds[roundNumber - 1];
 
         const extract = round.audioPreviewUrl;
 
@@ -357,3 +376,8 @@ class GameManager {
 
 
 module.exports = GameManager;
+
+
+// SINGLETON where we export an instance of the class
+// who is the same on that is used in all application
+// module.exports = new GameManager();

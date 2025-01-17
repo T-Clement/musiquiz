@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 const User = require('../models/User');
-
+const GameManager = require('../services/GameManager');
 
 const Game = require('../schema/Game');
 
@@ -122,8 +122,22 @@ router.delete('/:id/delete', async(req, res, next) => {
 
 
     const gameId = req.params.id;
-    
+
+    console.log(`${gameId} is proceed to be killed in memoro and deleted from database`);
+
     try {
+
+        // if gameIsLaunched
+            const gameState = GameManager.getGameState(gameId);
+
+            if(gameState) { // if game is in memory, delete it
+                
+                // kill / clear timeOut of game in server
+                GameManager.killGameInstance(gameId);
+                
+            }
+
+        // delete the record from the database
         const deletedGame = await Game.findByIdAndDelete(gameId);
     
         if(!deletedGame) {
