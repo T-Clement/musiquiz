@@ -44,6 +44,29 @@ class User {
     }
 
 
+    static async getUserForGame(id) {
+        
+        const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
+        const values = [id];
+        
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+
+
+            if (rows.length === 0) {
+                console.log("No User found with id: " + id);
+                return null;
+            }
+
+
+            const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
+            return { id, pseudo };
+            // return new User(...rows[0]);
+        } catch (error) {
+            console.error('Error finding user for game : ' + error.message);
+
+        }
+    }
 
 
     static async findOneUser(pseudo, passwordHash) {
@@ -82,6 +105,29 @@ class User {
         } else {
             return true;
         }
+    }
+
+
+    static async findUserByMail(email) {
+        const query = `SELECT * FROM ${this.tableName} WHERE email = ?`;
+        const values = [email];
+        
+
+        try {
+
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null;
+            } else {
+                return new User(rows[0].id, rows[0].pseudo, rows[0].password, rows[0].email, rows[0].createdAt, rows[0].updatedAt);
+            }
+
+        } catch(error) {
+            console.error("Error finding user by mail : " + error.message);
+            throw error;
+        }
+
     }
 
 
@@ -133,9 +179,34 @@ class User {
 
 
 
+    static async checkCredentialsUser(email, hashedPassword) {
+        const query = `SELECT * FROM ${this.tableName} WHERE email = ? AND password = ?`;
+        const values = [email, hashedPassword];
+
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null; // no match for this credentials
+            }
+            
+            const { id: userId, pseudo, password, email, createdAt, updatedAt } = rows[0];
+            return new User(userId, pseudo, null, email, createdAt, updatedAt);
+
+        } catch(error) {
+            console.error('Error checking user credentials in Database : ' + error.message);
+            throw error;
+        }
+
+    }
+
+
     getPseudo () {
         return this.pseudo;
     }
+
+
+   
 
 }
 

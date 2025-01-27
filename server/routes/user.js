@@ -17,7 +17,7 @@ const validateRegisterUser = [
         .trim()
         .escape()
         .notEmpty().withMessage('Le champ email est requis')
-        .isEmail().withMessage('L\'email n\'est pas valide'),
+        .isEmail().withMessage('L\'email n\'est pas valide'), // add a custom() to check if email is already in use, and to check if password === password confirmation field
     body("password")
         .trim()
         .escape()
@@ -25,12 +25,37 @@ const validateRegisterUser = [
         .isString().withMessage("Le mot de passe doit être une chaîne de caractères")
         .isLength({min : 8}).withMessage('Le mot de passe doit faire plus de 8 caractères')
 
-]
+];
+
+
+
+// validation middleware  
+const validateLogin = [
+    body('email')
+        .trim()
+        .escape()
+        .isEmail().withMessage('L\'email doit être valide')
+        .notEmpty().withMessage('L\'email est requis'),
+    body('password')
+        .trim()
+        .escape()
+        .isString().withMessage('Le mot de passe doit être une chaîne de caractères')
+        .notEmpty().withMessage('Le mot de passe est requis'),
+];
+
+
+
+
+
+
+
 
 
 
 router.get('/:id', userCtrl.show);
 
 router.post("/register", validateRegisterUser, userCtrl.create);
+
+// router.post("/login", validateLogin, userCtrl.login);
 
 module.exports = router;

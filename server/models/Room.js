@@ -19,7 +19,7 @@ class Room {
     }
 
 
-    static async findOneRoomById(id) {
+    static async findOneRoomById(id, withApiUrl = false) {
         const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
         const values = [id];
         
@@ -34,8 +34,8 @@ class Room {
             const { id: roomId, name, api_id_playlist, description, id_theme } = rows[0];
             
             // null to api_id_playlist
-            console.log(new Room(roomId, name, null, description, id_theme));
-            return new Room(roomId, name, null, description, id_theme);
+            console.log(new Room(roomId, name, withApiUrl ? api_id_playlist : null, description, id_theme));
+            return new Room(roomId, name, withApiUrl ? api_id_playlist : null, description, id_theme);
 
         } catch (error) {
             console.error('Error finding room : ' + error.message);
