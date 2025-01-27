@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
-const app = require("../server");
+const app = require("../app");
+
+require("dotenv").config();
+
 
 // /* Connecting to the database before each test. */
 // beforeEach(async () => {
@@ -12,8 +15,14 @@ const app = require("../server");
 //   await mongoose.connection.close();
 // });
 
+
+
+
 describe("GET api/ping", () => {
-  it("it is a test", async () => {
-    expect(true).toBe(true);
+  it("Test route to check if server is alive", async () => {
+    const res = await request(app).get('/api/ping');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toBe('pong');
+
   });
 });
