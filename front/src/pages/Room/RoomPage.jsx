@@ -55,7 +55,7 @@ export function RoomPage() {
         setLoading(true);
         console.warn(roomId);
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-game`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/game/create-game`, {
                 roomId: roomId 
             }, 
             {

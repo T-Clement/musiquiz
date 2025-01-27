@@ -40,3 +40,13 @@ exports.generateRefreshToken = async (user, REFRESH_SECRET, REFRESH_EXPIRATION) 
         
     }
 }
+
+// check if there is enough tracks to play game with the settings setted
+exports.checkIfTrackIsReadable = (listOfTracks) => {
+    return listOfTracks.filter(track => track.readable && track.preview && track.preview != '');
+}
+
+
+exports.shuffle = (array) => {
+    return array.sort(() => Math.random() - 0.5);
+}
