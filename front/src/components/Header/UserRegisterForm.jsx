@@ -9,6 +9,7 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
     e.preventDefault();
     console.log("Formulaire d'inscription soumis !");
 
+    setError(null); // reset errors
     setIsSubmitting(true);
 
     const formData = new FormData(e.target);
@@ -43,8 +44,8 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
       e.target.reset();
       setOpen(false);
     } catch (error) {
-      console.error("Error during form submission : ", error);
-      setError("Enregistrement échoué.");
+      console.error("Error during form submission : ", error.response.data.message);
+      setError(`Enregistrement échoué : ${error.response.data.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -87,7 +88,10 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
         </div>
       </div>
 
-      <div className="!mt-12">
+
+      { error ? <p className="mt-4 text-red-500 font-semibold text-sm">{ error }</p> : "" }
+
+      <div className="!mt-8">
         <button
           type="submit"
           disabled={isSubmitting}

@@ -6,8 +6,8 @@ class User {
     static tableName = "mqz_users";
 
     static errorsMessages = {
-        pseudoAlreadyExists: "Un utilisateur s'est déjà enregistré avec cette addresse",
-        emailAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce pseudo",
+        pseudoAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce pseudo",
+        emailAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce mail",
         idNotFound: "Aucun utilisateur trouvé avec cet identifiant",
         newUserNotInserted: "L'utilisateur inséré n'a pas été trouvé dans la base de données",
         
