@@ -67,7 +67,7 @@ describe("GET /api/ping", () => {
 });
 
 describe("POST /api/user/register", () => {
-  it("Should register a new user in database", async () => {
+  it("should register a new user in database", async () => {
     const newUser = new User(
       null,
       "PseudoTest",
@@ -136,7 +136,56 @@ describe("POST /api/user/register", () => {
       });
   });
 
-  it("should not register : user with this pseudo alteady exists in database", async () => {
+  it("should not register : user with this pseudo already exists in database", async () => {
+
+       
+    const pseudo = "TestPseudo";
+
+    const userPassword = "password";
+    
+    const saltRounds = 10;
+    const hashedPassword = await utils.generatePasswordHash(userPassword, saltRounds);
+    
+
+    // -----
+    // create new User 
+    const newUser = new User(
+      null,
+      pseudo,
+      hashedPassword,
+      "test@example.com",
+      Date.now,
+      Date.now
+    );
+    
+    // insert new user DIRECTLY IN DATABASE
+    await User.insertNewUser(newUser.pseudo, newUser.password, newUser.email);
+
+
+    // --------------------
+    // create new user with the same pseudo as the previous one
+    const newUserWithSamePseudo = new User(
+      null,
+      pseudo,
+      hashedPassword,
+      "example@test.com",
+      Date.now,
+      Date.now
+    );
+
+
+    // send data to the post route /api/user/register
+    return request(app)
+      .post("/api/user/register") // api route
+      .send(newUserWithSamePseudo) // payload data
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .expect(400)
+      .then(response => {
+        expect(response.body.message = User.errorsMessages.pseudoAlreadyExists); // error messages in User Model
+      });
+
+
 
   });
 
@@ -184,6 +233,7 @@ const testCases = [
 ]
 
 describe("POST /api/user/register - inputs fields validation", () => {
+  // test foreach test of testCases array
   it.each(testCases)("should return error when $name", async ({ payload, field, expectedMessage }) => {
     const res = await request(app)
       .post("/api/user/register")
@@ -194,7 +244,6 @@ describe("POST /api/user/register - inputs fields validation", () => {
       // console.log(res)
     expect(res.statusCode).toBe(400);
     expect(res.body.errors).toBeDefined();
-    console.log(res.body.errors);
 
     // structure of express validator error object : 
     // [
@@ -207,9 +256,11 @@ describe("POST /api/user/register - inputs fields validation", () => {
     //   }
     // ]
 
+    // search for the tested error in response
     const error = res.body.errors.find(err => err.path === field); 
     expect(error).toBeDefined();
     expect(error.msg).toEqual(expectedMessage);
   });
-})
+
+});
 
