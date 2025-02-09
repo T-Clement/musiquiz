@@ -87,7 +87,7 @@ describe("POST /api/user/register", () => {
   });
 
 
-  it("user with this email already exists in database", async () => {
+  it("should not register : user with this email already exists in database", async () => {
     
     const email = "test@example.com";
 
@@ -134,8 +134,82 @@ describe("POST /api/user/register", () => {
       .then(response => {
         expect(response.body.message = User.errorsMessages.emailAlreadyExists); // error messages in User Model
       });
-  })
+  });
 
+  it("should not register : user with this pseudo alteady exists in database", async () => {
+
+  });
 
 });
+
+
+
+const testCases = [
+  {
+    name: "missing pseudo",
+    payload: { email: "test@example.com", password:  "password"},
+    field: "pseudo",
+    expectedMessage : "Le champ pseudo est requis"
+  },
+  {
+    name: "pseudo to short",
+    payload: { pseudo: "ab", email: "test@example.com", password: "validpassword" },
+    field: "pseudo",
+    expectedMessage: "Le pseudo doit faire plus de 3 caractères"
+  },  
+  {
+    name: "missing email",
+    payload: { pseudo: "TestPseudo", password: "password" },
+    field: "email",
+    expectedMessage: "Le champ email est requis"
+  },
+  {
+    name: "invalid email",
+    payload: { pseudo: "ValidPseudo", email: "emailnotvalid.com", password: "validpassword" },
+    field: "email",
+    expectedMessage: "L'email n'est pas valide"
+  },
+  {
+    name: "missing password",
+    payload: { pseudo: "ValidPseudo", email: "test@example.com" },
+    field: "password",
+    expectedMessage: "Le champ password est requis"
+  },
+  {
+    name: "password too short",
+    payload: { pseudo: "ValidPseudo", email: "test@example.com", password: "short" },
+    field: "password",
+    expectedMessage: "Le mot de passe doit faire plus de 8 caractères"
+  }
+]
+
+describe("POST /api/user/register - inputs fields validation", () => {
+  it.each(testCases)("should return error when $name", async ({ payload, field, expectedMessage }) => {
+    const res = await request(app)
+      .post("/api/user/register")
+      .send(payload)
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json");
+
+      // console.log(res)
+    expect(res.statusCode).toBe(400);
+    expect(res.body.errors).toBeDefined();
+    console.log(res.body.errors);
+
+    // structure of express validator error object : 
+    // [
+    //   {
+    //     type: 'field',
+    //     value: 'short',
+    //     msg: 'Le mot de passe doit faire plus de 8 caractères',
+    //     path: 'password',
+    //     location: 'body'
+    //   }
+    // ]
+
+    const error = res.body.errors.find(err => err.path === field); 
+    expect(error).toBeDefined();
+    expect(error.msg).toEqual(expectedMessage);
+  });
+})
 

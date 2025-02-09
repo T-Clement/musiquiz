@@ -8,7 +8,7 @@ const utils = require('../utils/utils');
 const User = require('../models/User');
 
 
-const { validationResult, matchedData } = require("express-validator");
+const { matchedData } = require("express-validator");
 
 
 exports.show = async (req, res, next) => {
@@ -39,18 +39,11 @@ exports.show = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
 
-    const errors = validationResult(req);
-
-    if(!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-    }
-    
     const validatedData = matchedData(req);
     
     const { pseudo, email, password } = validatedData;
     
     console.log(pseudo, email, password);
-    
 
     try {
 

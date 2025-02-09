@@ -8,6 +8,8 @@ class User {
     static errorsMessages = {
         pseudoAlreadyExists: "Un utilisateur s'est déjà enregistré avec cette addresse",
         emailAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce pseudo",
+        idNotFound: "Aucun utilisateur trouvé avec cet identifiant",
+        newUserNotInserted: "L'utilisateur inséré n'a pas été trouvé dans la base de données",
         
     }
 

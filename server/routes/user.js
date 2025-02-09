@@ -4,23 +4,26 @@ const router = express.Router();
 const userCtrl = require('../controllers/user');
 
 const { body } = require("express-validator");
+const validateRequest = require('../middleware/validateRequest');
 
-
+// ------------------------------------------- //
+// SANITIZE DATA //
+// ------------------------------------------- //
 const validateRegisterUser = [
     body("pseudo")
         .trim()
-        .escape()
+        .escape() // sanitize data
         .notEmpty().withMessage("Le champ pseudo est requis")
         .isString().withMessage("Le pseudo doit être une chaine de caractères")
         .isLength({min : 3}).withMessage("Le pseudo doit faire plus de 3 caractères"),
     body("email")
         .trim()
-        .escape()
+        .escape() // sanitize data
         .notEmpty().withMessage('Le champ email est requis')
         .isEmail().withMessage('L\'email n\'est pas valide'), // add a custom() to check if email is already in use, and to check if password === password confirmation field
     body("password")
         .trim()
-        .escape()
+        .escape() // sanitize data
         .notEmpty().withMessage('Le champ password est requis')
         .isString().withMessage("Le mot de passe doit être une chaîne de caractères")
         .isLength({min : 8}).withMessage('Le mot de passe doit faire plus de 8 caractères')
@@ -54,7 +57,7 @@ const validateLogin = [
 
 router.get('/:id', userCtrl.show);
 
-router.post("/register", validateRegisterUser, userCtrl.create);
+router.post("/register", validateRegisterUser, validateRequest, userCtrl.create);
 
 // router.post("/login", validateLogin, userCtrl.login);
 
