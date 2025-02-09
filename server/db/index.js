@@ -15,6 +15,7 @@ try {
     if (process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === "development") {
         // const dbUrl = new URL(process.env.DATABASE_URL);
         // console.log(dbUrl);
+        console.log("TEST"),
         pool = mysql.createPool({
             host: process.env.MYSQL_HOST,
             port: process.env.MYSQL_PORT,
@@ -34,7 +35,7 @@ try {
             // queueLimit: 0
         });
 
-        console.log(`Connected to MariaDB at ${dbUrl.hostname}:${dbUrl.port}`);
+        // console.log(`Connected to MariaDB at ${dbUrl.hostname}:${dbUrl.port}`);
 
     } else if (process.env.NODE_ENV === "test") {
 

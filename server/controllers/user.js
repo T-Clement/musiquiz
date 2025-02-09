@@ -59,7 +59,7 @@ exports.create = async (req, res, next) => {
         console.log('pseudo exists : '  + pseudoExists);
 
         if(!pseudoExists ) {
-            return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec ce pseudo" })
+            return res.status(400).json({ message: User.errorsMessages.pseudoAlreadyExists })
         }
 
 
@@ -67,7 +67,7 @@ exports.create = async (req, res, next) => {
         const emailExists = await User.checkMail(email);
         console.log('mail exists : '  + emailExists);
         if(!emailExists) {
-            return res.status(400).json({ message: "Un utilisateur s'est déjà enregistré avec cette addresse" })
+            return res.status(400).json({ message: User.errorsMessages.emailAlreadyExists });
         }
 
 

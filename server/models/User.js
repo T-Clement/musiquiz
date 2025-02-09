@@ -5,6 +5,14 @@ class User {
 
     static tableName = "mqz_users";
 
+    static errorsMessages = {
+        pseudoAlreadyExists: "Un utilisateur s'est déjà enregistré avec cette addresse",
+        emailAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce pseudo",
+        
+    }
+
+
+
     constructor(id = null, pseudo, password, email, createdAt = "", updatedAt = "") {
         this.id = id;
         this.pseudo = pseudo;
@@ -203,6 +211,18 @@ class User {
 
     getPseudo () {
         return this.pseudo;
+    }
+
+    getEmail () {
+        return this.email;
+    }
+
+    getId () {
+        return this.id;
+    }
+
+    getPassword() {
+        return this.password;
     }
 
 

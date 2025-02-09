@@ -16,9 +16,6 @@ export function RoomItem({room}) {
   const bestPlayerScore = room?.game?.score ?? room?.best_player?.best_score;
 
 
-
-
-
   return (
     <article className='flex flex-col gap-y-4'>
       <div className='flex flex-wrap'>
