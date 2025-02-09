@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import apiAxios from "../../libs/axios";
 
 export default function UserRegisterForm({ setModalContent, setOpen }) {
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Formulaire d'inscription soumis !");
 
-    setError(null); // reset errors
+    setErrors([]); // reset errors
     setIsSubmitting(true);
 
     const formData = new FormData(e.target);
@@ -33,7 +33,7 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
         }
       );
 
-      console.warn(response);
+      // console.warn(await response.json());
 
       if (response.status === 500 || response.status === 401) {
         console.error("Registration failed");
@@ -44,8 +44,8 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
       e.target.reset();
       setOpen(false);
     } catch (error) {
-      console.error("Error during form submission : ", error.response.data.message);
-      setError(`Enregistrement échoué : ${error.response.data.message}`);
+      console.error("Error during form submission : ", error.response.data.errors);
+      setErrors(error.response.data.errors);
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +62,8 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
             className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500"
             placeholder="Entrez votre email"
             disabled={isSubmitting}
-          />
+            />
+            { errors.email ? <p className="mt-4 text-red-500 font-semibold text-sm">{ errors.email }</p> : "" }
         </div>
         <div>
           <label className="text-gray-800 text-sm mb-2 block">Pseudo</label>
@@ -72,7 +73,8 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
             className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500"
             placeholder="Entrez votre pseudo"
             disabled={isSubmitting}
-          />
+            />
+            { errors.pseudo ? <p className="mt-4 text-red-500 font-semibold text-sm">{ errors.pseudo }</p> : "" }
         </div>
         <div>
           <label className="text-gray-800 text-sm mb-2 block">
@@ -84,12 +86,12 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
             className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500"
             placeholder="Entrez votre mot de passe"
             disabled={isSubmitting}
-          />
+            />
+            { errors.password ? <p className="mt-4 text-red-500 font-semibold text-sm">{ errors.password }</p> : "" }
         </div>
       </div>
 
 
-      { error ? <p className="mt-4 text-red-500 font-semibold text-sm">{ error }</p> : "" }
 
       <div className="!mt-8">
         <button

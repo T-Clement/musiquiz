@@ -47,12 +47,14 @@ exports.create = async (req, res, next) => {
 
     try {
 
+        const errorsObject = {};
+
         // check if user with same pseudo exists
         const pseudoExists = await User.checkPseudo(pseudo);
         console.log('pseudo exists : '  + pseudoExists);
 
         if(!pseudoExists ) {
-            return res.status(400).json({ message: User.errorsMessages.pseudoAlreadyExists })
+            errorsObject.pseudo = User.errorsMessages.pseudoAlreadyExists;
         }
 
 
@@ -60,7 +62,12 @@ exports.create = async (req, res, next) => {
         const emailExists = await User.checkMail(email);
         console.log('mail exists : '  + emailExists);
         if(!emailExists) {
-            return res.status(400).json({ message: User.errorsMessages.emailAlreadyExists });
+            errorsObject.email = User.errorsMessages.emailAlreadyExists;
+        }
+
+
+        if(Object.keys(errorsObject).length > 0) {
+            return res.status(400).json({errors : errorsObject});
         }
 
 

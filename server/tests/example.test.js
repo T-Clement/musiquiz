@@ -257,9 +257,10 @@ describe("POST /api/user/register - inputs fields validation", () => {
     // ]
 
     // search for the tested error in response
-    const error = res.body.errors.find(err => err.path === field); 
-    expect(error).toBeDefined();
-    expect(error.msg).toEqual(expectedMessage);
+    // const error = res.body.errors.find(err => err.path === field); 
+    const errors = res.body.errors;
+    expect(errors).toBeDefined();
+    expect(errors[field]).toEqual(expectedMessage);
   });
 
 });
