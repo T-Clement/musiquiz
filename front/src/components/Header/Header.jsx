@@ -15,11 +15,12 @@ export function Header({user, setUser}) {
   const [modalContent, setModalContent] = useState("login");
   const [isLoggedIn, setIsLoggedIn] = useState(false); // get value of user as default isLoggedIn state
 
-  const userInfo = user && Object.keys(user.user).length > 0 ? user : null;
+  // const userInfo = user && Object.keys(user.user).length > 0 ? user : null;
 
+  const userInfo = user ?? null;
 
   useEffect(() => {
-    if(user && user.user && Object.keys(user.user).length > 0) {
+    if(user != null) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);

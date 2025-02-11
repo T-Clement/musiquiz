@@ -82,7 +82,13 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
                     });
 
 
-                    res.status(200).json({ message: "Connexion Réussie", userId: user.id });
+                    res.status(200).json({ 
+                        message: "Connexion Réussie", 
+                        user: {
+                            userId: user.id,
+                            pseudo: user.pseudo
+                        } 
+                    });
 
 
                 } catch (error) {

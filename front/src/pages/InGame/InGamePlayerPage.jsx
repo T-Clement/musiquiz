@@ -7,8 +7,8 @@ import { AuthContext } from "../../hooks/authContext";
 export default function InGamePlayerPage() {
   const { id: gameId } = useParams();
 
-  const user = useContext(AuthContext);
-  const userId = user.user.user.userId;
+  const auth = useContext(AuthContext); // full data of context, like a hook
+  const userId = auth.user.userId;
 
   const socket = useWebSocket();
 

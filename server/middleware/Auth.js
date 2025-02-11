@@ -41,7 +41,7 @@ exports.authenticateJWT = async (req, res, next) => {
                 return res.status(403).json({ message: 'Token expiré ou invalide' });
             }
 
-            req.user = { userId: user.userId, pseudo: user.pseudo };
+            req.user = { userId: user.userId, pseudo: user.userPseudo };
             next();
         });
     }
