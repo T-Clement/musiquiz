@@ -1,7 +1,7 @@
 const Game = require("../schema/Game");
 
 class GameManager {
-
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties
 
     static inMemoryGames = new Map();
 

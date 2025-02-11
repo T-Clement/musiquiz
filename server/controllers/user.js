@@ -38,7 +38,7 @@ exports.show = async (req, res, next) => {
 
 
 exports.create = async (req, res, next) => {
-
+    // data who passed the validator
     const validatedData = matchedData(req);
     
     const { pseudo, email, password } = validatedData;

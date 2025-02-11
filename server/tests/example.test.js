@@ -6,6 +6,8 @@ const request = require("supertest");
 const app = require("../app");
 const User = require("../models/User");
 
+const InputValidationMessage = require("../models/InputValidationMessage");
+
 const dumpFilePath = "./tests/test-setup.sql";
 
 let mysqlConnection;
@@ -198,39 +200,39 @@ const testCases = [
     name: "missing pseudo",
     payload: { email: "test@example.com", password:  "password"},
     field: "pseudo",
-    expectedMessage : "Le champ pseudo est requis"
+    expectedMessage : InputValidationMessage.MISSING_PSEUDO
   },
   {
     name: "pseudo to short",
     payload: { pseudo: "ab", email: "test@example.com", password: "validpassword" },
     field: "pseudo",
-    expectedMessage: "Le pseudo doit faire plus de 3 caractères"
+    expectedMessage: InputValidationMessage.PSEUDO_TO_SHORT
   },  
   {
     name: "missing email",
     payload: { pseudo: "TestPseudo", password: "password" },
     field: "email",
-    expectedMessage: "Le champ email est requis"
+    expectedMessage: InputValidationMessage.MISSING_EMAIL
   },
   {
     name: "invalid email",
     payload: { pseudo: "ValidPseudo", email: "emailnotvalid.com", password: "validpassword" },
     field: "email",
-    expectedMessage: "L'email n'est pas valide"
+    expectedMessage: InputValidationMessage.NOT_VALID_EMAIL
   },
   {
     name: "missing password",
     payload: { pseudo: "ValidPseudo", email: "test@example.com" },
     field: "password",
-    expectedMessage: "Le champ password est requis"
+    expectedMessage: InputValidationMessage.MISSING_PASSWORD
   },
   {
     name: "password too short",
     payload: { pseudo: "ValidPseudo", email: "test@example.com", password: "short" },
     field: "password",
-    expectedMessage: "Le mot de passe doit faire plus de 8 caractères"
+    expectedMessage: InputValidationMessage.PASSWORD_TO_SHORT
   }
-]
+];
 
 describe("POST /api/user/register - inputs fields validation", () => {
   // test foreach test of testCases array
@@ -265,3 +267,8 @@ describe("POST /api/user/register - inputs fields validation", () => {
 
 });
 
+
+
+describe("POST /api/login", () => {
+
+});

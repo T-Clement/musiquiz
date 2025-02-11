@@ -3,6 +3,8 @@ const router = express.Router();
 
 const userCtrl = require('../controllers/user');
 
+const InputValidationMessage = require("../models/InputValidationMessage");
+
 const { body } = require("express-validator");
 const validateRequest = require('../middleware/validateRequest');
 
@@ -13,20 +15,20 @@ const validateRegisterUser = [
     body("pseudo")
         .trim()
         .escape() // sanitize data
-        .notEmpty().withMessage("Le champ pseudo est requis")
+        .notEmpty().withMessage(InputValidationMessage.MISSING_PSEUDO)
         .isString().withMessage("Le pseudo doit être une chaine de caractères")
-        .isLength({min : 3}).withMessage("Le pseudo doit faire plus de 3 caractères"),
+        .isLength({min : 3}).withMessage(InputValidationMessage.PSEUDO_TO_SHORT),
     body("email")
         .trim()
         .escape() // sanitize data
         .notEmpty().withMessage('Le champ email est requis')
-        .isEmail().withMessage('L\'email n\'est pas valide'), // add a custom() to check if email is already in use, and to check if password === password confirmation field
+        .isEmail().withMessage(InputValidationMessage.NOT_VALID_EMAIL), // add a custom() to check if email is already in use, and to check if password === password confirmation field
     body("password")
         .trim()
         .escape() // sanitize data
-        .notEmpty().withMessage('Le champ password est requis')
+        .notEmpty().withMessage(InputValidationMessage.MISSING_PASSWORD)
         .isString().withMessage("Le mot de passe doit être une chaîne de caractères")
-        .isLength({min : 8}).withMessage('Le mot de passe doit faire plus de 8 caractères')
+        .isLength({min : 8}).withMessage(InputValidationMessage.PASSWORD_TO_SHORT)
 
 ];
 
