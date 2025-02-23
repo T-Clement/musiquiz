@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from '../hooks/authContext';
 import { io } from 'socket.io-client';
@@ -27,7 +27,9 @@ export default function GameLayout() {
   const { id: gameId } = useParams();
 
 
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null);
+  const [isSocketReady, setIsSocketReady] = useState(false);
+  // const [socket, setSocket] = useState(null);
 
   // role to in childrens components
   const [role, setRole] = useState(null);
@@ -53,7 +55,9 @@ export default function GameLayout() {
     socketInstance.on('connect', () => {
       console.log("Connected with socket id :", socketInstance.id);
       // update state
-      setSocket(socketInstance);
+      // setSocket(socketInstance);
+      socketRef.current = socketInstance;
+      setIsSocketReady(true);
     })
 
 
@@ -95,7 +99,8 @@ export default function GameLayout() {
 
 
       // emit delete event to redirect all other users
-      socket.emit('delete-game', gameId);
+      // socket.emit('delete-game', gameId);
+      socketRef.current.emit('delete-game', gameId);
 
 
       // navigate to home
@@ -117,7 +122,8 @@ export default function GameLayout() {
   }
 
   return (
-    <WebSocketContext.Provider value={socket}>
+    // <WebSocketContext.Provider value={socket}>
+    <WebSocketContext.Provider value={{socket: socketRef, isSocketReady}}>
       {/* maybe issue for presentator if height is full screen */}
       <div className="game-layout h-screen md:h-full">
         <p>GameLayout</p>
@@ -138,5 +144,6 @@ export default function GameLayout() {
 
 
 export function useWebSocket() {
+  // return useContext(WebSocketContext);
   return useContext(WebSocketContext);
 }

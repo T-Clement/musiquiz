@@ -57,7 +57,11 @@ export default function ChooseRole() {
     const navigate = useNavigate();
 
 
-    const socket = useWebSocket();
+    // const socket = useWebSocket();
+    const {socket, isSocketReady} = useWebSocket();
+    const socketInstance = socket.current;
+
+
 
     // if(!socket) return <div>Loading ...</div>;
 
@@ -67,7 +71,8 @@ export default function ChooseRole() {
         console.log('choix du rôle dans le formualaire: ', roleInForm);
         console.log(user)
         console.log(gameId);
-        console.log(socket.id);
+        // console.log(socket.id);
+        console.log(socketInstance.id);
 
         try {
             // send role to server
@@ -75,7 +80,7 @@ export default function ChooseRole() {
                 role: roleInForm,
                 userId: user ? user.userId : "",
                 gameId: gameId,
-                socketId: socket.id || null
+                socketId: socketInstance.id || null
             }, {
                 headers: {
                     "Content-Type": "application/json"
@@ -93,7 +98,7 @@ export default function ChooseRole() {
             if (response.data) {
 
                 // after valid api response, emit websocket event
-                socket.emit('join-room', gameId, user ? user.userId : null, roleInForm); // not role because state updates 
+                socketInstance.emit('join-room', gameId, user ? user.userId : null, roleInForm); // not role because state updates 
                                                                                          //are async and it can still be null by the time the data is send via ws event
 
 
@@ -116,7 +121,8 @@ export default function ChooseRole() {
 
 
 
-    if(!socket) {
+    // if(!socket) {
+    if(!isSocketReady) {
         return <p>Waiting for websocket ...</p>
     }
 

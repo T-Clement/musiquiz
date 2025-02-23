@@ -21,7 +21,7 @@ export default function LeaderBoard({ players, setPlayers }) {
                 </tr>
             </thead>
             {/* <tbody className='max-h-20 overflow-y-scroll'> */}
-                <FlipMove className='' tagName="tbody">
+                <FlipMove className='' typeName="tbody">
                     {/* {players.map((player, index) => (<p key={player.userId}>{player.pseudo} - Socket: {player.socketId} - Score: {player.score}</p>))} */}
                     {players.map((player, index) => (
                         // <tr key={ player.userId } className='border-b' onMove={ () => moveItem(index) }>

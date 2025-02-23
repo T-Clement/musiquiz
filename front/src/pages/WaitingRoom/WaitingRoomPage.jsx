@@ -42,7 +42,8 @@ export default function WaitingRoomPage() {
   const {role, setRole} = useOutletContext();
 
 
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
+  const socketInstance = socket.current;
 
   // data coming from component loader
   const { game } = useLoaderData();
@@ -87,34 +88,34 @@ export default function WaitingRoomPage() {
 
 
   useEffect(() => {
-    if (socket) {
+    if (socketInstance) {
 
 
       // player join room
-      socket.on('player-joined', (newPlayer) => {
+      socketInstance.on('player-joined', (newPlayer) => {
         console.log("A new player joined the room")
         setPlayers(((prevPlayers) => [...prevPlayers, newPlayer]));
       })
 
       // player quit room
-      socket.on('player-left', (userId) => {
+      socketInstance.on('player-left', (userId) => {
         setPlayers((prevPlayers) => prevPlayers.filter(player => player.userId != userId));
       })
 
 
       // presentator join room 
-      socket.on("presentator-joined", (newPresentator) => {
+      socketInstance.on("presentator-joined", (newPresentator) => {
         setPresentator(newPresentator);
       })
 
       // presentator join room
-      socket.on('presentator-left', (data) => {
+      socketInstance.on('presentator-left', (data) => {
         console.log("presentator left game", data);
         setPresentator(null);
       })
 
 
-      socket.on('update-players', data => {
+      socketInstance.on('update-players', data => {
         console.log(data); // userId, action properties in object
         if (data.action === 'left') {
 
@@ -125,7 +126,7 @@ export default function WaitingRoomPage() {
 
 
         // redirect to game component
-    socket.on("move-in-game", () => {
+    socketInstance.on("move-in-game", () => {
 
       console.warn("WS : Move in game socket Event");
 
@@ -142,24 +143,24 @@ export default function WaitingRoomPage() {
     })
 
 
-      // socket.on('')
+      // socketInstance.on('')
 
 
     }
 
     return () => {
-      if (socket) {
+      if (socketInstance) {
 
-        socket.off("player-left");
-        socket.off("player-joined");
-        socket.off('presentator-joined');
-        socket.off('presentator-left');
-        socket.off('update-players');
+        socketInstance.off("player-left");
+        socketInstance.off("player-joined");
+        socketInstance.off('presentator-joined');
+        socketInstance.off('presentator-left');
+        socketInstance.off('update-players');
       }
     }
 
 
-  }, [socket, gameId, userId]);
+  }, [socketInstance, gameId, userId]);
 
 
 
@@ -169,7 +170,7 @@ export default function WaitingRoomPage() {
 
     if (role === 'player') {
 
-      socket.emit('player-left', gameId, userId);
+      socketInstance.emit('player-left', gameId, userId);
 
       // optional because where are leaving ???
       setPlayers((prevPlayers) => prevPlayers.filter(player => player.userId !== userId));
@@ -178,7 +179,7 @@ export default function WaitingRoomPage() {
     }
 
     if (role === 'presentator') {
-      socket.emit('presentator-left', gameId);
+      socketInstance.emit('presentator-left', gameId);
 
 
       // optional because where are leaving ???
@@ -198,7 +199,7 @@ export default function WaitingRoomPage() {
     
     // ws event to launch game
     
-    socket.emit("launch-game", gameId, () => {
+    socketInstance.emit("launch-game", gameId, () => {
       
       console.log("WS : La partie est lancée par le présentateur");
 
@@ -218,7 +219,7 @@ export default function WaitingRoomPage() {
 
 
 
-  if (!socket || !players) {
+  if (!socketInstance || !players) {
     return <div>Loading in WaitingRoom...</div>;
   }
 
@@ -240,14 +241,14 @@ export default function WaitingRoomPage() {
 
 
       <h3 className='font-bold'>Role utilisateur: {role}</h3>
-      <p>Socket: {socket.id}</p>
+      <p>Socket: {socketInstance.id}</p>
 
 
       {
         role === 'presentator' ?
-          <WaitingRoomPresentator players={players} presentator={presentator} socket={socket} handleLaunchGame={handleLaunchGame}/>
+          <WaitingRoomPresentator players={players} presentator={presentator} socket={socketInstance} handleLaunchGame={handleLaunchGame}/>
           :
-          <WaitingRoomPlayer socket={socket} presentator={presentator}/>
+          <WaitingRoomPlayer socket={socketInstance} presentator={presentator}/>
       }
 
       <div className='flex justify-center'>

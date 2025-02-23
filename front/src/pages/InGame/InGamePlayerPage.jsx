@@ -10,7 +10,8 @@ export default function InGamePlayerPage() {
   const auth = useContext(AuthContext); // full data of context, like a hook
   const userId = auth.user.userId;
 
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
+  const socketInstance = socket.current;
 
   const { role, setRole } = useOutletContext();
 
@@ -25,33 +26,33 @@ export default function InGamePlayerPage() {
 
   useEffect(() => {
 
-    socket.on("round-loading", (data) => {
+    socketInstance.on("round-loading", (data) => {
       setCurrentRound(data.roundNumber);
       setIsLoading(true);
     });
 
-    socket.on("round-started", (data) => {
+    socketInstance.on("round-started", (data) => {
       setIsLoading(false);
       setRoundChoices(data.choices);
     });
 
-    socket.on("round-results", () => {
+    socketInstance.on("round-results", () => {
       setRoundChoices(null); // TODO: see if another way is possible to avoid rerendering of component ..
       setIsLoading(true);
     });
 
 
     return () => {
-      socket.off("round-loading");
-      socket.off("round-started");
-      socket.off("round-results");
+      socketInstance.off("round-loading");
+      socketInstance.off("round-started");
+      socketInstance.off("round-results");
     };
-  }, [socket, currentRound]);
+  }, [socketInstance, currentRound]);
 
 
   // send choice of player to server
   const submitAnswer = (choiceId) => {
-    socket.emit("submit-answer", {
+    socketInstance.emit("submit-answer", {
       gameId,
       userId: userId,
       roundNumber: currentRound,

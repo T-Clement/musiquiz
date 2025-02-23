@@ -8,7 +8,8 @@ import CountDownCircle from "./CountDownCircle";
 
 export default function InGamePresentatorPage() {
   const { id: gameId } = useParams();
-  const socket = useWebSocket();
+  const {socket} = useWebSocket();
+  const socketInstance = socket.current;
   const { role, setRole } = useOutletContext();
 
   // -------------------------------------------
@@ -34,18 +35,18 @@ export default function InGamePresentatorPage() {
   const [timeLeft, setTimeLeft] = useState(30);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socketInstance) return;
 
     // when component mounted, ask for players in game / room
-    socket.emit("get-room-players", gameId);
+    socketInstance.emit("get-room-players", gameId);
 
     // handle reception of players in room
-    socket.on("room-players-list", (players) => {
+    socketInstance.on("room-players-list", (players) => {
       setPlayers(players);
     });
 
     // server send data of round
-    socket.on("round-loading", (data) => {
+    socketInstance.on("round-loading", (data) => {
       console.log("Round is loading");
       setIsRoundOver(false);
       setRoundInProgress(false);
@@ -64,7 +65,7 @@ export default function InGamePresentatorPage() {
     });
 
     // server has launched the round, round is officialy started
-    socket.on("round-started", (data) => {
+    socketInstance.on("round-started", (data) => {
       // data: roundDuration ?, ..
       console.log("Round just started");
       // console.log(data.roundDuration);
@@ -89,7 +90,7 @@ export default function InGamePresentatorPage() {
     });
 
     //
-    socket.on("round-results", (resultsData) => {
+    socketInstance.on("round-results", (resultsData) => {
       // resultsData: correctAnswer, scores, nextRoundNumber, ...
       console.log("roundInProgress changed to:", roundInProgress);
       setCorrectAnswer(resultsData.correctAnswer);
@@ -103,15 +104,15 @@ export default function InGamePresentatorPage() {
 
     });
 
-    socket.on("game-ended", (message) => {
+    socketInstance.on("game-ended", (message) => {
       console.warn(message);
     });
 
     return () => {
-      socket.off("room-players-list");
-      socket.off("round-started");
-      socket.off("round-results");
-      socket.off("round-loading");
+      socketInstance.off("room-players-list");
+      socketInstance.off("round-started");
+      socketInstance.off("round-results");
+      socketInstance.off("round-loading");
     };
   }, [socket, gameId]);
 
@@ -122,7 +123,7 @@ export default function InGamePresentatorPage() {
     console.log("Audio loaded, presentator is ready");
 
     // do nothing in server side ...
-    // socket.emit("presentator-ready", {
+    // socketInstance.emit("presentator-ready", {
     //   gameId,
     //   roundNumber: currentRound
     // });

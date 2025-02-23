@@ -223,9 +223,9 @@ class GameManager {
     static killGameInstance(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return; // nothing to kill
-        console.log("ICI");
+        // console.log("ICI");
         console.log(gameState.timerId);
-        console.log("ICI");
+        // console.log("ICI");
         clearTimeout(gameState.timerId);
         this.inMemoryGames.delete(gameId);
     }
@@ -259,7 +259,7 @@ class GameManager {
             score: scoreRound
         });
 
-        await gameDocument.save();
+        await gameDocument.save(); // care about version control / concurency -> update issue if 2 players submit a response closely in time
 
 
         // notify presentator that a player has submited an answer
