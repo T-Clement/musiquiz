@@ -238,33 +238,47 @@ class GameManager {
 
 
         const roundIndex = gameState.currentRound - 1;
-        const gameDocument = await Game.findById(gameId);
-        if(!gameDocument) throw new Error("Game not found in DB");
+        // const gameDocument = await Game.findById(gameId);
+        // if(!gameDocument) throw new Error("Game not found in DB");
 
         // ----
         const roundStart = gameState.roundStartTimeStamp;
         const responseTime = Date.now() - roundStart;
         const isCorrect = gameState.rounds[roundIndex].correctAnswer.toString() === choiceId;
 
-        console.log(`User ${userId} // response : ${isCorrect}`);
-
+        
         // 0 if false, else calculate score with related method
         const scoreRound = isCorrect ? this._getScoreFromResponseTime(responseTime) : 0;
+        console.log(`User ${userId} // response : ${isCorrect} // scoreRound : ${scoreRound}`);
 
+        // gameDocument.rounds[roundIndex].playersResponses.push({
+        //     userId,
+        //     userChoice: choiceId,
+        //     responseTime,
+        //     score: scoreRound
+        // });
 
-        gameDocument.rounds[roundIndex].playersResponses.push({
-            userId,
-            userChoice: choiceId,
-            responseTime,
-            score: scoreRound
-        });
+        // await gameDocument.save(); // care about version control / concurency -> update issue if 2 players submit a response closely in time
 
-        await gameDocument.save(); // care about version control / concurency -> update issue if 2 players submit a response closely in time
-
+        // version error if using .findById -> Mongo compares version of Document
+        // and throw version error if the document send by .save() has not the same version 
+        // as this one document in database
+        const udpatedGame = await Game.findOneAndUpdate(
+            {_id: gameId},
+            {
+                $push: { [`rounds.${roundIndex}.playersResponses`] : { // rounds.${roundIndex} to get access to a sub-array
+                    userId,
+                    userChoice: choiceId,
+                    responseTime,
+                    score: scoreRound
+                }
+            }
+            },
+            { new: true } // returns new version of Document
+        )
 
         // notify presentator that a player has submited an answer
-        this.io.to(gameDocument.presentator.socketId).emit("player-responded", { userId });
-
+        this.io.to(udpatedGame.presentator.socketId).emit("player-responded", { userId });
 
     }
 
