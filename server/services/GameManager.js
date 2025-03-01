@@ -47,7 +47,17 @@ class GameManager {
         console.log(`=== startGameAutomation === gameId : ${gameId}`);
 
         gameState.status = "STARTED";
-        this.io.to(gameId).emit("game-started", { gameId });
+
+        const clients = this.io.sockets.adapter.rooms.get(gameId);
+        if(clients) {
+            clients.forEach(socketId => {
+                const socket = this.io.sockets.sockets.get(socketId);
+                socket.emit("game-started", {gameId, role: socket.role});
+            })
+        }
+
+
+        // this.io.to(gameId).emit("game-started", { gameId });
 
 
         this._startNextRound(gameId);

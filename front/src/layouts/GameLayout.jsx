@@ -69,7 +69,7 @@ export default function GameLayout() {
 
     //    
     socketInstance.on("game-started", (data) => {
-      navigate(`/game/${gameId}/play/${socket.role}`)
+      navigate(`/game/${gameId}/play/${data.role}`)
     })
 
 
