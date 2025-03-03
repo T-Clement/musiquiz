@@ -225,63 +225,9 @@ module.exports = (io) => {
     socket.on("submit-answer", async ({ gameId, userId, choiceId }) => {
       try {
 
-
         await gameManager.submitAnswer(gameId, userId, choiceId);
 
         socket.emit("answer-received", { success: true });
-
-
-        // ----------------------------------------------
-
-
-    //     // get game in database
-    //     const game = await Game.findById(gameId);
-        
-    //     // get the timestamp of the beginning of the round 
-    //     const gameState = inMemoryGames.get(gameId);
-    //     const roundStart = gameState.roundStartTimeStamp;
-
-
-    //     // to calculate duration interval between player response and beginning of round (to calculate score)
-    //     const timeNow = Date.now();
-
-    //     const responseTime = timeNow - roundStart;
-
-    //     // calculate score
-    //     const playerResponseIsCorrect = gameState.rounds[gameState.currentRound - 1].correctAnswer.toString() === choiceId;
-        
-
-    //     console.log(`is player response correct ${playerResponseIsCorrect}`);
-    //     let scoreRound;
-    //     if(!playerResponseIsCorrect) {
-    //       scoreRound = 0;
-    //     } else {
-    //       scoreRound = getScoreFromResponseTime(responseTime);
-    //     }
-    //     console.log(`Score player : ${scoreRound}`);
-        
-
-
-    //       // TODO: add a check to see if player already responded  
-    //       // TODO: add a check if player is responded to the currentRound and not another one
-    //         // an intersting test case !!!
-    //     game.rounds[roundNumber - 1].playersResponses.push({
-    //       userId,
-    //       userChoice: choiceId,
-    //       responseTime: responseTime,
-    //       score: scoreRound // caculate score here ???
-    //     });
-
-    //     // store response in round
-    //     await game.save();
-        
-    //     // notify presentator
-    //     io.to(game.presentator.socketId).emit("player-responsed", { userId });
-        
-    //     // notify socket player owner
-    //     // send event to player who makes the response that his choice is stored
-    //     socket.emit("answer-received", {success: true, responseTime: timeNow - roundStart});
-
 
       } catch (error) {
         console.error("Error in submit-answer :", error);
@@ -291,6 +237,29 @@ module.exports = (io) => {
       }
     });
 
+
+    socket.on("audio-ready", ({ gameId, roundNumber}) => {
+      const gameState = GameManager.inMemoryGames.get(gameId);
+      if (!gameState) return;
+      
+      if (gameState.currentRound !== roundNumber) return;
+    
+      // audio is ready
+      gameState.audioReadyReceived = true;
+        
+      console.log("Presentator has audio extract loaded", roundNumber);
+
+      // start round 
+      // 3s delay between rounds 
+      const LOADING_DELAY = 3000;
+      setTimeout(() => {
+          console.log("round launched");
+          if(gameState.audioReadyReceived ) {
+            gameManager._launchRound(gameId);
+          }
+      }, LOADING_DELAY);
+
+    })
 
 
 

@@ -8,7 +8,7 @@ import CountDownCircle from "./CountDownCircle";
 
 export default function InGamePresentatorPage() {
   const { id: gameId } = useParams();
-  const {socket} = useWebSocket();
+  const {socket, isSocketReady} = useWebSocket();
   const socketInstance = socket.current;
   const { role, setRole } = useOutletContext();
 
@@ -35,7 +35,7 @@ export default function InGamePresentatorPage() {
   const [timeLeft, setTimeLeft] = useState(30);
 
   useEffect(() => {
-    if (!socketInstance) return;
+    if (!isSocketReady) return;
 
     // when component mounted, ask for players in game / room
     socketInstance.emit("get-room-players", gameId);
@@ -114,13 +114,21 @@ export default function InGamePresentatorPage() {
       socketInstance.off("round-results");
       socketInstance.off("round-loading");
     };
-  }, [socket, gameId]);
+  }, [isSocketReady, socket, socketInstance, gameId]);
 
   // ------------------------------------
   // -------- HANDLERS ------------------
 
   const handleAudioLoaded = () => {
     console.log("Audio loaded, presentator is ready");
+
+    if(socketInstance) {
+      socketInstance.emit('audio-ready', { gameId, roundNumber: currentRound });
+    } else {
+      console.error("socket instance is undefined")
+    }
+
+
 
     // do nothing in server side ...
     // socketInstance.emit("presentator-ready", {
@@ -158,7 +166,12 @@ export default function InGamePresentatorPage() {
         {/* Right */}
         <div>
           {/** Audio Ref */}
-          <audio ref={audioRef} onCanPlay={handleAudioLoaded} />
+          <audio 
+            ref={audioRef} 
+            preload="auto" 
+            onCanPlay={handleAudioLoaded} 
+            onError={(e) => console.error("Erreur lors du chargement de l'audio : ", e)}
+          />
 
           {/** Local counter */}
           <div className="flex flex-col gap-3">

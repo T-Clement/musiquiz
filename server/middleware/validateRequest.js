@@ -10,7 +10,7 @@ const validateRequest = (req, res, next) => {
     // data coming from validator
   const errors = validationResult(req).formatWith(errorFormatter); // apply custom formatter
 
-    console.log(errors.array());
+    // console.log(errors.array());
 
   // return errors with the message defined in the validator
   if (!errors.isEmpty()) {

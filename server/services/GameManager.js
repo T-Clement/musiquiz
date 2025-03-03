@@ -5,7 +5,9 @@ class GameManager {
 
     static inMemoryGames = new Map();
 
-    
+    // put delay between rounds as a static property
+    // put delay before to launch round after audio extract for round
+        // is loaded in presentator view
     
     /**
      * 
@@ -48,6 +50,7 @@ class GameManager {
 
         gameState.status = "STARTED";
 
+        // adapter allow to broadcast event tu a subset of clients
         const clients = this.io.sockets.adapter.rooms.get(gameId);
         if(clients) {
             clients.forEach(socketId => {
@@ -78,6 +81,10 @@ class GameManager {
 
         }
 
+        // flag for readiness of audio in presentator client
+        gameState.audioReady = false;
+
+
         
         console.log(`=== startNextRound ===> Round ${gameState.currentRound} - gameId: ${gameId}`);
         
@@ -94,12 +101,12 @@ class GameManager {
 
 
 
-        // 3s delay between rounds 
-        const LOADING_DELAY = 3000;
-        gameState.timerId = setTimeout(() => {
-            console.log("round launched");
-            this._launchRound(gameId);
-        }, LOADING_DELAY);
+        // // 3s delay between rounds 
+        // const LOADING_DELAY = 3000;
+        // gameState.timerId = setTimeout(() => {
+        //     console.log("round launched");
+        //     this._launchRound(gameId);
+        // }, LOADING_DELAY);
 
 
     }

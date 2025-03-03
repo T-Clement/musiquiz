@@ -22,7 +22,7 @@ require("dotenv").config();
 // /* connecting to the database before each test. */
 beforeEach(async () => {
   // await mongoose.connect(process.env.MONGODB_URI);
-  console.log("BEFORE EACH : Setting up test database");
+  // console.log("BEFORE EACH : Setting up test database");
 
   // create connection
   mysqlConnection = await pool.getConnection();
@@ -34,7 +34,7 @@ beforeEach(async () => {
 
   try {
     await mysqlConnection.query(dumpContent);
-    console.log("BEFORE EACH : Dump imported successfully");
+    // console.log("BEFORE EACH : Dump imported successfully");
   } catch (error) {
     console.error(
       "BEFORE EACH : Error during importing dump : ",
@@ -47,10 +47,10 @@ beforeEach(async () => {
 // /* closing database connection after each test. */
 afterEach(async () => {
   // await mongoose.connection.close();
-  console.log("AFTER EACH : Rolling back transaction...");
+  // console.log("AFTER EACH : Rolling back transaction...");
   await mysqlConnection.rollback();
   await mysqlConnection.release();
-  console.log("AFTER EACH : Connection released");
+  // console.log("AFTER EACH : Connection released");
 });
 
 afterAll(async () => {
@@ -270,5 +270,39 @@ describe("POST /api/user/register - inputs fields validation", () => {
 
 
 describe("POST /api/login", () => {
+
+});
+
+
+describe("WS tests", () => {
+
+  // before((done) => {
+  //   const httpServer = createServer();
+  //   io = new Server(httpServer);
+  //   httpServer.listen(() => {
+  //     const port = httpServer.address().port;
+  //     clientSocket = ioc(`http://localhost:${port}`);
+  //     io.on("connection", (socket) => {
+  //       serverSocket = socket;
+  //     });
+  //     clientSocket.on("connect", done);
+  //   });
+  // });
+
+  // after(() => {
+  //   io.close();
+  //   clientSocket.disconnect();
+  // });
+
+
+  // -----------------------------------------
+  it("should connect to websocket server", async () => {
+
+  });
+
+
+
+
+
 
 });
