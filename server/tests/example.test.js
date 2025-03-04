@@ -369,7 +369,45 @@ describe("WS tests", () => {
   });
 
 
-  it("user can't join a game if he is already in one game")
+  it("user can't join a game if he is already in one game", async (done) => {
+
+      
+    const pseudo = "TestPseudo";
+
+    const userPassword = "password";
+    
+    const saltRounds = 10;
+    const hashedPassword = await utils.generatePasswordHash(userPassword, saltRounds);
+    
+
+    // -----
+    // create new User 
+    const newUser = new User(
+      null,
+      pseudo,
+      hashedPassword,
+      "test@example.com",
+      Date.now,
+      Date.now
+    );
+    
+    // insert new user DIRECTLY IN DATABASE
+    const newUserStored = await User.insertNewUser(newUser.pseudo, newUser.password, newUser.email);
+
+    // login user to authorize to get access to player role
+
+    // pass JWT data in socket connection
+    // ... 
+
+
+    // const firstClientSocket = ioc(socketServerUrl);
+
+    // const secondClientSocket = ioc(socketServerUrl);
+
+
+
+
+  });
 
 
 

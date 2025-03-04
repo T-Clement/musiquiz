@@ -16,24 +16,6 @@ module.exports = (io) => {
       try {
         const user = await User.getUserForGame(userId); // SQL Object
 
-        // // TODO : check if user is already in a room
-        // // if already -> not possible to join this game
-        // // ...
-        // const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
-        // if(userAlreadyInGame) {
-        //   console.error("User is already in a game");
-
-        //   // ???? -> need to show a message to client before disconnect
-        //   socket.emit('error', {
-        //     message: "User is already in a game",
-        //     game: userAlreadyInGame
-        //   });
-        //   socket.disconnect();
-        //   return;
-        //   console.log("ca continu !!!")
-        //   // socket.disconnect(); // disconnect client socket 
-        // } 
-
         // add user to the Map of ingame players / users
         GameManager.addUserToInGamePlayersMemory(userId, gameId);
         
