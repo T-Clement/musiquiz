@@ -342,7 +342,7 @@ describe("WS tests", () => {
   // + stocker en mémoire
   // vérifier si joueur / socket n'est pas déjà dans une partie -> map en mémoire 
   // et vérification via middleware si trouvé : message d'erreur
-  
+
   // autorisation
 
   // placer les infos du JWT dans la socket 
@@ -367,5 +367,14 @@ describe("WS tests", () => {
     newSocketClient.emit('ping');
 
   });
+
+
+  it("user can't join a game if he is already in one game")
+
+
+
+
+
+
 
 });

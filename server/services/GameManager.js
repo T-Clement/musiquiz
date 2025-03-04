@@ -4,6 +4,26 @@ class GameManager {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties
 
     static inMemoryGames = new Map();
+    static inMemoryPlayersInGames = new Map();
+
+
+    static addUserToInGamePlayersMemory(userId, gameId) {
+        GameManager.inMemoryPlayersInGames.set(userId, gameId);
+    }
+
+
+    static checkIfUserIsAlreadyInOneGame (userId) {
+        return GameManager.inMemoryPlayersInGames.get(userId) ?? false;
+    }
+
+    static removeOnePlayerFromInGameMemory (userId) {
+        console.log(`remove player with id : ${userId}`);
+        GameManager.inMemoryPlayersInGames.delete(userId);
+    }
+
+
+
+
 
     // put delay between rounds as a static property
     // put delay before to launch round after audio extract for round
@@ -17,6 +37,8 @@ class GameManager {
        this.io = io;
     //    this.inMemoryGames = new Map();
     }
+
+
 
 
     initGame(gameId, gameData) {
@@ -217,11 +239,24 @@ class GameManager {
 
     }
 
-
+    static removePlayersFromInGamePlayers(gameId) {
+        // to put in a function 
+        // remove from memory all users who are in this game who is ended
+        for(let [key, value] of GameManager.inMemoryPlayersInGames.entries()) {
+            if(value === gameId) {
+                GameManager.inMemoryGames.delete(key); // key is the userId
+            }
+        }
+    }
 
     _endGame(gameId) {
+        // delete game from memory
         GameManager.inMemoryGames.delete(gameId);
+        
+        // remove all the players in a game
+        GameManager.removePlayersFromInGamePlayers(gameId);
 
+        // GameManager.inMemoryPlayersInGames.delete()
         console.log(`P=== endGame ===> End of game ${gameId}`);
 
         // ??? this.io.in or this.io.to ???
@@ -245,6 +280,8 @@ class GameManager {
         // console.log("ICI");
         clearTimeout(gameState.timerId);
         this.inMemoryGames.delete(gameId);
+
+        GameManager.removePlayersFromInGamePlayers(gameId);
     }
 
 

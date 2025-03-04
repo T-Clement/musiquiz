@@ -16,10 +16,27 @@ module.exports = (io) => {
       try {
         const user = await User.getUserForGame(userId); // SQL Object
 
-        // TODO : check if user is already in a room
-        // if already -> not possible to join this game
-        // ...
+        // // TODO : check if user is already in a room
+        // // if already -> not possible to join this game
+        // // ...
+        // const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
+        // if(userAlreadyInGame) {
+        //   console.error("User is already in a game");
 
+        //   // ???? -> need to show a message to client before disconnect
+        //   socket.emit('error', {
+        //     message: "User is already in a game",
+        //     game: userAlreadyInGame
+        //   });
+        //   socket.disconnect();
+        //   return;
+        //   console.log("ca continu !!!")
+        //   // socket.disconnect(); // disconnect client socket 
+        // } 
+
+        // add user to the Map of ingame players / users
+        GameManager.addUserToInGamePlayersMemory(userId, gameId);
+        
         const game = await Game.findById(gameId); // Mongoose Schema
 
         if (!game) {
@@ -87,13 +104,15 @@ module.exports = (io) => {
 
 
 
-
+    // remove from database and in memory
     socket.on("player-left", async (gameId, userId, socketId) => {
         console.log("player-left");
         console.log(gameId, userId);
 
 
         try {
+
+            GameManager.removeOnePlayerFromInGameMemory(userId);
 
             const updatePullPlayer = {
                 $pull: {
@@ -113,10 +132,10 @@ module.exports = (io) => {
                     `Player ${userId} has been removed from the game ${gameId}`
                 );
 
-                // notifiy other users in room
-                io.to(gameId).emit("update-players", {
-                    userId, action: "left"
-                });
+            // notifiy other users in room
+            io.to(gameId).emit("update-players", {
+                userId, action: "left"
+            });
 
 
             } else {
@@ -275,6 +294,8 @@ module.exports = (io) => {
 
 
     socket.on("disconnect", () => {
+
+      // GameManager.inMemoryPlayersInGames.delete(userId);
         console.log(`Socket ${socket.id} s'est déconnectée`);
     });
 

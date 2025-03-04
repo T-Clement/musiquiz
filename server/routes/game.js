@@ -76,6 +76,27 @@ router.post('/add-user-to-game', async (req, res, next) => {
         const userData = await User.getUserForGame(userId);
 
 
+        // TODO : check if user is already in a room
+        // if already -> not possible to join this game
+        // ...
+        const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
+        if(userAlreadyInGame) {
+        //   console.error("User is already in a game");
+
+        //   // ???? -> need to show a message to client before disconnect
+        //   socket.emit('error', {
+        //     message: "User is already in a game",
+        //     game: userAlreadyInGame
+        //   });
+        //   socket.disconnect();
+        //   return;
+          // socket.disconnect(); // disconnect client socket 
+
+
+          return res.status(403).json({ message : "User is already in a running game"});
+
+        }
+
         const filter = { _id: gameId };
         // console.log(gameId);
         let update = {};
