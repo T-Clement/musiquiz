@@ -276,8 +276,16 @@ describe("POST /api/login", () => {
 
 describe("WS tests", () => {
 
-  let testHttpServer, socketServer, clientSocket;
+  // DOCUMENTATION
+  // https://stackoverflow.com/questions/15509231/unit-testing-node-js-and-websockets-socket-io?rq=4
 
+
+  let testHttpServer, socketServer, clientSocket;
+  const http = require("http"); // va permetttre de créer un serveur
+  const port = 44444;
+  const hostname = "localhost";
+  const ioc = require("socket.io-client");
+  const socketServerUrl = `http://${hostname}:${port}`;
 
   // before((done) => {
   //   const httpServer = createServer();
@@ -299,51 +307,65 @@ describe("WS tests", () => {
 
   beforeAll((done) => {
 
-    // HTTP server needed to hook websocket on it
-
-    const http = require("http"); // va permetttre de créer un serveur
-    const port = 44444;
-    const hostname = "localhost";
-    const ioc = require("socket.io-client");
-
+    
+    
     app.set("port", port);
-
+    
+    // HTTP server needed to hook websocket on it
     testHttpServer = http.createServer(app);
     const createTestSocketServer = require('../createSocketServer');
     socketServer = createTestSocketServer(testHttpServer, port);
-    // done();
 
     testHttpServer.listen(port, 'localhost', () => {
       console.log(`Testing server is running on ${hostname}:${port}`);
     });
 
 
-    // server express doit tourner, pour que le socket 
-    clientSocket = ioc(`http://${hostname}:${port}`); // 
+    // server express doit tourner, pour que le socket s'attache dessus
+    clientSocket = ioc(socketServerUrl); // 
     clientSocket.on("connect", done);
 
   });
 
-  afterAll(() => {
+  afterAll((done) => {
     clientSocket.disconnect(); // disconnect client instance
     socketServer.close(); // close socket server
     
     // close http server
     testHttpServer.close();
+
+    done();
+
   });
 
+  // PENSER A NETTOYER les sockets
+  // + stocker en mémoire
+  // vérifier si joueur / socket n'est pas déjà dans une partie -> map en mémoire 
+  // et vérification via middleware si trouvé : message d'erreur
+  
+  // autorisation
 
+  // placer les infos du JWT dans la socket 
+  // https://socket.io/how-to/use-with-jwt
 
 
   // -----------------------------------------
-  it("should connect to websocket server", async () => {
-    // console.log(io);
-    // console.log(app);
+  it("client websocket should connect to websocket server, perform ping-pong", (done) => {
+
+    // create new socket client instance
+    const newSocketClient = ioc(socketServerUrl);
+
+    // 'event' listener before emit, to avoid sending message before listener is up
+    newSocketClient.on("pong", (data) => {
+      console.log("in on 'ping'")
+      console.log(data.message);
+      expect(data.message).toBe("pong");
+      newSocketClient.disconnect();
+      done();
+    });
+
+    newSocketClient.emit('ping');
+
   });
-
-
-
-
-
 
 });

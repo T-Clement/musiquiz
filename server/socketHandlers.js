@@ -14,8 +14,13 @@ module.exports = (io) => {
       const socketId = socket.id;
 
       try {
-        const game = await Game.findById(gameId); // Mongoose Schema
         const user = await User.getUserForGame(userId); // SQL Object
+
+        // TODO : check if user is already in a room
+        // if already -> not possible to join this game
+        // ...
+
+        const game = await Game.findById(gameId); // Mongoose Schema
 
         if (!game) {
           console.error(`Game not found : ${gameId}`);
@@ -259,6 +264,12 @@ module.exports = (io) => {
           }
       }, LOADING_DELAY);
 
+    })
+
+
+    socket.on("ping", () => {
+      console.log('socketHandlers : ping')
+      socket.emit("pong", { message : 'pong' });
     })
 
 
