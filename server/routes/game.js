@@ -169,6 +169,8 @@ router.post('/create-game', async (req, res, next) => {
         //-------------------------------------------------------------------------------
         // prepare datas for game rounds
 
+        // ajouter un log de la quantité des songs filtrées
+
 
         // to update in the future when customs games will be deployed
         const roundsNumber = 10;

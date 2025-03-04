@@ -398,8 +398,6 @@ class GameManager {
         const slope = MAX_SCORE / (T - THRESHOLD);
         return Math.floor(Math.max( 0, MAX_SCORE - slope * (t - THRESHOLD) ));
 
-
-
     }
     
 }

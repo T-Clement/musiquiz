@@ -276,6 +276,9 @@ describe("POST /api/login", () => {
 
 describe("WS tests", () => {
 
+  let testHttpServer, socketServer, clientSocket;
+
+
   // before((done) => {
   //   const httpServer = createServer();
   //   io = new Server(httpServer);
@@ -294,10 +297,48 @@ describe("WS tests", () => {
   //   clientSocket.disconnect();
   // });
 
+  beforeAll((done) => {
+
+    // HTTP server needed to hook websocket on it
+
+    const http = require("http"); // va permetttre de créer un serveur
+    const port = 44444;
+    const hostname = "localhost";
+    const ioc = require("socket.io-client");
+
+    app.set("port", port);
+
+    testHttpServer = http.createServer(app);
+    const createTestSocketServer = require('../createSocketServer');
+    socketServer = createTestSocketServer(testHttpServer, port);
+    // done();
+
+    testHttpServer.listen(port, 'localhost', () => {
+      console.log(`Testing server is running on ${hostname}:${port}`);
+    });
+
+
+    // server express doit tourner, pour que le socket 
+    clientSocket = ioc(`http://${hostname}:${port}`); // 
+    clientSocket.on("connect", done);
+
+  });
+
+  afterAll(() => {
+    clientSocket.disconnect(); // disconnect client instance
+    socketServer.close(); // close socket server
+    
+    // close http server
+    testHttpServer.close();
+  });
+
+
+
 
   // -----------------------------------------
   it("should connect to websocket server", async () => {
-
+    // console.log(io);
+    // console.log(app);
   });
 
 

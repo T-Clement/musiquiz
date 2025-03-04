@@ -59,17 +59,20 @@ const errorHandler = (error) => {
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: process.env.FRONT_URL,
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: process.env.FRONT_URL,
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// });
 
 
-const socketHandlers = require("./socketHandlers");
-socketHandlers(io);
+// const socketHandlers = require("./socketHandlers");
+// socketHandlers(io);
+
+const createSocketServer = require('./createSocketServer');
+createSocketServer(server, port);
 
 
 server.on("error", errorHandler);
