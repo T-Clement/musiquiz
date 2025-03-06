@@ -104,9 +104,13 @@ export default function InGamePresentatorPage() {
 
     });
 
-    socketInstance.on("game-ended", (message) => {
-      console.warn(message);
-    });
+    // socketInstance.on("game-ended", (message) => {
+    //   console.warn("in-game-presentator : " + message);
+
+    //   // update view + add a redirect
+
+
+    // });
 
     return () => {
       socketInstance.off("room-players-list");

@@ -72,11 +72,20 @@ export default function GameLayout() {
       navigate(`/game/${gameId}/play/${data.role}`)
     })
 
+    socketInstance.on("game-ended", (data) => {
+      // console.log(data);
+      // console.warn("game-layout"  + data.message);
+
+      navigate(`/game/${gameId}/leaderboard`, { state: data.scores });
+
+    });
+
 
     return () => {
       socketInstance.off("connect");
       socketInstance.off("quit-game");
       socketInstance.off("game-started");
+      socketInstance.off("game-ended");
       socketInstance.disconnect();
     }
 
