@@ -59,11 +59,11 @@ export default function NewRoomPage() {
     setLoading(true);
 
     try {
-      const response = await apiAxios.post(`api/room/create`, {
+      const response = await apiAxios.post(`api/room/store`, {
         playlist_id: playlistId,
         title: roomTitle,
         description: roomDescription,
-        theme: roomTheme,
+        theme_id: roomTheme,
       });
 
       alert("Room créée avec succès !");
@@ -250,7 +250,7 @@ export default function NewRoomPage() {
                     <option className="text-gray-400" value="" disabled selected>Choisir un thème</option>
 
                     {availableThemes.map((theme, index) => (
-                      <option className="text-gray-400" key={theme.id} value={theme.id}>{theme.name}</option>
+                      <option className="text-gray-400" key={theme.id} value={parseInt(theme.id)}>{theme.name}</option>
                     ))}
 
                   </select>

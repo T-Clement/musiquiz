@@ -3,14 +3,50 @@ const router = express.Router();
 
 const roomCtrl = require("../controllers/room");
 
-const { body } = require("express-validator");
 const GameManager = require('../services/GameManager');
 const Theme = require('../models/Theme');
+const InputValidationMessage = require('../models/InputValidationMessage');
+const Room = require('../models/Room');
+const { body } = require("express-validator");
+const validateRequest = require('../middleware/validateRequest');
 
 
 const validateRegisterUserTheme = [
 
 ];
+
+
+const validateNewStoredRoom = [
+    body("title")
+        .exists()
+        .trim()
+        .escape()
+        .notEmpty().withMessage(InputValidationMessage.MISSING_TITLE)
+        .isString().withMessage("Le titre doit être une chaine de caractères")
+        .isLength({min: Room.ROOM_TITLE_MIN_LENGTH, max: Room.ROOM_TITLE_MAX_LENGTH}).withMessage(InputValidationMessage.TITLE_LENGTH_ERROR)
+    ,
+    body("playlist_id")
+        .exists()
+        .trim()
+        .escape()
+        .notEmpty(),
+        // custom validation 
+        // check if room is not already registered -> returns the room if true
+
+    body("description")
+        .exists()
+        .trim()
+        .escape()
+        .isLength({max: Room.ROOM_DESCRIPTION_MAX_LENGTH}).withMessage(InputValidationMessage.DESCRIPTION_LENGTH_ERROR),
+    body("theme_id")
+        .exists()
+        .trim()
+        .escape()
+        .isString()
+        // check if theme passed is in the stored themes
+];
+
+
 
 router.get('/:id', roomCtrl.show);
 
@@ -90,7 +126,12 @@ router.post("/check-new-playlist", async (req, res, next) => {
 
 
 // validation of entry data for stored room
+// check if user is connected -> auth middleware
+// associate user to the new stored room
 
+
+
+router.post("/store", validateNewStoredRoom, validateRequest, roomCtrl.store);
 
 
 
