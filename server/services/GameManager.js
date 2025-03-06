@@ -6,6 +6,8 @@ class GameManager {
     static inMemoryGames = new Map();
     static inMemoryPlayersInGames = new Map();
 
+    static roundsNumber = 10;
+    static numberOfResponsePropositions = 4;
 
     static addUserToInGamePlayersMemory(userId, gameId) {
         GameManager.inMemoryPlayersInGames.set(userId, gameId);

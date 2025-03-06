@@ -84,7 +84,7 @@ export function HomePage() {
 
         <Swiper
           direction="horizontal" 
-          loop={false} // disabled loop
+          loop={true} // disabled loop
           navigation={{
             nextEl: '.swiper-button-next', // class for next btn
             prevEl: '.swiper-button-prev', // class for previous btn
