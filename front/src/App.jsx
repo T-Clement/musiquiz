@@ -16,6 +16,7 @@ import ChooseRole, {loader as chooseRoleLoader} from './pages/ChooseRole';
 import WaitingRoomPage, { loader as waitingRoomLoader } from './pages/WaitingRoom/WaitingRoomPage';
 import InGamePlayerPage from './pages/InGame/InGamePlayerPage';
 import InGamePresentatorPage from './pages/InGame/InGamePresentatorPage';
+import NewRoomPage from './pages/NewRoom/NewRoomPage';
 
 // import apiAxios from './libs/axios';
 
@@ -60,20 +61,10 @@ export function App() {
           element: <RoomPage />,
           loader: roomPageLoader
         },
-        // {
-        //   path: 'game/:id/choose-role',
-        //   element: <ChooseRole />,
-        //   loader: chooseRoleLoader
-        // },
-        // {
-        //   path: 'game/:id/waiting-room',
-        //   element: <WaitingRoom />,
-        //   loader: waitingRoomLoader
-        // },
-        // {
-        //   path: "waiting-room/:id",
-        //   element: <WaitingRoom />
-        // },
+        {
+          path: "room/new",
+          element: <NewRoomPage />,
+        },
         {
           path: "theme/:id",
           element: <ThemePage />,

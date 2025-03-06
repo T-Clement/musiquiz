@@ -3,6 +3,11 @@ const pool = require('../db');
 class Room {
 
     static tableName = "mqz_rooms";
+    static ROOM_TITLE_MIN_LENGTH = 3;
+    static ROOM_TITLE_MAX_LENGTH = 124;
+    static ROOM_DESCRIPTION_MAX_LENGTH = 256;
+
+
 
     constructor(id, name, api_id_playlist, description, id_theme) {
         this.id = id;
@@ -42,6 +47,78 @@ class Room {
             throw error;
         }
     }
+
+
+    static async findOneRoomByTitle(title) {
+        const query = `SELECT * FROM ${this.tableName} WHERE name = ?`;
+        const values = [title];
+
+        try {
+
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null;
+            }
+
+            const {id, name, api_id_playlist, description, id_theme} = rows[0];
+            return new Room(id, name, api_id_playlist, description, id_theme);
+
+        } catch (error) {
+            console.error('Error finding room with specific title : ' + error.message);
+            throw error;
+        }
+    }
+
+    static async findOneRoomByPlaylistId(playlist_id) {
+        const query = `SELECT * FROM ${this.tableName} WHERE api_id_playlist = ?`;
+        const values = [playlist_id];
+
+        try {
+
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null;
+            }
+
+            const {id, name, api_id_playlist, description, id_theme} = rows[0];
+            return new Room(id, name, api_id_playlist, description, id_theme);
+
+        } catch (error) {
+            console.error('Error finding room with specific playlist_id : ' + error.message);
+            throw error;
+        }
+    }
+
+
+    static async insertNewRoom(title, playlist_id, description, theme_id) {
+
+        const query = `INSERT INTO ${this.tableName} (name, api_id_playlist, description, id_theme) VALUES (?, ?, ?, ?)`;
+        const values = [title, playlist_id, description, theme_id];
+
+        try {
+
+            const [result] = await pool.execute(query, values);
+            const insertedId = result.insertId;
+
+            const [rows] = await pool.execute(`SELECT * FROM ${this.tableName} WHERE id = ?`, [insertedId]);
+
+            if (rows.length === 0) {
+                throw new Error('Room not found after insertion');
+            }
+
+            const {id, name, api_id_playlist, description, id_theme} = rows[0];
+            return new Room(id, name, api_id_playlist, description, id_theme);
+            
+        } catch (error) {
+            console.error("Error inserting new user Room in Database : " + error.message);
+            throw error;
+        }
+        
+
+    }
+
 
 
     static async getRoomScores(roomId, limit = 20, offset = 0) {

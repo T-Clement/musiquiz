@@ -14,7 +14,7 @@ const GameManager = require('../services/GameManager');
 const Game = require('../schema/Game');
 
 // utils functions
-const { checkIfTrackIsReadable, shuffle } = require('../utils/utils');
+const { checkIfTracksAreReadable, shuffle } = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
 const { default: mongoose } = require('mongoose');
 
@@ -75,6 +75,11 @@ router.post('/add-user-to-game', async (req, res, next) => {
         // SQL DATA
         const userData = await User.getUserForGame(userId);
 
+        // if user is already in a running game, not allowed to join a new room
+        const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
+        if(userAlreadyInGame) {
+            return res.status(403).json({ message : "User is already in a running game"});
+        }
 
         const filter = { _id: gameId };
         // console.log(gameId);
@@ -173,15 +178,15 @@ router.post('/create-game', async (req, res, next) => {
 
 
         // to update in the future when customs games will be deployed
-        const roundsNumber = 10;
-        const numberOfResponsePropositions = 4;
+        const roundsNumber = GameManager.roundsNumber;
+        const numberOfResponsePropositions = GameManager.numberOfResponsePropositions;
 
-        // console.log("API MUSIC PROVIDER CALL");
 
+        // ...
+        const fetchPlaylistFromDeezer = "";
 
         // fetch data of playlist in music provider
         const apiMusicResponse = await fetch(`https://api.deezer.com/playlist/${roomData.api_id_playlist}`);
-        // console.log()
 
 
         if (!apiMusicResponse) {
@@ -202,7 +207,7 @@ router.post('/create-game', async (req, res, next) => {
             throw new Error('Impossible de récupérer les données de la playlist depuis l\'API');
         }
 
-        const listOfTracks = checkIfTrackIsReadable(apiMusicData.tracks.data);
+        const listOfTracks = checkIfTracksAreReadable(apiMusicData.tracks.data);
 
         // check if enough game are available
         // each track can only be used 1 time as a choice, after that it's removed from trackList pool
@@ -315,6 +320,7 @@ router.post('/create-game', async (req, res, next) => {
         // console.error()
         res.status(500).json({ error: 'Failed to create game' });
     }
+
 });
 
 
