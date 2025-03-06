@@ -78,6 +78,7 @@ router.post('/add-user-to-game', async (req, res, next) => {
         // if user is already in a running game, not allowed to join a new room
         const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
         if(userAlreadyInGame) {
+            console.log('user is already in a game ', userAlreadyInGame);
             return res.status(403).json({ message : "User is already in a running game"});
         }
 
@@ -123,18 +124,19 @@ router.delete('/:id/delete', async(req, res, next) => {
 
     const gameId = req.params.id;
 
-    console.log(`${gameId} is proceed to be killed in memoro and deleted from database`);
+    console.log(`${gameId} is proceed to be killed in memory and deleted from database`);
 
     try {
 
         // if gameIsLaunched
-            const gameState = GameManager.getGameState(gameId);
-
+            const gameState = GameManager.inMemoryGames.get(gameId);
+            // console.log("before")
+            // console.log(gameState);
+            // console.log("after")
             if(gameState) { // if game is in memory, delete it
                 
                 // kill / clear timeOut of game in server
                 GameManager.killGameInstance(gameId);
-                
             }
 
         // delete the record from the database
@@ -310,6 +312,12 @@ router.post('/create-game', async (req, res, next) => {
         newGame.generateSharingCode();
 
         await newGame.save();
+
+        // init Game in memory
+        GameManager.inMemoryGames.set(gameId, {
+            roomName: roomData.name,
+            createdAt: new Date()
+        });
 
 
         res.status(201).json({ gameId: newGame._id })

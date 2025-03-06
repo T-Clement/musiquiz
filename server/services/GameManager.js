@@ -26,11 +26,15 @@ class GameManager {
 
 
     static removePlayersFromInGamePlayers(gameId) {
+
+        // console.log(GameManager.inMemoryPlayersInGames.entries());
+
         // to put in a function 
         // remove from memory all users who are in this game who is ended
-        for(let [key, value] of GameManager.inMemoryPlayersInGames.entries()) {
+        for(let [key, value] of GameManager.inMemoryPlayersInGames.entries()) { // get all games who are running
             if(value === gameId) {
-                GameManager.inMemoryGames.delete(key); // key is the userId
+                console.log(`user ${key} deleted from game ${value}`)
+                GameManager.inMemoryPlayersInGames.delete(key); // key is the userId
             }
         }
     }
@@ -54,7 +58,9 @@ class GameManager {
 
 
     initGame(gameId, gameData) {
-        GameManager.inMemoryGames.set(gameId, {
+        const gameState = GameManager.inMemoryGames.get(gameId);
+
+        gameState.set(gameId, {
             currentRound: 0,
             totalRounds: gameData.totalRounds,
             roundDuration: gameData.roundDuration,
@@ -283,16 +289,18 @@ class GameManager {
 
 
     static getGameState(gameId) {
-        return GameManager.inMemoryGames.get(gameId);
+        return this.inMemoryGames.get(gameId);
     }
 
     static killGameInstance(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return; // nothing to kill
         // console.log("ICI");
-        console.log(gameState.timerId);
+        // console.log(gameState.timerId);
         // console.log("ICI");
-        clearTimeout(gameState.timerId);
+        if(gameState.timerId) {
+            clearTimeout(gameState.timerId);
+        }
         this.inMemoryGames.delete(gameId);
 
         GameManager.removePlayersFromInGamePlayers(gameId);

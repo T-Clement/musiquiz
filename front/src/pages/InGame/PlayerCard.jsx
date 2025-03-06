@@ -13,13 +13,15 @@ export default function PlayerCard({ player, index, totalPlayers }) {
   }
 
   return (
-    <div className={`relative flex flex-col items-center bg-white rounded-lg shadow-md p-4 ${sizeClass}`}>
+    <div className={`relative flex flex-col items-center bg-white rounded-lg shadow-md p-4 ${sizeClass} ${
+        index === 0 ? "order-2" : index === 1 ? "order-1" : "order-3"
+      }`}>
       <img
         src={""}
         alt={player.pseudo}
         className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white -mt-10"
       />
-      <span className="text-xl font-bold text-gray-800">{player.id}</span>
+      <span className="text-xl font-bold text-gray-800">{index + 1}</span>
       <p className="text-center text-sm font-semibold text-gray-700">{player.pseudo}</p>
       <p className="text-xs text-gray-500">{player.score} points</p>
     </div>
