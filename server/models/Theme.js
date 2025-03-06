@@ -68,14 +68,16 @@ class Theme {
             g.score AS best_score, 
             g.date_score AS date_best_score
         FROM ${Room.tableName} r
-        JOIN ${Game.tableName} g ON g.id_room = r.id
-        JOIN ${User.tableName} u ON g.id_user = u.id
+        LEFT JOIN ${Game.tableName} g ON g.id_room = r.id
+        LEFT JOIN ${User.tableName} u ON g.id_user = u.id
         WHERE id_theme = ?
-        AND g.score = (
+        AND (g.score = (
             SELECT MAX(score)
             FROM ${Game.tableName}
             WHERE id_room = r.id
-        );`;
+            ) OR g.score IS NULL
+        )
+        ;`;
 
     //     const query = `
     //     SELECT g.id AS game_id, g.date_score, r.id AS room_id, u.id AS user_id, u.pseudo, g.score as current_bestscore, gp.games_played
@@ -106,7 +108,7 @@ class Theme {
             if(rows.length === 0) {
                 return [];
             }
-
+            console.log(rows);
             return rows.map(room => {
                 return {
                     room_id: room.room_id,

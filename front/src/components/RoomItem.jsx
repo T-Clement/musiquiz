@@ -38,8 +38,15 @@ export function RoomItem({room}) {
             
             <ul className='flex flex-col z-10'>
 
-              <li className='truncate'>{bestPlayerPseudo}</li>
-              <li className='truncate'>{bestPlayerScore} pts</li>
+              {bestPlayerPseudo ? 
+              <>
+                <li className='truncate'>{bestPlayerPseudo}</li>
+                <li className='truncate'>{bestPlayerScore} pts</li>
+              </>
+              :
+              <li>Aucune partie</li>
+            }
+
 
             </ul>
           </div>
