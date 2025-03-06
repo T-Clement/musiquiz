@@ -10,7 +10,7 @@ export default function LeaderboardPage() {
   const location = useLocation();
   const navigate = useNavigate();
   console.log(location.state);
-  const {scores, roomName} = location.state;
+  const {scores, roomName, tracks} = location.state;
 
   // console.log(scores);
 
