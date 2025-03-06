@@ -293,6 +293,7 @@ class GameManager {
             message: "La partie est terminée, merci d'avoir joué !",
             gameId,
             scores,
+            roomName: gameState.roomName,
             tracks : gameState.rounds // filter this to return only the correct answer
         })
     }

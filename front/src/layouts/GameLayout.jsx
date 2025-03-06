@@ -76,7 +76,7 @@ export default function GameLayout() {
       // console.log(data);
       // console.warn("game-layout"  + data.message);
 
-      navigate(`/game/${gameId}/leaderboard`, { state: data.scores });
+      navigate(`/game/${gameId}/leaderboard`, { state: { scores: data.scores, roomName: data.roomName } });
 
     });
 
