@@ -60,12 +60,22 @@ class GameManager {
     initGame(gameId, gameData) {
         const gameState = GameManager.inMemoryGames.get(gameId);
 
-        gameState.set(gameId, {
+        // gameState.set(gameId, {
+        //     currentRound: 0,
+        //     totalRounds: gameData.totalRounds,
+        //     roundDuration: gameData.roundDuration,
+        //     rounds: gameData.rounds,
+        //     status: 'NOT_STARTED',
+        //     timerId: null,
+        //     players: gameData.players,
+        // });
+
+        Object.assign(gameState, {
             currentRound: 0,
             totalRounds: gameData.totalRounds,
             roundDuration: gameData.roundDuration,
             rounds: gameData.rounds,
-            status: 'NOT_STARTED',
+            status: "NOT_STARTED",
             timerId: null,
             players: gameData.players,
         });
