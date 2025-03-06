@@ -7,12 +7,17 @@ const GameManager = require('../services/GameManager');
 const Theme = require('../models/Theme');
 const InputValidationMessage = require('../models/InputValidationMessage');
 const Room = require('../models/Room');
-const { body } = require("express-validator");
+const { body, matchedData } = require("express-validator");
 const validateRequest = require('../middleware/validateRequest');
 
 
 const validateRegisterUserTheme = [
 
+];
+
+
+const validateCheckNewPlaylist = [
+    body("playlist_id").exists().notEmpty()
 ];
 
 
@@ -50,10 +55,13 @@ const validateNewStoredRoom = [
 
 router.get('/:id', roomCtrl.show);
 
-router.post("/check-new-playlist", async (req, res, next) => {
+router.post("/check-new-playlist", validateCheckNewPlaylist, validateRequest, async (req, res, next) => {
 
-    const { playlist_id } = req.body;
+    const validatedData = matchedData(req);
 
+    const { playlist_id } = validatedData;
+
+    // console.log(playlist_id);
     const deezerBaseApiUrl = "https://api.deezer.com/playlist";
 
     // fetch deezer API
