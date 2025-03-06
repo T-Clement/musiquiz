@@ -17,6 +17,7 @@ import WaitingRoomPage, { loader as waitingRoomLoader } from './pages/WaitingRoo
 import InGamePlayerPage from './pages/InGame/InGamePlayerPage';
 import InGamePresentatorPage from './pages/InGame/InGamePresentatorPage';
 import NewRoomPage from './pages/NewRoom/NewRoomPage';
+import PlaygroundPage from './pages/Playground/PlaygroundPage';
 
 // import apiAxios from './libs/axios';
 
@@ -69,6 +70,10 @@ export function App() {
           path: "theme/:id",
           element: <ThemePage />,
           loader: themePageLoader
+        },
+        {
+          path: "playground",
+          element: <PlaygroundPage/>
         },
         {
           path : "*", 
