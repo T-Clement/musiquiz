@@ -38,7 +38,7 @@ function JoinGameSection() {
             });
 
 
-            console.log(response.data);
+            // console.log(response.data);
 
             // console.log(response);
             // if response is ok, redirect to waiting room
@@ -55,34 +55,6 @@ function JoinGameSection() {
             setErrorMessage("Aucune salle n'a été trouvée avec cet identifiant");
         }
 
-        
-        // const checkIfRoomExists = async (roomCode) => {
-        //     try {
-        //         console.warn("Dans la fonction");
-        //         const response = await fetch("/currentRoomsAvailable.json");
-        //         if (!response) {
-        //             throw new Error('Erreur lors du chargement des salles disponibles');
-        //         }
-        //         const rooms = await response.json();
-        //         console.warn(rooms);
-        //         return rooms.find(room => room.waitingRoomId === parseInt(roomCode));
-        //     } catch (error) {
-        //         console.error(error);
-        //         return false;
-        //     }
-        // }
-        
-        // const game = await checkIfRoomExists(roomCode);
-        
-        
-
-
-        // if (game) {
-        //     // navigate(`/waiting-room/${roomCode}`, { state: { room } });
-        //     navigate(`/game/${game._id}/choose-role`, { state: { game } });
-        // } else {
-        //     setErrorMessage("Aucune salle n'a été trouvée avec cet identifiant");
-        // }
     }
 
 
