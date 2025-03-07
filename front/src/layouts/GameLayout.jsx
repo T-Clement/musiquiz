@@ -133,6 +133,7 @@ export default function GameLayout() {
   return (
     // <WebSocketContext.Provider value={socket}>
     <WebSocketContext.Provider value={{socket: socketRef, isSocketReady}}>
+    {/* // <WebSocketContext.Provider value={{socket: socketRef}}> */}
       {/* maybe issue for presentator if height is full screen */}
       <div className="game-layout h-screen md:h-full">
         <p>GameLayout</p>

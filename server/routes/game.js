@@ -162,8 +162,16 @@ router.post('/create-game', async (req, res, next) => {
 
     try {
 
-        // console.log(req.body);
 
+    // console.log(req.body);
+
+    
+        // let error = new Error("TEST 404");
+        // error.status = 404;
+        // throw error;
+        
+        
+        
         const { roomId } = req.body;
         // console.log(roomId);
 
@@ -298,7 +306,7 @@ router.post('/create-game', async (req, res, next) => {
         // store new Game in database
         const newGame = new Game({
             _id: gameId,
-            roomId: parseInt(roomId),
+            roomId: parseInt(roomId), 
             status: 'waiting',
             createdAt: new Date(),
             playlistId: roomData.api_id_playlist,
@@ -326,7 +334,10 @@ router.post('/create-game', async (req, res, next) => {
     } catch (error) {
         console.error('Error creating new Game', error.message);
         // console.error()
-        res.status(500).json({ error: 'Failed to create game' });
+next(error)
+
+
+        // res.status(error.status).json({ error: 'Failed to create game' });
     }
 
 });

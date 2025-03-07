@@ -120,8 +120,8 @@ export default function ChooseRole() {
 
 
 
-
-    // if(!socket) {
+    
+    // if(!socket.connected) {
     if(!isSocketReady) {
         return <p>Waiting for websocket ...</p>
     }

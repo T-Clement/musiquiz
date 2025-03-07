@@ -47,7 +47,9 @@ export default function InGamePresentatorPage() {
 
     // server send data of round
     socketInstance.on("round-loading", (data) => {
-      console.log("Round is loading");
+
+      console.warn("Round is loading");
+      
       setIsRoundOver(false);
       setRoundInProgress(false);
       setIsLoading(false);
@@ -58,9 +60,13 @@ export default function InGamePresentatorPage() {
       setAudioUrl(extractUrl);
 
       // prepare audio locally
+
       if (audioRef.current) {
+        console.log("in if audioRef.current")
         audioRef.current.src = extractUrl;
         audioRef.current.load();
+      } else {
+        console.log("not in audioRef.current")
       }
     });
 
@@ -104,13 +110,7 @@ export default function InGamePresentatorPage() {
 
     });
 
-    // socketInstance.on("game-ended", (message) => {
-    //   console.warn("in-game-presentator : " + message);
 
-    //   // update view + add a redirect
-
-
-    // });
 
     return () => {
       socketInstance.off("room-players-list");
@@ -133,21 +133,14 @@ export default function InGamePresentatorPage() {
     }
 
 
-
-    // do nothing in server side ...
-    // socketInstance.emit("presentator-ready", {
-    //   gameId,
-    //   roundNumber: currentRound
-    // });
   };
 
-  // console.log(players);
-  // console.log(rounds);
+
 
   return (
     <div>
       <p>InGamePresentatorPage</p>
-      <p>Socket: {socket?.id}</p>
+      <p>Socket: {socketInstance?.id}</p>
       <p>Role: {role}</p>
 
       <p className="text-center mb-20">

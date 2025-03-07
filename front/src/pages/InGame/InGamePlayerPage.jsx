@@ -27,6 +27,7 @@ export default function InGamePlayerPage() {
   useEffect(() => {
 
     socketInstance.on("round-loading", (data) => {
+      console.log("round-loading player", data);
       setCurrentRound(data.roundNumber);
       setIsLoading(true);
     });
@@ -40,6 +41,9 @@ export default function InGamePlayerPage() {
       setRoundChoices(null); // TODO: see if another way is possible to avoid rerendering of component ..
       setIsLoading(true);
     });
+
+
+    
 
 
     return () => {

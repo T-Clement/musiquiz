@@ -33,6 +33,7 @@ class Room {
 
             if(rows.length === 0) {
                 console.log("No Room found with id : " + id);
+                // throw new Error("...");
                 return null;
             }
 
@@ -43,7 +44,7 @@ class Room {
             return new Room(roomId, name, withApiUrl ? api_id_playlist : null, description, id_theme);
 
         } catch (error) {
-            console.error('Error finding room : ' + error.message);
+            console.error('Error in findingRoom method : ' + error.message);
             throw error;
         }
     }

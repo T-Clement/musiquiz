@@ -58,7 +58,7 @@ const GameSchema = new mongoose.Schema({
         required: true
     },
     roomId: { // game document related to this roomId
-        type: Number,
+        type: Number, // requeest to SQL database / custom validation 
         required: true
     },
     status: {

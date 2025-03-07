@@ -6,7 +6,7 @@ class GameManager {
     static inMemoryGames = new Map();
     static inMemoryPlayersInGames = new Map();
 
-    static roundsNumber = 2;
+    static roundsNumber = 10;
     static numberOfResponsePropositions = 4;
 
     static addUserToInGamePlayersMemory(userId, gameId) {
@@ -14,7 +14,7 @@ class GameManager {
     }
 
 
-    static checkIfUserIsAlreadyInOneGame (userId) {
+    static checkIfUserIsAlreadyInOneGame (userId) {                
         return GameManager.inMemoryPlayersInGames.get(userId) ?? false;
     }
 
@@ -70,6 +70,7 @@ class GameManager {
         //     players: gameData.players,
         // });
 
+
         Object.assign(gameState, {
             currentRound: 0,
             totalRounds: gameData.totalRounds,
@@ -106,6 +107,7 @@ class GameManager {
             clients.forEach(socketId => {
                 const socket = this.io.sockets.sockets.get(socketId);
                 socket.emit("game-started", {gameId, role: socket.role});
+                console.log("socket event game started : " + socket.role);
             })
         }
 
@@ -113,13 +115,13 @@ class GameManager {
         // this.io.to(gameId).emit("game-started", { gameId });
 
 
-        this._startNextRound(gameId);
+        this.#_startNextRound(gameId);
 
 
     }
 
     // private method
-    _startNextRound(gameId) {
+    #_startNextRound(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
 
@@ -142,7 +144,7 @@ class GameManager {
         
         const roundExtractUrl = this._getRoundExctractUrl(gameId, gameState.currentRound);
 
-
+        // emit data to everybody in room
         this.io.in(gameId).emit("round-loading", {
             roundNumber: gameState.currentRound,
             totalRounds: gameState.totalRounds,
@@ -245,7 +247,7 @@ class GameManager {
         // see if this data is store in gameData
         const RESULTS_DELAY = 7000;
         gameState.timerId = setTimeout(() => {
-            this._startNextRound(gameId);
+            this.#_startNextRound(gameId);
         }, RESULTS_DELAY);
         
         
