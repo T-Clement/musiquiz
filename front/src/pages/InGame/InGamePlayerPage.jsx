@@ -10,7 +10,7 @@ export default function InGamePlayerPage() {
   const auth = useContext(AuthContext); // full data of context, like a hook
   const userId = auth.user.userId;
 
-  const {socket} = useWebSocket();
+  const { socket, isSocketReady } = useWebSocket();
   const socketInstance = socket.current;
 
   const { role, setRole } = useOutletContext();
@@ -25,6 +25,9 @@ export default function InGamePlayerPage() {
 
 
   useEffect(() => {
+
+    if(!isSocketReady || !socketInstance) return;
+
 
     socketInstance.on("round-loading", (data) => {
       console.log("round-loading player", data);
@@ -84,7 +87,7 @@ export default function InGamePlayerPage() {
           roundChoices?.map((choice) => (
             <button
               className={`text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700`}
-              key={choice.choicId}
+              key={choice.choiceId}
               onClick={() => submitAnswer(choice.choiceId)}
             >
               <span className="">

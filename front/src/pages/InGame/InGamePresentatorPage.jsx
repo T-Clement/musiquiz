@@ -5,6 +5,7 @@ import Spinner from "../../components/Spinner";
 import LeaderBoard from "./LeaderBoard";
 
 import CountDownCircle from "./CountDownCircle";
+import { useGameSocketContext } from "../../contexts/GameSocketProvider";
 
 export default function InGamePresentatorPage() {
   const { id: gameId } = useParams();
@@ -12,113 +13,10 @@ export default function InGamePresentatorPage() {
   const socketInstance = socket.current;
   const { role, setRole } = useOutletContext();
 
-  // -------------------------------------------
-  // STATES
-  // -------------------------------------------
-  const [players, setPlayers] = useState([]);
-  const [currentRound, setCurrentRound] = useState(1);
-  const [roundsNumber, setRoundsNumber] = useState(null);
 
-  // url of extract of currentRound
-  const [audioUrl, setAudioUrl] = useState(null);
-  // to handle reading of audio
+  const { players, roundData } = useGameSocketContext(gameId);
   const audioRef = useRef(null);
 
-  // to show if the round is in "loading state"
-  const [isLoading, setIsLoading] = useState(false);
-
-  //
-  const [correctAnswer, setCorrectAnswer] = useState(null);
-  const [roundInProgress, setRoundInProgress] = useState(false);
-  const [isRoundOver, setIsRoundOver] = useState(false);
-  // local counter but server is the single source of truth !!!
-  const [timeLeft, setTimeLeft] = useState(30);
-
-  useEffect(() => {
-    if (!isSocketReady) return;
-
-    // when component mounted, ask for players in game / room
-    socketInstance.emit("get-room-players", gameId);
-
-    // handle reception of players in room
-    socketInstance.on("room-players-list", (players) => {
-      setPlayers(players);
-    });
-
-    // server send data of round
-    socketInstance.on("round-loading", (data) => {
-
-      console.warn("Round is loading");
-      
-      setIsRoundOver(false);
-      setRoundInProgress(false);
-      setIsLoading(false);
-
-      const { roundNumber, totalRounds, extractUrl } = data;
-      setCurrentRound(roundNumber);
-      setRoundsNumber(totalRounds);
-      setAudioUrl(extractUrl);
-
-      // prepare audio locally
-
-      if (audioRef.current) {
-        console.log("in if audioRef.current")
-        audioRef.current.src = extractUrl;
-        audioRef.current.load();
-      } else {
-        console.log("not in audioRef.current")
-      }
-    });
-
-    // server has launched the round, round is officialy started
-    socketInstance.on("round-started", (data) => {
-      // data: roundDuration ?, ..
-      console.log("Round just started");
-      // console.log(data.roundDuration);
-      setRoundInProgress(true);
-      setIsRoundOver(false);
-      setCorrectAnswer(null);
-
-      // start local counter
-      if (data.roundDuration) {
-        // console.log("if round duration");
-        setTimeLeft(data.roundDuration);
-      } else {
-        setTimeLeft(30);
-      }
-
-      // play audio
-      if (audioRef.current) {
-        audioRef.current.play().catch((err) => {
-          console.error(`Error playing audio : ${err}`);
-        });
-      }
-    });
-
-    //
-    socketInstance.on("round-results", (resultsData) => {
-      // resultsData: correctAnswer, scores, nextRoundNumber, ...
-      console.log("roundInProgress changed to:", roundInProgress);
-      setCorrectAnswer(resultsData.correctAnswer);
-      // setRoundInProgress(false);
-      setIsRoundOver(true);
-
-      // update the leaderboard with new scores of players coming from server
-      if (resultsData.updatedPlayers) {
-        setPlayers(resultsData.updatedPlayers);
-      }
-
-    });
-
-
-
-    return () => {
-      socketInstance.off("room-players-list");
-      socketInstance.off("round-started");
-      socketInstance.off("round-results");
-      socketInstance.off("round-loading");
-    };
-  }, [isSocketReady, socket, socketInstance, gameId]);
 
   // ------------------------------------
   // -------- HANDLERS ------------------
@@ -127,13 +25,42 @@ export default function InGamePresentatorPage() {
     console.log("Audio loaded, presentator is ready");
 
     if(socketInstance) {
-      socketInstance.emit('audio-ready', { gameId, roundNumber: currentRound });
+      socketInstance.emit('audio-ready', { gameId, roundNumber: roundData.currentRound });
     } else {
       console.error("socket instance is undefined")
     }
 
 
   };
+
+
+  useEffect(() => {
+    if (isSocketReady && socketInstance) {
+      console.log("Emitting get-room-players from InGamePresentatorPage");
+      socketInstance.emit("get-room-players", gameId);
+    }
+  }, [isSocketReady, gameId, socketInstance]);
+
+  useEffect(() => {
+    // load / fetch audio extract
+    if(audioRef.current && roundData.audioUrl) {
+      audioRef.current.src = roundData.audioUrl;
+      audioRef.current.load();
+      console.log("Source de l'élément Audio mise à jour : ", roundData.audioUrl);
+    }
+  }, [roundData.audioUrl]);
+
+
+
+  useEffect(() => {
+    // plays audio when value of roundInProgress changes
+    if(roundData.roundInProgress && audioRef.current) {
+      audioRef.current
+        .play()
+        .then(() => console.log("Audio is playing"))
+        .catch((err) => console.error("Error playing audio : ", err));
+    }
+  }, [roundData.roundInProgress]);
 
 
 
@@ -145,7 +72,7 @@ export default function InGamePresentatorPage() {
 
       <p className="text-center mb-20">
         <span className="bg-white text-black rounded-md p-4">
-          Round {currentRound} / {roundsNumber ?? "..."}
+          Round {roundData.currentRound} / {roundData.roundsNumber ?? "..."}
         </span>
       </p>
 
@@ -156,7 +83,7 @@ export default function InGamePresentatorPage() {
           
           
 
-          <LeaderBoard players={players} setPlayers = { setPlayers }/>
+          <LeaderBoard players={players} setPlayers = { () => {} }/>
 
         </div>
 
@@ -165,6 +92,7 @@ export default function InGamePresentatorPage() {
           {/** Audio Ref */}
           <audio 
             ref={audioRef} 
+            src={roundData.audioUrl || ""}
             preload="auto" 
             onCanPlay={handleAudioLoaded} 
             onError={(e) => console.error("Erreur lors du chargement de l'audio : ", e)}
@@ -173,19 +101,19 @@ export default function InGamePresentatorPage() {
           {/** Local counter */}
           <div className="flex flex-col gap-3">
             <CountDownCircle
-              currentRound={currentRound}
-              roundInProgress={roundInProgress}
-              timeLeft={timeLeft}
+              currentRound={roundData.currentRound}
+              roundInProgress={roundData.roundInProgress}
+              timeLeft={roundData.timeLeft}
             />
 
-            {correctAnswer && (
+            {roundData.correctAnswer && (
               <div className="flex flex-col gap-3">
                 
                 <p className="text-white ">
                   Bonne réponse :
                 </p>
                 <span className="bg-white text-black rounded-md p-4">
-                  {correctAnswer.artistName} - {correctAnswer.title}
+                  {roundData.correctAnswer.artistName} - {roundData.correctAnswer.title}
                 </span>
 
               </div>

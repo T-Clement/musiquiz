@@ -3,6 +3,7 @@ import { useNavigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from '../hooks/authContext';
 import { io } from 'socket.io-client';
 import axios from 'axios';
+import GameSocketProvider from '../contexts/GameSocketProvider';
 
 
 
@@ -13,25 +14,15 @@ const WebSocketContext = createContext();
 
 export default function GameLayout() {
 
-  console.log("Render Game Layout");
-  // check if game passed in GET request exists
-  //  --> returns a 404 in waiting-room
 
-
-
+  console.log("Render GameLayout");
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const { state } = useLocation();
-
-
   const { id: gameId } = useParams();
-
 
   const socketRef = useRef(null);
   const [isSocketReady, setIsSocketReady] = useState(false);
-  // const [socket, setSocket] = useState(null);
-
-  // role to in childrens components
   const [role, setRole] = useState(null);
 
 
@@ -135,19 +126,23 @@ export default function GameLayout() {
     <WebSocketContext.Provider value={{socket: socketRef, isSocketReady}}>
     {/* // <WebSocketContext.Provider value={{socket: socketRef}}> */}
       {/* maybe issue for presentator if height is full screen */}
-      <div className="game-layout h-screen md:h-full">
-        <p>GameLayout</p>
-        <div className='mx-auto flex items-center justify-center'>
-          <button
-            className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
-            type='button'
-            onClick={handleDeleteGame}
-          >
-            Supprimer la partie
-          </button>
+      <GameSocketProvider gameId={gameId}>
+        
+        <div className="game-layout h-screen md:h-full">
+          <p>GameLayout</p>
+          <div className='mx-auto flex items-center justify-center'>
+            <button
+              className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+              type='button'
+              onClick={handleDeleteGame}
+            >
+              Supprimer la partie
+            </button>
+          </div>
+          <Outlet context={{role, setRole}} />
         </div>
-        <Outlet context={{role, setRole}} />
-      </div>
+
+      </GameSocketProvider>
     </WebSocketContext.Provider>
   );
 }
@@ -155,5 +150,9 @@ export default function GameLayout() {
 
 export function useWebSocket() {
   // return useContext(WebSocketContext);
-  return useContext(WebSocketContext);
+  const context = useContext(WebSocketContext);
+  if(!context) {
+    throw new Error("useWebSocket need to be used in GameLayout provider");
+  }
+  return context;
 }
