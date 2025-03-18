@@ -3,14 +3,6 @@ import FlipMove from 'react-flip-move';
 
 export default function LeaderBoard({ players, setPlayers }) {
 
-    // const moveItem = (dragIndex, hoverIndex) => {
-    //     const draggedItem = players[dragIndex];
-    //     const remainingsItems = players.filter((_, index) => index !== dragIndex);
-    //     remainingsItems.splice(hoverIndex, 0, draggedItem);
-    //     setPlayers(remainingsItems);
-    // }
-
-
     return (
         <table className='w-full text-sm text-left'>
             <thead className='text-xs uppercase border-b-2 bg-slate-600'>

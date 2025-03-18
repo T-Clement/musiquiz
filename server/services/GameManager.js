@@ -6,7 +6,7 @@ class GameManager {
     static inMemoryGames = new Map();
     static inMemoryPlayersInGames = new Map();
 
-    static roundsNumber = 10;
+    static roundsNumber = 2;
     static numberOfResponsePropositions = 4;
 
     static addUserToInGamePlayersMemory(userId, gameId) {
@@ -289,14 +289,13 @@ class GameManager {
         console.log(`P=== endGame ===> End of game ${gameId}`);
         console.log(scores);
 
-
         // ??? this.io.in or this.io.to ???
         this.io.in(gameId).emit("game-ended", {
             message: "La partie est terminée, merci d'avoir joué !",
             gameId,
             scores,
             roomName: gameState.roomName,
-            tracks : gameState.rounds // filter this to return only the correct answer
+            tracks : GameManager.getGameExtracts(gameState) // filter this to return only the correct answer
         })
     }
 
@@ -308,9 +307,6 @@ class GameManager {
     static killGameInstance(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return; // nothing to kill
-        // console.log("ICI");
-        // console.log(gameState.timerId);
-        // console.log("ICI");
         if(gameState.timerId) {
             clearTimeout(gameState.timerId);
         }
@@ -471,6 +467,31 @@ class GameManager {
         return Math.floor(Math.max( 0, MAX_SCORE - slope * (t - THRESHOLD) ));
 
     }
+
+
+
+    static getGameExtracts(gameData) {
+        return gameData.rounds.map(round => {
+            const correctChoice = round.choices.find(choice => 
+                choice.choiceId.toString() === round.correctAnswer.toString()
+            );
+
+            if(!correctChoice) {
+                throw new Error('Correct Choice is not found');
+            }
+
+            return {
+                artist: correctChoice.artistName,
+                title: correctChoice.title,
+                songExtract: round.audioPreviewUrl,
+                correctAnswerId: correctChoice.choiceId,
+                index: round.correctChoiceAnswer
+              }
+        })
+    }
+
+
+
     
 }
 

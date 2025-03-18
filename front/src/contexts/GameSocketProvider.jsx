@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useWebSocket } from "../layouts/GameLayout";
 
-
 const GameSocketContext = createContext();
-
 
 export default function GameSocketProvider({gameId, children}) {
   const { socket, isSocketReady } = useWebSocket();
@@ -21,9 +19,6 @@ export default function GameSocketProvider({gameId, children}) {
   useEffect(() => {
     if (!isSocketReady) return;
     const socketInstance = socket.current;
-
-   
-
 
     // -------------------------
     // HANDLERS
@@ -69,13 +64,13 @@ export default function GameSocketProvider({gameId, children}) {
       }
     };
 
-    // Attacher les événements
+    // attach events
     socketInstance.on("room-players-list", handleRoomPlayersList);
     socketInstance.on("round-loading", handleRoundLoading);
     socketInstance.on("round-started", handleRoundStarted);
     socketInstance.on("round-results", handleRoundResults);
 
-    // Nettoyer les écouteurs lors du démontage du hook
+    // cleanup functions
     return () => {
       socketInstance.off("room-players-list", handleRoomPlayersList);
       socketInstance.off("round-loading", handleRoundLoading);

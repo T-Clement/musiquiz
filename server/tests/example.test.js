@@ -13,6 +13,8 @@ const dumpFilePath = "./tests/test-setup.sql";
 let mysqlConnection;
 
 const utils = require('../utils/utils');
+const { createGameFixture } = require("./fakeGame");
+const GameManager = require("../services/GameManager");
 
 
 
@@ -273,6 +275,28 @@ describe("POST /api/login", () => {
 
 });
 
+describe("getGameExtracts", () => {
+  it("should return an array of the extracts (artist, title, song extract) for each round", () => {
+
+    const gameData = createGameFixture(2);
+
+    const roundsExtracts = GameManager.getGameExtracts(gameData);
+
+    expect(roundsExtracts.length).toBe(gameData.rounds.length);
+    // add more assertions ... 
+  });
+    
+
+
+  
+});
+
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+
 
 describe("WS tests", () => {
 
@@ -357,7 +381,7 @@ describe("WS tests", () => {
 
     // 'event' listener before emit, to avoid sending message before listener is up
     newSocketClient.on("pong", (data) => {
-      console.log("in on 'ping'")
+      // console.log("in on 'ping'")
       console.log(data.message);
       expect(data.message).toBe("pong");
       newSocketClient.disconnect();
@@ -369,45 +393,49 @@ describe("WS tests", () => {
   });
 
 
-  it("user can't join a game if he is already in one game", async (done) => {
+  // it("user can't join a game if he is already in one game", async (done) => {
 
       
-    const pseudo = "TestPseudo";
+  //   // const pseudo = "TestPseudo";
 
-    const userPassword = "password";
+  //   // const userPassword = "password";
     
-    const saltRounds = 10;
-    const hashedPassword = await utils.generatePasswordHash(userPassword, saltRounds);
+  //   // const saltRounds = 10;
+  //   // const hashedPassword = await utils.generatePasswordHash(userPassword, saltRounds);
     
 
-    // -----
-    // create new User 
-    const newUser = new User(
-      null,
-      pseudo,
-      hashedPassword,
-      "test@example.com",
-      Date.now,
-      Date.now
-    );
+  //   // // -----
+  //   // // create new User 
+  //   // const newUser = new User(
+  //   //   null,
+  //   //   pseudo,
+  //   //   hashedPassword,
+  //   //   "test@example.com",
+  //   //   Date.now,
+  //   //   Date.now
+  //   // );
     
-    // insert new user DIRECTLY IN DATABASE
-    const newUserStored = await User.insertNewUser(newUser.pseudo, newUser.password, newUser.email);
+  //   // // insert new user DIRECTLY IN DATABASE
+  //   // const newUserStored = await User.insertNewUser(newUser.pseudo, newUser.password, newUser.email);
 
-    // login user to authorize to get access to player role
+  //   // login user to authorize to get access to player role
 
-    // pass JWT data in socket connection
-    // ... 
-
-
-    // const firstClientSocket = ioc(socketServerUrl);
-
-    // const secondClientSocket = ioc(socketServerUrl);
+  //   // pass JWT data in socket connection
+  //   // ... 
 
 
+  //   // const firstClientSocket = ioc(socketServerUrl);
+
+  //   // const secondClientSocket = ioc(socketServerUrl);
+
+  //   // done();
+  //   // return;
 
 
-  });
+  // });
+
+
+
 
 
 
@@ -416,3 +444,8 @@ describe("WS tests", () => {
 
 
 });
+
+
+
+
+
