@@ -178,7 +178,6 @@ export default function WaitingRoomPage() {
 
   return (
     <div className="mt-5">
-      {/* <Link to={'/'} className='link'>Go back to Home</Link> */}
 
       <h1 className="text-2xl font-extrabold uppercase text-center mb-6">
         Salle d'attente
