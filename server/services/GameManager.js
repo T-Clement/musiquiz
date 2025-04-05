@@ -6,7 +6,7 @@ class GameManager {
     static inMemoryGames = new Map();
     static inMemoryPlayersInGames = new Map();
 
-    static roundsNumber = 10;
+    static roundsNumber = 2;
     static numberOfResponsePropositions = 4;
 
     static addUserToInGamePlayersMemory(userId, gameId) {
@@ -14,7 +14,7 @@ class GameManager {
     }
 
 
-    static checkIfUserIsAlreadyInOneGame (userId) {
+    static checkIfUserIsAlreadyInOneGame (userId) {                
         return GameManager.inMemoryPlayersInGames.get(userId) ?? false;
     }
 
@@ -24,6 +24,20 @@ class GameManager {
     }
 
 
+
+    static removePlayersFromInGamePlayers(gameId) {
+
+        // console.log(GameManager.inMemoryPlayersInGames.entries());
+
+        // to put in a function 
+        // remove from memory all users who are in this game who is ended
+        for(let [key, value] of GameManager.inMemoryPlayersInGames.entries()) { // get all games who are running
+            if(value === gameId) {
+                console.log(`user ${key} deleted from game ${value}`)
+                GameManager.inMemoryPlayersInGames.delete(key); // key is the userId
+            }
+        }
+    }
 
 
 
@@ -44,12 +58,25 @@ class GameManager {
 
 
     initGame(gameId, gameData) {
-        GameManager.inMemoryGames.set(gameId, {
+        const gameState = GameManager.inMemoryGames.get(gameId);
+
+        // gameState.set(gameId, {
+        //     currentRound: 0,
+        //     totalRounds: gameData.totalRounds,
+        //     roundDuration: gameData.roundDuration,
+        //     rounds: gameData.rounds,
+        //     status: 'NOT_STARTED',
+        //     timerId: null,
+        //     players: gameData.players,
+        // });
+
+
+        Object.assign(gameState, {
             currentRound: 0,
             totalRounds: gameData.totalRounds,
             roundDuration: gameData.roundDuration,
             rounds: gameData.rounds,
-            status: 'NOT_STARTED',
+            status: "NOT_STARTED",
             timerId: null,
             players: gameData.players,
         });
@@ -80,6 +107,7 @@ class GameManager {
             clients.forEach(socketId => {
                 const socket = this.io.sockets.sockets.get(socketId);
                 socket.emit("game-started", {gameId, role: socket.role});
+                console.log("socket event game started : " + socket.role);
             })
         }
 
@@ -87,13 +115,13 @@ class GameManager {
         // this.io.to(gameId).emit("game-started", { gameId });
 
 
-        this._startNextRound(gameId);
+        this.#_startNextRound(gameId);
 
 
     }
 
     // private method
-    _startNextRound(gameId) {
+    #_startNextRound(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
 
@@ -116,7 +144,7 @@ class GameManager {
         
         const roundExtractUrl = this._getRoundExctractUrl(gameId, gameState.currentRound);
 
-
+        // emit data to everybody in room
         this.io.in(gameId).emit("round-loading", {
             roundNumber: gameState.currentRound,
             totalRounds: gameState.totalRounds,
@@ -128,18 +156,19 @@ class GameManager {
         // // 3s delay between rounds 
         // const LOADING_DELAY = 3000;
         // gameState.timerId = setTimeout(() => {
-        //     console.log("round launched");
-        //     this._launchRound(gameId);
-        // }, LOADING_DELAY);
-
-
-    }
-
-
-
+            //     console.log("round launched");
+            //     this._launchRound(gameId);
+            // }, LOADING_DELAY);
+            
+            
+        }
+        
+        
+        
     _launchRound(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
+        console.log(gameState.players);
 
         console.log(`=== launch round ===> Round ${gameState.currentRound} - gameId: ${gameId}`);
 
@@ -163,95 +192,93 @@ class GameManager {
         }, gameState.roundDuration * 1000);
 
     }
-
-
+    
+    
     async _endRound(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return;
-
+        
         gameState.status = "ROUND_ENDED";
         const roundIndex = gameState.currentRound - 1;
-
+        
         // calculate scores
-
+        
         // const updatedPlayers ...
-
-
+        
+        
         const correctAnswerId = gameState.rounds[roundIndex].correctAnswer;
         const correctRoundChoice = gameState.rounds[roundIndex].choices.find(
-        // ObjectId are compared by reference and not value in js
-        // so it is compared after a toString on the objectId
-        (choice) => choice.choiceId.toString() === correctAnswerId.toString()
+            // ObjectId are compared by reference and not value in js
+            // so it is compared after a toString on the objectId
+            (choice) => choice.choiceId.toString() === correctAnswerId.toString()
         );
 
-
-
+        
+        
         console.log(`=== endRound ==> Round ${gameState.currentRound} - gameId: ${gameId}`);
         gameState.status = "ROUND_ENDED";
-
-
+        
+        
         // get correct answer of round
-
-
+        
+        
         // set 0 to players who dont have make a response to this round ???
-
-
+        
+        
         const game = await Game.findById(gameId);
         // const playersResponses = game.rounds[roundIndex].playersResponses;
-
+        
         // calculate scores of players
         const updatedPlayers = await this._calculateScores(game, roundIndex);
-
-
-
-
+        
+        // update the object in memory
+        gameState.players = updatedPlayers;
+        
+        
         // emit event round-results to broadcast results of round in presentator view
         this.io.in(gameId).emit('round-results', {
             roundNumber: gameState.currentRound,
             correctAnswer: correctRoundChoice,
             updatedPlayers
         });
-
-
+        
+        
         // wait 5 seconds before next round is being played
         // see if this data is store in gameData
         const RESULTS_DELAY = 7000;
         gameState.timerId = setTimeout(() => {
-            this._startNextRound(gameId);
+            this.#_startNextRound(gameId);
         }, RESULTS_DELAY);
-
-
-
-
-
-
+        
+        
+        
+        
+        
+        
         // this.io.to(gameId).emit("round-ended", {
-        //     roundNumber: gameState.currentRound,
-        //     // correctAnswer,
-        //     // updatedPlayers
-        // });
-
-
-
-        // // delay between each rounds
-        // setTimeout(() => {
-        //     this._startNextRound(gameId);
-        // }, 5000);
-
-
+            //     roundNumber: gameState.currentRound,
+            //     // correctAnswer,
+            //     // updatedPlayers
+            // });
+            
+            
+            
+            // // delay between each rounds
+            // setTimeout(() => {
+                //     this._startNextRound(gameId);
+                // }, 5000);
+                
+                
     }
-
-    static removePlayersFromInGamePlayers(gameId) {
-        // to put in a function 
-        // remove from memory all users who are in this game who is ended
-        for(let [key, value] of GameManager.inMemoryPlayersInGames.entries()) {
-            if(value === gameId) {
-                GameManager.inMemoryGames.delete(key); // key is the userId
-            }
-        }
-    }
-
+            
+            
+            
     _endGame(gameId) {
+
+        // scores 
+        const gameState = GameManager.inMemoryGames.get(gameId);
+        const scores = gameState.players;
+
         // delete game from memory
         GameManager.inMemoryGames.delete(gameId);
         
@@ -260,27 +287,29 @@ class GameManager {
 
         // GameManager.inMemoryPlayersInGames.delete()
         console.log(`P=== endGame ===> End of game ${gameId}`);
+        console.log(scores);
 
         // ??? this.io.in or this.io.to ???
         this.io.in(gameId).emit("game-ended", {
             message: "La partie est terminée, merci d'avoir joué !",
             gameId,
-            // leaderBoard
+            scores,
+            roomName: gameState.roomName,
+            tracks : GameManager.getGameExtracts(gameState) // filter this to return only the correct answer
         })
     }
 
 
     static getGameState(gameId) {
-        return GameManager.inMemoryGames.get(gameId);
+        return this.inMemoryGames.get(gameId);
     }
 
     static killGameInstance(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return; // nothing to kill
-        // console.log("ICI");
-        console.log(gameState.timerId);
-        // console.log("ICI");
-        clearTimeout(gameState.timerId);
+        if(gameState.timerId) {
+            clearTimeout(gameState.timerId);
+        }
         this.inMemoryGames.delete(gameId);
 
         GameManager.removePlayersFromInGamePlayers(gameId);
@@ -438,6 +467,31 @@ class GameManager {
         return Math.floor(Math.max( 0, MAX_SCORE - slope * (t - THRESHOLD) ));
 
     }
+
+
+
+    static getGameExtracts(gameData) {
+        return gameData.rounds.map(round => {
+            const correctChoice = round.choices.find(choice => 
+                choice.choiceId.toString() === round.correctAnswer.toString()
+            );
+
+            if(!correctChoice) {
+                throw new Error('Correct Choice is not found');
+            }
+
+            return {
+                artist: correctChoice.artistName,
+                title: correctChoice.title,
+                songExtract: round.audioPreviewUrl,
+                correctAnswerId: correctChoice.choiceId,
+                index: round.correctChoiceAnswer
+              }
+        })
+    }
+
+
+
     
 }
 

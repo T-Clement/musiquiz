@@ -38,8 +38,6 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
 
     const { email, password } = validatedData;
 
-    console.log(email, password);
-
     // check if user exists with the credentials comming from post request and validated with validator
     User.findUserByMail(email).then(async user => {
         // no user

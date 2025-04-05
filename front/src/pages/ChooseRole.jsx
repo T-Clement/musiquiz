@@ -2,7 +2,6 @@
 import apiAxios from '../libs/axios';
 import { useLoaderData, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Socket } from 'socket.io-client';
 import { useWebSocket } from '../layouts/GameLayout';
 
 
@@ -29,7 +28,7 @@ export async function loader() {
             console.error("dans le else");
             console.error(error);
         }
-        throw error; // Rethrow other errors
+        throw error; // rethrow other errors
     }
 
 
@@ -120,8 +119,8 @@ export default function ChooseRole() {
 
 
 
-
-    // if(!socket) {
+    
+    // if(!socket.connected) {
     if(!isSocketReady) {
         return <p>Waiting for websocket ...</p>
     }

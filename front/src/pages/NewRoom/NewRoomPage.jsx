@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import apiAxios from "../../libs/axios";
 
 import Spinner from "../../components/Spinner";
+import { useNavigate } from "react-router-dom";
 
 // put in the loader a check is User is authenticated
 // put in the loader a check is User is authenticated
@@ -16,6 +17,8 @@ export default function NewRoomPage() {
   // page only if user is authenticated
   // page only if user is authenticated
   // page only if user is authenticated
+
+  const navigate = useNavigate();
 
 
   const [playlistId, setPlaylistId] = useState("");
@@ -41,6 +44,9 @@ export default function NewRoomPage() {
         playlist_id: playlistId,
       });
       setPlaylistTestResult(response.data);
+
+      console.warn("no extracts", response.data.data.noExtractsTracks);
+      console.warn("not readable", response.data.data.notReadablesTracks);
 
       if(response.data.data.themes) {
         setAvailableThemes(response.data.data.themes);
@@ -75,10 +81,12 @@ export default function NewRoomPage() {
       setAvailableThemes([]);
 
       // navigate to new created room
-
+      navigate(`/room/${response.data.room.id}`);
 
     } catch (error) {
+
       setError("Erreur lors de la création de la Room.");
+
     } finally {
       setLoading(false);
     }

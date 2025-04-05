@@ -5,6 +5,7 @@ class User {
 
     static tableName = "mqz_users";
 
+    // ajouter le code HTTP ?
     static errorsMessages = {
         pseudoAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce pseudo",
         emailAlreadyExists: "Un utilisateur s'est déjà enregistré avec ce mail",
