@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "../../layouts/GameLayout";
 import { useOutletContext, useParams } from "react-router-dom";
-import Spinner from "../../components/Spinner";
 import LeaderBoard from "./LeaderBoard";
 
 import CountDownCircle from "./CountDownCircle";
@@ -58,7 +57,10 @@ export default function InGamePresentatorPage() {
       audioRef.current
         .play()
         .then(() => console.log("Audio is playing"))
-        .catch((err) => console.error("Error playing audio : ", err));
+        .catch((err) => 
+          console.error("Error playing audio : ", err)
+
+      );
     }
   }, [roundData.roundInProgress]);
 
