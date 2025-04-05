@@ -1,6 +1,44 @@
 import React from 'react'
 
 export default function WaitingRoomPresentator({ players, presentator, socket, handleLaunchGame }) {
+    
+    const handleClick = async () => {
+        // check if audio can be play in presentor browser's
+        try {
+            // window.AudioContext = window.AudioContext || window.webkitAudioContext;            
+            window.AudioContext = window.AudioContext;
+            
+            const audioContext = new AudioContext();
+
+            console.log(audioContext.state );
+
+            // try to activate audio if he is suspended 
+            if(audioContext.state === "suspended") {
+                console.warn("audio is suspended in browser");
+                await audioContext.resume();
+            }
+
+            // display info if audio is not activated
+            if(audioContext.state !== "running") {
+                // console.warn("audio need to be running");
+                alert("L'activation de l'audio sur ce site par votre navigateur est requise pour lancer une partie. Veuillez activer l'audio et réessayer.");
+                return;
+            } else {
+                // console.warn("audio is authorized");
+            }
+
+
+        } catch (error) {
+            alert("Votre navigateur ne supporte pas l'API audio nécessaire pour cette application. Veuillez réessayer en changeant de navigateur.")
+            return;
+        }
+
+        // if everythiing is ok
+        // call function of parent component
+        handleLaunchGame();
+    }
+    
+    
     return (
         <div>
             <div className='flex gap-2'>
@@ -45,7 +83,7 @@ export default function WaitingRoomPresentator({ players, presentator, socket, h
                     <button
                         className='bg-green-600 px-5 py-2.5 rounded-lg disabled:bg-green-300 disabled:cursor-not-allowed'
                         disabled={!players.length > 0}
-                        onClick={handleLaunchGame}
+                        onClick={() => handleClick()}
                     >
                         Lancer la partie
                     </button>
