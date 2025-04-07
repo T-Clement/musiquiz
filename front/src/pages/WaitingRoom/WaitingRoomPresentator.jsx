@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "../../components/Modal";
-import { useAudioContext } from "../../contexts/AudioContextProvider";
+// import { useAudioContext } from "../../contexts/AudioContextProvider";
 
 export default function WaitingRoomPresentator({
   players,
@@ -9,51 +9,51 @@ export default function WaitingRoomPresentator({
   handleLaunchGame,
 }) {
   const [showModal, setShowModal] = useState(false);
-  const { audioContext, initializeAudioContext } = useAudioContext();
+  // const { audioContext, initializeAudioContext } = useAudioContext();
 
 
-  const handleAudioAcceptance = async () => {
-    const updatedAudioContext = await initializeAudioContext();
-    if (updatedAudioContext && updatedAudioContext.state === "suspended") {
-      await updatedAudioContext.resume();
-    }
-    setShowModal(false);
+  // const handleAudioAcceptance = async () => {
+  //   const updatedAudioContext = await initializeAudioContext();
+  //   if (updatedAudioContext && updatedAudioContext.state === "suspended") {
+  //     await updatedAudioContext.resume();
+  //   }
+  //   setShowModal(false);
 
-    // handleLaunchGame();
-  };
+  //   // handleLaunchGame();
+  // };
 
   const handleClick = async () => {
     // check if audio can be play in presentor browser's
-    try {
-    //   const updatedAudioContext = await initializeAudioContext();
-    // console.log(audioContext);
-      const updatedAudioContext = audioContext;
-      if (!updatedAudioContext) {
-        alert("Impossible d'initialiser l'audio.");
-        return;
-      }
+    // try {
+    // //   const updatedAudioContext = await initializeAudioContext();
+    // // console.log(audioContext);
+    //   const updatedAudioContext = audioContext;
+    //   if (!updatedAudioContext) {
+    //     alert("Impossible d'initialiser l'audio.");
+    //     return;
+    //   }
 
-      console.log("État audio après update :", updatedAudioContext.state);
+    //   console.log("État audio après update :", updatedAudioContext.state);
 
-      if (updatedAudioContext.state === "suspended") {
-        setShowModal(true);
-        return;
-      }
+    //   if (updatedAudioContext.state === "suspended") {
+    //     setShowModal(true);
+    //     return;
+    //   }
 
-      if (updatedAudioContext.state !== "running") {
-        alert(
-          "L'activation de l'audio sur ce site par votre navigateur est requise pour lancer une partie. Veuillez activer l'audio et réessayer."
-        );
-        return;
-      }
-    } catch (error) {
-      alert(
-        "Votre navigateur ne supporte pas l'API audio nécessaire pour cette application. Veuillez réessayer en changeant de navigateur."
-      );
-      return;
-    }
+    //   if (updatedAudioContext.state !== "running") {
+    //     alert(
+    //       "L'activation de l'audio sur ce site par votre navigateur est requise pour lancer une partie. Veuillez activer l'audio et réessayer."
+    //     );
+    //     return;
+    //   }
+    // } catch (error) {
+    //   alert(
+    //     "Votre navigateur ne supporte pas l'API audio nécessaire pour cette application. Veuillez réessayer en changeant de navigateur."
+    //   );
+    //   return;
+    // }
 
-    // Si tout est OK, lancer la partie
+    // if everything ok, launches the game
     handleLaunchGame();
   };
 
@@ -74,7 +74,8 @@ export default function WaitingRoomPresentator({
               <button
                 className="bg-green-600 px-5 py-2.5 rounded-lg text-white"
                 type="button"
-                onClick={handleAudioAcceptance}
+                // onClick={handleAudioAcceptance}
+                onClick={handleClick}
               >
                 Activer l'audio pour ce site
               </button>

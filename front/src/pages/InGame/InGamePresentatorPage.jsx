@@ -94,11 +94,13 @@ export default function InGamePresentatorPage() {
           {/** Audio Ref */}
           <audio 
             ref={audioRef} 
-            src={roundData.audioUrl || ""}
+            
             preload="auto" 
-            onCanPlay={handleAudioLoaded} 
+            onCanPlayThrough={handleAudioLoaded} 
             onError={(e) => console.error("Erreur lors du chargement de l'audio : ", e)}
-          />
+          >
+            <source src={roundData.audioUrl || ""}></source>
+          </audio>
 
           {/** Local counter */}
           <div className="flex flex-col gap-3">
