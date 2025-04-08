@@ -1,5 +1,4 @@
 const mysql = require('mysql2/promise');
-const fs = require('fs');
 
 
 if(process.env.NODE_ENV === "test") {
@@ -13,9 +12,6 @@ let pool;
 try {
 
     if (process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === "development") {
-        // const dbUrl = new URL(process.env.DATABASE_URL);
-        // console.log(dbUrl);
-        console.log("TEST"),
         pool = mysql.createPool({
             host: process.env.MYSQL_HOST,
             port: process.env.MYSQL_PORT,
@@ -25,14 +21,7 @@ try {
             waitForConnections: true,
             connectionLimit: 10,
             queueLimit: 0
-            // host: dbUrl.hostname, // Utiliser le hostname extrait de l'URL (ici, mysql-container-muziquiz)
-            // port: dbUrl.port || 3306, // Utiliser le port depuis l'URL ou 3306 par défaut
-            // user: dbUrl.username, // Utiliser l'utilisateur extrait de l'URL
-            // password: dbUrl.password, // Utiliser le mot de passe extrait de l'URL
-            // database: dbUrl.pathname.replace('/', ''), // Extraire le nom de la base de données en retirant le "/" initial
-            // waitForConnections: true,
-            // connectionLimit: 10,
-            // queueLimit: 0
+
         });
 
         // console.log(`Connected to MariaDB at ${dbUrl.hostname}:${dbUrl.port}`);
