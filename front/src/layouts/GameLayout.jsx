@@ -6,6 +6,7 @@ import axios from "axios";
 import GameSocketProvider from "../contexts/GameSocketProvider";
 
 import { AudioContextProvider } from "../contexts/AudioContextProvider";
+import Button from "../components/Button";
 
 // create websocket context
 const WebSocketContext = createContext();
@@ -108,13 +109,10 @@ export default function GameLayout() {
             <p>GameLayout</p>
             <div className="mx-auto flex items-center justify-center">
               
-              <button
-                className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                type="button"
-                onClick={handleDeleteGame}
-              >
+              <Button onClick={handleDeleteGame} variant="danger">
                 Supprimer la partie
-              </button>
+              </Button>
+
             </div>
             <Outlet context={{ role, setRole }} />
           </div>

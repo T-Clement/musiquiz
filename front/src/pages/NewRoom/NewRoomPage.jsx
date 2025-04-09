@@ -3,6 +3,7 @@ import apiAxios from "../../libs/axios";
 
 import Spinner from "../../components/Spinner";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 
 // put in the loader a check is User is authenticated
 // put in the loader a check is User is authenticated
@@ -160,12 +161,12 @@ export default function NewRoomPage() {
             required
             onChange={(e) => setPlaylistId(e.target.value)}
           />
-          <button
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+          <Button
+            variant="secondaryDark"
             type="submit"
           >
             Tester
-          </button>
+          </Button>
         </div>
       </form>
 
@@ -263,12 +264,13 @@ export default function NewRoomPage() {
 
                   </select>
 
-                  <button
-                    className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
+                  <Button
+                    className="mt-4 "
+                    variant="success"
                     type="submit"
                   >
                     🎵 Ajouter la Room
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
