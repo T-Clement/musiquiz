@@ -33,14 +33,14 @@ jobs:
           node-version: 18
       
       - name: Installe les dépendances backend
-        working-directroy: ./server
+        working-directory: ./server
         run: npm install
 
 
       - name: Test backend
         working-directory: ./server
         run: |
-          npm run test -- --coverage 
+          npm run test
 
 
       - name: Installe les dépendances du frontend
