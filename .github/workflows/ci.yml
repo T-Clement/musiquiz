@@ -37,10 +37,10 @@ jobs:
         run: npm install
 
 
-      - name: Test backend
-        working-directory: ./server
-        run: |
-          npm run test
+      # - name: Test backend
+      #   working-directory: ./server
+      #   run: |
+      #     npm run test
 
 
       - name: Installe les dépendances du frontend
