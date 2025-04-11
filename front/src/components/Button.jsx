@@ -3,7 +3,7 @@ import React from "react";
 const VARIANT_STYLES = {
   primary: "",
   secondary: "py-2 px-4 font-semibold shadow-md rounded-lg bg-slate-400",
-  secondaryDark:"text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700",
+  secondaryDark: "text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700",
   danger: "focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900",
   success: "px-4 py-2 bg-green-600 text-white rounded-lg",
   blue: "py-3 px-4 text-sm tracking-wider font-semibold rounded-md text-white bg-blue-700 hover:bg-blue-800 focus:outline-none",

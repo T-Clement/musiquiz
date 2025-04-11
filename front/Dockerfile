@@ -1,5 +1,5 @@
 # utilise une image Node.js comme image de base pour la phase de build
-FROM node:18 AS build
+FROM node:latest AS build
 
 # définit le répertoire de travail
 WORKDIR /app
@@ -23,6 +23,7 @@ COPY . .
 
 # construit l'application React avec Vite
 RUN npm run build
+ENTRYPOINT npm react-inject-env set
 
 # utilise une image Nginx pour faire tourner l'application
 FROM nginx:alpine
@@ -32,6 +33,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 # expose le port 80 pour accéder à l'application
 EXPOSE 80
+
+
 
 # démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]

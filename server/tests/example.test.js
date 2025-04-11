@@ -446,6 +446,14 @@ describe("WS tests", () => {
 });
 
 
+// FICHIER DE REPONSE D'UN UTILISATEUR A UN ROUND SPÉCIFIQUE OU JE 
+// DECOUPE EN PLUSIEURS BLOCS LES DIFFÉRENTES ETAPES DU TEST DE LA FONCTIONNALITE
+// de la connexion de l'utilisateur AU MESSAGE DE REPONSE APRES AVOIR VERIFIER LE SCORE
+
+
+describe('NewsContent', () => {
+  it.todo('Should render a normal string') // This will show up as a todo in our test suite! Woohoo! 
+});
 
 
 

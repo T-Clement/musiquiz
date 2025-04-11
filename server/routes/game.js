@@ -40,8 +40,9 @@ router.post('/check-sharing-code', async (req, res, next) => {
 
     const { sharingCode } = req.body;
 
-
-    const filter = { sharingCode: sharingCode };
+    // correct code and still in waiting mode
+    // only game in waiting mode can be joined so other status are not
+    const filter = { sharingCode: sharingCode, status : "waiting" };
 
 
     try {
@@ -51,6 +52,8 @@ router.post('/check-sharing-code', async (req, res, next) => {
         if(!game) {
            return res.status(404).json({message: "Pas de partie en cours avec ce code"});
         }
+
+
 
         return res.status(200).json({message: "", game: game});
 
