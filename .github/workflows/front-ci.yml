@@ -36,7 +36,7 @@ jobs:
       - name: Build et Push de l'image Docker du frontend
         if: success()
         run: |
-          FRONT_TAG="ghcr.io/${{ github.repository_owner }}/musiquiz-frontend:${{ github.event.inputs.version }}"
+          FRONT_TAG="ghcr.io/${{ secrets.repository_owner }}/musiquiz-frontend:${{ github.event.inputs.version }}"
 
           echo "Build de l'image du frontend avec le TAG $FRONT_TAG"
           docker build -t $FRONT_TAG ./front
