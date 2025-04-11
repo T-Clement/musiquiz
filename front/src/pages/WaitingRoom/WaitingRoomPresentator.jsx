@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "../../components/Modal";
+import Button from "../../components/Button";
 // import { useAudioContext } from "../../contexts/AudioContextProvider";
 
 export default function WaitingRoomPresentator({
@@ -71,14 +72,14 @@ export default function WaitingRoomPresentator({
                 lancer la partie. Une fois cela fait, vous pouvez recliquer sur
                 lancer la partie
               </p>
-              <button
-                className="bg-green-600 px-5 py-2.5 rounded-lg text-white"
+              <Button
+                variant="success"
                 type="button"
                 // onClick={handleAudioAcceptance}
                 onClick={handleClick}
               >
                 Activer l'audio pour ce site
-              </button>
+              </Button>
             </div>
           </div>
         </Modal>
@@ -132,13 +133,14 @@ export default function WaitingRoomPresentator({
         </div>
 
         <div className="flex items-center justify-items-center">
-          <button
-            className="bg-green-600 px-5 py-2.5 rounded-lg disabled:bg-green-300 disabled:cursor-not-allowed"
+          <Button
+            variant="success"
+            className="disabled:bg-green-300 disabled:cursor-not-allowed"
             disabled={!players.length > 0}
             onClick={() => handleClick()}
           >
             Lancer la partie
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import apiAxios from "../../libs/axios";
+import Button from "../Button";
 
 export default function UserRegisterForm({ setModalContent, setOpen }) {
   const [errors, setErrors] = useState([]);
@@ -94,10 +95,11 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
 
 
       <div className="!mt-8">
-        <button
+        <Button
           type="submit"
+          variant="blue"
           disabled={isSubmitting}
-          className="w-full py-3 px-4 text-sm tracking-wider font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+          className="w-full"
         >
           {isSubmitting ? (
             <div role="status">
@@ -122,7 +124,7 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
           ) : (
             "Créer votre compte"
           )}
-        </button>
+        </Button>
       </div>
       <p className="text-gray-800 text-sm mt-6 text-center">
         Vous avez un compte ?{" "}

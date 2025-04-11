@@ -3,6 +3,7 @@ import apiAxios from '../libs/axios';
 import { useLoaderData, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useWebSocket } from '../layouts/GameLayout';
+import Button from '../components/Button';
 
 
 // vérifier si le joueur est connecté
@@ -139,17 +140,20 @@ export default function ChooseRole() {
                             Sélectionnez le rôle que vous souhaitez jouer dans cette partie.
                         </p>
                         <div className="flex flex-col md:flex-row justify-center gap-4">
-                            <button
-                                className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                type='button'
+                            <Button
+                                variant='info'
                                 onClick={() => handleChooseRole('presentator')}
-                            >Présentateur</button>
-                            <button
-                                className="disabled:opacity-50 disabled:cursor-not-allowed py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                type='button'
+                            >
+                                Présentateur
+                            </Button>
+
+                            <Button
+                                variant='info'
                                 disabled={!user}
                                 onClick={() => handleChooseRole('player')}
-                            >Joueur</button>
+                            >
+                                Joueur
+                            </Button>
                         </div>
                     </div>
                 </div>

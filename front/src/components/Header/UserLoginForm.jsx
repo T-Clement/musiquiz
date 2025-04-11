@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import apiAxios from '../../libs/axios';
 import { AuthContext } from '../../hooks/authContext';
+import Button from '../Button';
 // import { useContext } from 'react';
 // import { useAuth } from '../../hooks/useAuth';
 // import { Form, useFetcher } from 'react-router-dom';
@@ -122,9 +123,10 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
         </div>
 
         <div className="!mt-12">
-        <button 
+        <Button 
           type="submit"
-          className="w-full py-3 px-4 text-sm tracking-wider font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+          variant='blue'
+          className="w-full"
           disabled={isSubmitting} // disable button during submission pending 
         >
            
@@ -139,7 +141,7 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
                 </div>
             ) 
             : "Se connecter"}
-        </button>
+        </Button>
         { error && <p className='text-red-600'>{error}</p> }
         </div>
         <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscivez vous</a></p>

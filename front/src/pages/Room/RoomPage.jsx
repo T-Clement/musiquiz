@@ -7,6 +7,7 @@ import {
   useParams,
 } from "react-router-dom";
 import Spinner from "../../components/Spinner";
+import Button from "../../components/Button";
 // import apiAxios from '../../libs/axios';
 
 export async function loader({ request, params }) {
@@ -151,21 +152,22 @@ export function RoomPage() {
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
           <h3>Multijoueur</h3>
           <div className="flex flex-col gap-3 mt-6">
-            <button
-              type="button"
-              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 flex flex-row-reverse items-center gap-4"
+            
+            <Button
+              className="flex flex-row-reverse items-center gap-4" variant="secondaryDark"
               onClick={() => handleCreateGame(id)}
             >
               <span>{loading && <Spinner />}</span>
               <span>Créer une partie</span>
-            </button>
-            <button
-              type="button"
-              className="cursor-not-allowed text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-              disabled
+            </Button>
+
+            <Button
+              className="cursor-not-allowed" variant="secondaryDark"
+              disabled={true}
             >
               Créer une partie <br /> personnalisée
-            </button>
+            </Button>
+
           </div>
         </div>
       </div>
