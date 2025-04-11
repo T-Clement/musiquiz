@@ -8,6 +8,11 @@ on:
         description: "Tag de la version front (ex: 1.0.0, latest, etc.)"
         required: true
         default: "1.0.0"
+        
+# permet d'autoriser le droit de push dans la registry Github       
+permissions:
+  contents: read
+  packages: write
 
 
 jobs:
