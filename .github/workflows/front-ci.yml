@@ -50,7 +50,7 @@ jobs:
           docker push $FRONT_TAG
 
           echo "Ajout et push de l'image avec le tag ':latest'"
-          docker tag $FRONT_TAG ghcr.io/${{ github.repository_owner }}/musiquiz-frontend:latest
-          docker push ghcr.io/${{ github.repository_owner }}/musiquiz-frontend:latest
+          docker tag $FRONT_TAG ghcr.io/${{ secrets.repository_owner }}/musiquiz-frontend:latest
+          docker push ghcr.io/${{ secrets.repository_owner }}/musiquiz-frontend:latest
 
 
