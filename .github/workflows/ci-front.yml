@@ -1,0 +1,51 @@
+name: CI-front
+
+on:
+  # déclenchement manuel
+  orkflow_dispatch:
+    inputs:
+      version:
+        description: "Tag de la version front (ex: 1.0.0, latest, etc.)"
+        required: true
+        default: "1.0.0"
+
+
+jobs:
+  build-and-push-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (récupère le code)
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with: 
+          node-version: 18
+  
+      - name: Installe les dépendances du frontend
+        working-directory: ./front
+        run: npm install
+
+
+      - name: Connexion à GHCR
+        if: success()
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build et Push de l'image Docker du frontend
+        if: success()
+        run: |
+          FRONT_TAG="ghcr.io/${{ github.repository_owner }}/musiquiz-frontend:${{ github.event.inputs.version }}"
+
+          echo "Build de l'image du frontend avec le TAG $FRONT_TAG"
+          docker build -t $FRONT_TAG ./front
+          
+          echo "Push de l'image sur la registry"
+          docker push $FRONT_TAG
+
+          echo "Ajout et push de l'image avec le tag ':latest'"
+          docker tag $FRONT_TAG ghcr.io/${{ github.repository_owner }}/musiquiz-frontend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/musiquiz-frontend:latest
+
+
