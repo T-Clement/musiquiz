@@ -1,6 +1,10 @@
 .env
 docker-compose.yml
 docker-compose.yml.old
+docker-compose.yml.old2
 *.sql
 exportedsqlfile.sql:Zone.Identifier
 node_modules
+# start-project.sh
+start.js
+:memory
