@@ -1,5 +1,3 @@
-import React from "react";
-
 const VARIANT_STYLES = {
   primary: "",
   secondary: "py-2 px-4 font-semibold shadow-md rounded-lg bg-slate-400",

@@ -13,6 +13,8 @@ RUN npm install
 # copie tout le code source
 COPY . .
 
+# construit l'application React avec Vite
+RUN npm run build
 
 
 # -------------------------------------------------
@@ -21,9 +23,6 @@ COPY . .
 # -------------------------------------------------
 # -------------------------------------------------
 
-# construit l'application React avec Vite
-RUN npm run build
-ENTRYPOINT npm react-inject-env set
 
 # utilise une image Nginx pour faire tourner l'application
 FROM nginx:alpine
@@ -34,7 +33,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # expose le port 80 pour accéder à l'application
 EXPOSE 80
 
-
+# copie le ficher de config nginx
+COPY nginx.conf /etc/nginx/conf.d/defaault.conf
 
 # démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]

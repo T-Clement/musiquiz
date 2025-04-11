@@ -7,7 +7,7 @@ import { RoomPage, loader as roomPageLoader } from './pages/Room/RoomPage';
 import { Page404 } from './pages/Page404';
 import { ThemePage, loader as themePageLoader } from './pages/Theme/ThemePage';
 import { action as logoutAction } from './components/Header/Logout';
-import { createContext, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { AuthContextProvider } from './hooks/authContext';
 
