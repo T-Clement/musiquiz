@@ -2,7 +2,7 @@ name: CI-front
 
 on:
   # déclenchement manuel
-  orkflow_dispatch:
+  workflow_dispatch:
     inputs:
       version:
         description: "Tag de la version front (ex: 1.0.0, latest, etc.)"
