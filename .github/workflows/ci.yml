@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  # déclenchement manuel
+  workflow_dispatch:
+    inputs:
+      build_target:
+        type: choice
+        description: "Séléctionner quelle image builder (frontend, backend ou both)"
+        required: true
+        default: "both"
+        options:
+          - both
+          - frontend
+          - backend
+      version:
+        description: "Tag de l'image (ex: 1.0.0, latest, etc.)"
+        required: false
+        default: "latest"
+
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (récupère le code)
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with: 
+          node-version: 18
+      
+      - name: Installe les dépendances backend
+        working-directroy: ./server
+        run: npm install
+
+
+      - name: Test backend
+        working-directory: ./server
+        run: |
+          npm run test -- --coverage 
+
+
+      - name: Installe les dépendances du frontend
+        working-directory: ./front
+        run: npm install
+
+
+      
+
+
