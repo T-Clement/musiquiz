@@ -1,6 +1,15 @@
 version: '3'
 services:
 
+  reverse-proxy:
+    image: nginx-alpine
+    container_name: reverse_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/defaukt.conf:ro
+
+
   mariadb-musiquiz:
     image: mariadb:latest
     container_name: mariadb-musiquiz
@@ -17,7 +26,8 @@ services:
     image: ghcr.io/t-clement/musiquiz-backend:latest
     container_name: backend-musiquiz
     ports: 
-      - "${DOCKER_PORT_API}:3000"
+      # - "${DOCKER_PORT_API}:3000"
+      - "3000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - MONGODB_ATLAS_URI=${MONGODB_ATLAS_URI}
@@ -27,6 +37,7 @@ services:
     image: ghcr.io/t-clement/musiquiz-frontend:latest
     container_name: frontend-musiquiz
     ports: 
-      - "${DOCKER_PORT_FRONT}:80"
+      # - "${DOCKER_PORT_FRONT}:80"
+      - "80"
     depends_on: 
       - backend
