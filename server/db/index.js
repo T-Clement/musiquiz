@@ -12,17 +12,20 @@ let pool;
 try {
 
     if (process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === "development") {
-        pool = mysql.createPool({
-            host: process.env.MYSQL_HOST,
-            port: process.env.MYSQL_PORT,
-            user: process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD,
-            database: process.env.MYSQL_DATABASE,
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0
+        // pool = mysql.createPool({
+        //     host: process.env.MYSQL_HOST,
+        //     port: process.env.MYSQL_PORT,
+        //     user: process.env.MYSQL_USER,
+        //     password: process.env.MYSQL_PASSWORD,
+        //     database: process.env.MYSQL_DATABASE,
+        //     waitForConnections: true,
+        //     connectionLimit: 10,
+        //     queueLimit: 0
 
-        });
+        // });
+
+        pool = mysql.createPool(process.env.DATABASE_URL);
+
 
         // console.log(`Connected to MariaDB at ${dbUrl.hostname}:${dbUrl.port}`);
 
