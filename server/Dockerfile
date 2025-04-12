@@ -2,7 +2,7 @@
 FROM node:18-alpine
 
 # Définit l'environnement comme celui de production
-ARG NODE_ENV=production
+ARG NODE_ENV=prod
 ENV NODE_ENV=$NODE_ENV
 
 # définit le répertoire de travail

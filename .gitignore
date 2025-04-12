@@ -1,5 +1,4 @@
 .env
-docker-compose.yml
 docker-compose.yml.old
 docker-compose.yml.old2
 *.sql
