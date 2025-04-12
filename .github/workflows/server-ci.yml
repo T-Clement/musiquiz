@@ -1,0 +1,70 @@
+name: CI-server
+
+on:
+  # déclenchement manuel
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag de la version du serveur (ex: 1.0.0, latest, etc.)"
+        required: true
+        default: "1.0.0"
+        
+# permet d'autoriser le droit de push dans la registry Github       
+permissions:
+  contents: read
+  packages: write
+
+
+jobs:
+
+  todo-test-before-build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: TODO
+        run: echo "TODO - implement tests before building the image"
+  
+  
+  # faire executer le job suivant en fonction du 
+  # status du job précédent, success() ?
+
+  build-and-push-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (récupère le code)
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with: 
+          node-version: 18
+
+      # à décommenter si on veut lancer des tests  
+      # - name: Installe les dépendances du backend
+      #   working-directory: ./server
+      #   run: npm install
+
+
+      - name: Connexion à GHCR
+        if: success()
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build et Push de l'image Docker du backend
+        if: success()
+        run: |
+          BACKEND_TAG="ghcr.io/${{ secrets.repository_owner }}/musiquiz-backend:${{ github.event.inputs.version }}"
+
+          echo "Build de l'image du backend avec le TAG $BACKEND_TAG"
+          docker build \
+            -t $BACKEND_TAG \
+            ./server
+          
+          echo "Push de l'image sur la registry"
+          docker push $BACKEND_TAG
+
+          echo "Ajout et push de l'image avec le tag ':latest'"
+          docker tag $BACKEND_TAG ghcr.io/${{ secrets.repository_owner }}/musiquiz-backend:latest
+          docker push ghcr.io/${{ secrets.repository_owner }}/musiquiz-backend:latest
+
+
