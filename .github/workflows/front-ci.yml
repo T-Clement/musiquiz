@@ -44,7 +44,10 @@ jobs:
           FRONT_TAG="ghcr.io/${{ secrets.repository_owner }}/musiquiz-frontend:${{ github.event.inputs.version }}"
 
           echo "Build de l'image du frontend avec le TAG $FRONT_TAG"
-          docker build -t $FRONT_TAG ./front
+          docker build \
+            --build-arg VITE_API_URL="${{ secrets.API_URL }}"" \
+            -t $FRONT_TAG \ 
+            ./front
           
           echo "Push de l'image sur la registry"
           docker push $FRONT_TAG
