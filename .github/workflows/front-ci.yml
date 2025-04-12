@@ -46,7 +46,7 @@ jobs:
           echo "Build de l'image du frontend avec le TAG $FRONT_TAG"
           docker build \
             --build-arg VITE_API_URL="${{ secrets.API_URL }}" \
-            -t $FRONT_TAG \ 
+            -t $FRONT_TAG \
             ./front
           
           echo "Push de l'image sur la registry"
