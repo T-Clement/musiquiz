@@ -43,35 +43,36 @@ RUN VITE_API_URL=$VITE_API_URL npm run build
     
     
 # utilise une image Nginx pour faire tourner l'application
-# FROM nginx:alpine
+FROM nginx:alpine
 
 # # ajout de envsubst dispo dans la bibliotheque gettext
-# RUN apk add --no-cache gettext
+RUN apk add --no-cache gettext
 
 # # par defaut si aucune valeur n'est passée prend localhost
-# ARG FRONT_DOMAIN=localhost
+ARG FRONT_DOMAIN=localhost
 # # env convertir l'ARG en ENV pour envsubst
-# ENV FRONT_DOMAIN=$FRONT_DOMAIN
+ENV FRONT_DOMAIN=$FRONT_DOMAIN
 
 
 # # copie le template dans un répertoire temporaire
-# COPY default.conf.template /etc/nginx/templates/default.conf.template
+COPY default.conf.template /etc/nginx/templates/default.conf.template
 
 # # utiliser envsubst pour substituer le placeholder dans le template nginx
-# RUN envsubst '$FRONT_DOMAIN' < /etc/nginx/templates/default.conf.template \
-# > /etc/nginx/conf.d/default.conf
+RUN envsubst '$FRONT_DOMAIN' < /etc/nginx/templates/default.conf.template \
+> /etc/nginx/conf.d/default.conf
 
 
 # # copie les fichiers buildés dans le répertoire de Nginx
-# COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 
-# # expose le port 80 pour accéder à l'application
-# EXPOSE 80
+# expose le port 80 pour accéder à l'application
+# expose en interne
+EXPOSE 80
 
 
 # # démarrer Nginx
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
 
 
 # -------------------------------------------------
