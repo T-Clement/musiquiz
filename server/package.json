@@ -2,7 +2,9 @@
   "main": "server.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000",
-    "start": "DEBUG=express:* npx nodemon server.js"
+    "start:dev": "DEBUG=express:* nodemon server.js",
+    "start:prod": "node server.js",
+    "start": "npm run start:dev"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
