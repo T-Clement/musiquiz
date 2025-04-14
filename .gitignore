@@ -6,4 +6,4 @@ exportedsqlfile.sql:Zone.Identifier
 node_modules
 # start-project.sh
 start.js
-:memory
+*:memory
