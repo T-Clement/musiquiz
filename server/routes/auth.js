@@ -135,9 +135,11 @@ router.get('/api/refresh-token', (req, res) => {
             return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
         }
 
+        console.log("dans le /api/refresh-token");
+        console.log(user);
         // generate a new acces token
         const newAccessToken = jwt.sign(
-            { userId: user.userId, pseudo: user.pseudo, email: user.email },
+            { userId: user.userId, pseudo: user.pseudo },
             process.env.JWT_SECRET_KEY,
             { expiresIn: process.env.TOKEN_EXPIRATION }
         );
@@ -149,8 +151,8 @@ router.get('/api/refresh-token', (req, res) => {
             sameSite: 'Strict',
             maxAge: 15 * 60 * 1000  // 15 minutes in ms
         });
-
-        res.status(200).json({ message: "Token renouvelé !", user: user.id });
+        console.log(newAccessToken);
+        res.status(200).json({ message: "Token renouvelé !", user: { userId: user.userId, pseudo: user.pseudo }});
     });
 });
 

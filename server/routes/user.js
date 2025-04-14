@@ -7,6 +7,7 @@ const InputValidationMessage = require("../models/InputValidationMessage");
 
 const { body } = require("express-validator");
 const validateRequest = require('../middleware/validateRequest');
+const { authenticateJWT } = require('../middleware/Auth');
 
 // ------------------------------------------- //
 // SANITIZE DATA //
@@ -57,7 +58,7 @@ const validateLogin = [
 
 
 
-router.get('/:id', userCtrl.show);
+router.get('/:id', authenticateJWT, userCtrl.show);
 
 router.post("/register", validateRegisterUser, validateRequest, userCtrl.create);
 

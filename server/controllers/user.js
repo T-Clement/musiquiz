@@ -20,6 +20,16 @@ exports.show = async (req, res, next) => {
         
     }
 
+    // check if user connected is the same as the user in the route
+    // check for ibntegrity of JWT, check userId in JWT and after that check for correct userId for this route
+    console.log(req.user);
+    const userInRequest = req.user; // only userId and pseudo in this object
+
+    if(userId !== userInRequest.userId) {
+        return res.status(403).json({ message: "Vous n'êtes pas autorisé à accéder à ces informations"});
+    }
+
+
     try {
         const user = await User.findOneUserById(userId);
 
