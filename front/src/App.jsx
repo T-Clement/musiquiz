@@ -19,6 +19,7 @@ import InGamePresentatorPage from './pages/InGame/InGamePresentatorPage';
 import NewRoomPage from './pages/NewRoom/NewRoomPage';
 import PlaygroundPage from './pages/Playground/PlaygroundPage';
 import FinalLeaderBoardPage from './pages/InGame/FinalLeaderBoardPage';
+import UserPage, { loader as userPageLoader } from './pages/UserPage';
 
 // import apiAxios from './libs/axios';
 
@@ -66,6 +67,11 @@ export function App() {
         {
           path: "room/new",
           element: <NewRoomPage />,
+        },
+        {
+          path: "user/:id",
+          element: <UserPage />,
+          loader: userPageLoader
         },
         {
           path: "theme/:id",

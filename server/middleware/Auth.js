@@ -40,8 +40,9 @@ exports.authenticateJWT = async (req, res, next) => {
             if (err) {
                 return res.status(403).json({ message: 'Token expiré ou invalide' });
             }
-
-            req.user = { userId: user.userId, pseudo: user.userPseudo };
+            console.log("dans le verify du token présent dans authenticateJWT méthode");
+            console.log(user);
+            req.user = { userId: user.userId, pseudo: user.pseudo };
             next();
         });
     }
