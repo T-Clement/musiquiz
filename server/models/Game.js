@@ -1,4 +1,5 @@
 const pool = require('../db');
+const Room = require('./Room');
 
 
 class Game {
@@ -25,6 +26,44 @@ class Game {
 
     getUserId() {
         return this.id_user;
+    }
+
+
+
+    static async getLastGamesOfUser(user_id, limit = 5) {
+        const query = `
+        SELECT ${this.tableName}.*, ${Room.tableName}.name 
+        FROM ${this.tableName}
+        LEFT JOIN ${Room.tableName} ON ${this.tableName}.id_room = ${Room.tableName}.id
+        WHERE id_user = ? 
+        ORDER BY date_score 
+        DESC LIMIT ${limit}`;
+
+        const values = [user_id];
+        
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+
+
+            if (rows.length === 0) {
+                console.log("No Games found for user with id: " + user_id);
+                return [];
+            }
+
+            // console.log(rows);
+
+            return rows.map(row => ({
+                game: new Game (row.id, row.score, row.date_score, row.id_user, row.id_room), 
+                metaData: {name : row.name, link: `/room/${row.id_room}`} 
+            }));
+    
+        } catch (error) {
+            console.error('Error finding last games of user : ' + error.message);
+
+        }
+
+
+        return ;
     }
 
 }

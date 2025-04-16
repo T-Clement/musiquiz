@@ -9,6 +9,7 @@ const User = require('../models/User');
 
 
 const { matchedData } = require("express-validator");
+const Game = require('../models/Game');
 
 
 exports.show = async (req, res, next) => {
@@ -37,7 +38,8 @@ exports.show = async (req, res, next) => {
             return res.status(404).json({message: "User not found"});
         }
 
-        res.status(200).json(user);
+        const lastGamesOfUser = await Game.getLastGamesOfUser(userId);
+        res.status(200).json({user: user, games: lastGamesOfUser});
 
 
     } catch (error) {
