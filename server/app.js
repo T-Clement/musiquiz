@@ -11,6 +11,7 @@ const themeRoutes = require('./routes/theme');
 const roomRoutes = require('./routes/room');
 const gameRoutes = require('./routes/game');
 const authRoutes = require('./routes/auth');
+const resetPasswordRoutes = require('./routes/reset-password');
 
 // controller for specific route
 const gameController = require('./controllers/gameSQL');
@@ -50,7 +51,7 @@ app.get('/api/top3', gameController.top3);
 app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
 app.use('/api/game', gameRoutes);
-
+app.use(resetPasswordRoutes);
 
 
 // error handling middleware
