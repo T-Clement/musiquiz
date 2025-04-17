@@ -26,12 +26,15 @@ router.post("/api/request-password-reset", async (req, res) => {
     // send api response who act as a match is find 
     // to avoid giving info about users in the databse
     if(!user) {
+        console.log("reset password request made but no user found with email : ", email);
         return res.status(200).json({ message: "Si cet email existe, vous recevrez un lien de réinitialisation." });
     }
 
 
     // delete expired previous requests
-    /// ...
+    const result = await ResetPassword.deleteExpiredRequests();
+    console.log(result);
+    
 
     // check if a non expired request exists in database
     let token = await ResetPassword.findActiveRequestByUser(user.id);

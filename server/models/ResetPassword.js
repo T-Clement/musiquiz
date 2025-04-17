@@ -45,21 +45,45 @@ class ResetPassword {
         
 
         const query = `
-        SELECT * 
+        SELECT token 
         FROM ${this.tableName}
         WHERE id_user = ? AND expired_at > NOW() AND used_at IS NULL LIMIT 1`;
         const values = [userId];
 
         try {
 
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null;
+            }
+
+            const { token } = rows[0];
+            return token;
+
+
         } catch(error) {
-            console.error(`Error`)
+            console.error(`Error searching for active reset password request : ${error.message}`);
+            throw error;
         }
 
     }
 
 
     static async deleteExpiredRequests() {
+        const query = `
+        DELETE FROM ${this.tableName} 
+        WHERE expired_at < NOW() 
+        AND used_at IS NULL`;
+
+        const values = [];
+
+        try {
+            const [result] = await pool.execute(query, values);
+            return result;
+        } catch (error) {
+            console.error('Error deleting expired tokens in request password table : ', error.message);
+        }
 
     }
 
