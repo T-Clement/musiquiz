@@ -20,6 +20,7 @@ import NewRoomPage from './pages/NewRoom/NewRoomPage';
 import PlaygroundPage from './pages/Playground/PlaygroundPage';
 import FinalLeaderBoardPage from './pages/InGame/FinalLeaderBoardPage';
 import UserPage, { loader as userPageLoader } from './pages/UserPage';
+import ResetPassword from './pages/ResetPassword';
 
 // import apiAxios from './libs/axios';
 
@@ -77,6 +78,10 @@ export function App() {
           path: "theme/:id",
           element: <ThemePage />,
           loader: themePageLoader
+        },
+        {
+          path: "reset-password",
+          element: <ResetPassword/>
         },
         {
           path: "playground",
