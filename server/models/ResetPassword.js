@@ -88,6 +88,55 @@ class ResetPassword {
     }
 
 
+    static async findActiveRequestByToken(token) {
+        const query = `
+        SELECT id, id_user 
+        FROM ${this.tableName} 
+        WHERE token = ? 
+        AND expired_at > NOW() 
+        AND used_at IS NULL 
+        LIMIT 1`;
+
+        const values = [token];
+
+        try {
+
+            const [rows, fields] = await pool.execute(query, values);
+
+            if(rows.length === 0) {
+                return null;
+            }
+
+            // id of the request to used it as ref
+            const { id, id_user } = rows[0];
+            return { id, id_user };
+
+
+        } catch(error) {
+            console.error(`Error searching for active token reset password request : ${error.message}`);
+            throw error;
+        }
+    }
+
+
+    static async markRequestAsUsed(requestId) {
+        const query = `UPDATE ${this.tableName} SET used_at = NOW() WHERE id = ?`;
+
+        const values = [requestId];
+
+        try {
+            const [rows, fields] = await pool.execute(query, values); 
+            
+            // need to be returning something ??
+
+        } catch (error) {
+            console.error(`Error udpating password of user : ${error.message}`);
+            throw error;
+
+        }
+
+    }
+
 
 }
 

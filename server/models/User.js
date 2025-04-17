@@ -205,9 +205,25 @@ class User {
             return new User(userId, pseudo, null, email, createdAt, updatedAt);
 
         } catch(error) {
-            console.error('Error checking user credentials in Database : ' + error.message);
+            console.error(`Error checking user credentials in table ${this.tableName} : ` + error.message);
             throw error;
         }
+
+    }
+
+    static async updatePassword (userId, hashedPassword) {
+        const query = `UPDATE ${this.tableName} SET password = ? WHERE id = ?`;
+        const values = [hashedPassword, userId];
+
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+            // needs to return something ???
+
+        } catch(error) {
+            console.error(`Error updating user password in table ${this.tableName} : ` + error.message);
+            throw error;
+        }
+
 
     }
 
