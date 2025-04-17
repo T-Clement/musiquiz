@@ -89,7 +89,7 @@ export default function ResetPassword() {
 
       </form>
 
-      {success && <RedirectAfterDelay pageToRedirect='/home' />}
+      {success && <RedirectAfterDelay pageToRedirect='/' />}
 
     </div>
   );
