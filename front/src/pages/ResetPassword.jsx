@@ -64,6 +64,7 @@ export default function ResetPassword() {
             Nouveau mot de passe :
           </label>
             <input
+              className="text-black"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -76,6 +77,7 @@ export default function ResetPassword() {
             Confirmez le mot de passe :
           </label>
             <input
+              className="text-black"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
