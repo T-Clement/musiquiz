@@ -6,6 +6,7 @@ import UserLoginForm from './UserLoginForm';
 import UserRegisterForm from './UserRegisterForm';
 import Logout from './Logout';
 import Nav from './Nav';
+import UserForgotPassword from './UserForgotPassword';
 
 export function Header({user, setUser}) {
 
@@ -43,36 +44,39 @@ export function Header({user, setUser}) {
           <div className='text-center w-72'>
 
 
-              {modalContent === "login" ? (
+              {modalContent === "login" &&
                 <div className='mx-auto my-4 w-64'>           
                   <h3 className='text-lg font-black text-gray-800'>Se connecter</h3>
                   <p className='text-sm text-gray-500'>
                     Connectez vous pour pouvoir jouer au jeu
                   </p>
                 </div>
-              ) 
-              :
-              (
+              }
+
+                {modalContent === "register" &&
                 <div className='mx-auto my-4 w-64'>           
                   <h3 className='text-lg font-black text-gray-800'>S'inscrire</h3>
                   <p className='text-sm text-gray-500'>
                     Enregistrez vous pour pouvoir joueur au jeu
                   </p>
                 </div>
-              )}
+              }
+
+                {modalContent === "forgot-password" &&
+                <div className='mx-auto my-4 w-64'>           
+                  <h3 className='text-lg font-black text-gray-800'>Réinitiliaser votre mot de passe</h3>
+                  <p className='text-sm text-gray-500'>
+                    Renseignez le mail associé à votre compte pour pouvoir réinitiliaser votre mot de passe.
+                    <br/>
+                    Vous recevrez un lien permettant d'accéder à une page où vous pourrez choisir votre nouveau mot de passe.
+                  </p>
+                </div>
+              }
               
 
-            {
-              // toggle 4 renderings ??? why ?????
-              modalContent === "login" ? 
-              (
-                <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo} />
-              ) 
-              : 
-              (
-                <UserRegisterForm setModalContent={setModalContent} />
-              ) 
-            }              
+            { modalContent === "login" && <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo} /> }
+            { modalContent === "register" && <UserRegisterForm setModalContent={setModalContent} /> }
+            { modalContent === "forgot-password" && <UserForgotPassword setModalContent={setModalContent} />}
 
           </div>
 

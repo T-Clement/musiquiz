@@ -100,29 +100,31 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
   return (
     <form onSubmit={handleSubmit}>
         <div className="space-y-6">
-        <div>
-            <label className="text-gray-800 text-sm mb-2 block">Votre email</label>
-            <input name="email"
-                type="email" 
-                className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" 
-                placeholder="Entrez votre email"
-                disabled={isSubmitting} // disable button during submission pending 
-            />
-        </div>
-        <div>
-            <label className="text-gray-800 text-sm mb-2 block">Votre mot de passe</label>
-            <input 
-                name="password" 
-                type="password" 
-                className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" 
-                placeholder="Entrez votre mot de passe"
-                disabled={isSubmitting} // disable button during submission pending 
-            />
+            <div>
+                <label className="text-gray-800 text-sm mb-2 block">Votre email</label>
+                <input name="email"
+                    type="email" 
+                    className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" 
+                    placeholder="Entrez votre email"
+                    disabled={isSubmitting} // disable button during submission pending 
+                />
+            </div>
+            <div>
+                <label className="text-gray-800 text-sm mb-2 block">Votre mot de passe</label>
+                <input 
+                    name="password" 
+                    type="password" 
+                    className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" 
+                    placeholder="Entrez votre mot de passe"
+                    disabled={isSubmitting} // disable button during submission pending 
+                />
+            </div>
+
+            <p className='place-self-end'><a className='text-blue-600 text-sm underline hover:cursor-pointer' onClick={() => setModalContent('forgot-password')}>Mot de passe oublié ?</a></p>
         </div>
 
-        </div>
 
-        <div className="!mt-12">
+        <div className="!mt-8">
         <Button 
           type="submit"
           variant='blue'
@@ -142,6 +144,8 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
             ) 
             : "Se connecter"}
         </Button>
+        
+
         { error && <p className='text-red-600'>{error}</p> }
         </div>
         <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscivez vous</a></p>

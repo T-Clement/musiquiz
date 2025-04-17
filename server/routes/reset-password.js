@@ -10,9 +10,21 @@ const {body, validationResult} = require('express-validator');
 const InputValidationMessage = require('../models/InputValidationMessage');
 const utils = require('../utils/utils');
 
-router.post("/api/request-password-reset", async (req, res) => {
+router.post("/api/request-password-reset", [body("email")
+    .trim()
+    .escape()
+    .isEmail().withMessage("L'email n'est pas valide")
+    ], 
+    async (req, res) => {
 
     try {
+
+    // validate data coming from request
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()}); 
+    }
 
 
     // what to do if a request to reset the password is already in database ???
@@ -60,8 +72,8 @@ router.post("/api/request-password-reset", async (req, res) => {
     // send mail
     // -------------------------------
 
-    // sendResetPasswordEmail(user.email, resetLink)
-    //     .catch(err => console.error('Error sending of mail about getting password reset token link'))
+    sendResetPasswordEmail(user.email, resetLink)
+        .catch(err => console.error('Error sending of mail about getting password reset token link'))
 
 
     return res.status(200).json({ message: "Si cet email existe, vous recevrez un lien de réinitialisation." });
