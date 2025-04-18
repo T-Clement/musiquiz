@@ -6,7 +6,7 @@ class GameManager {
     static inMemoryGames = new Map();
     static inMemoryPlayersInGames = new Map();
 
-    static roundsNumber = 2;
+    static roundsNumber = process.env.ROUND_NUMBER || 10;
     static numberOfResponsePropositions = 4;
 
     static addUserToInGamePlayersMemory(userId, gameId) {
