@@ -85,7 +85,12 @@ export default function InGamePresentatorPage() {
           
           
 
-          <LeaderBoard players={players} setPlayers = { () => {} }/>
+          <LeaderBoard 
+            players={players} 
+            setPlayers = { () => {} } 
+            socket={socketInstance} 
+            currentRound={roundData.currentRound}
+          />
 
         </div>
 

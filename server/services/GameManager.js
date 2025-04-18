@@ -363,7 +363,7 @@ class GameManager {
         )
 
         // notify presentator that a player has submited an answer
-        this.io.to(udpatedGame.presentator.socketId).emit("player-responded", { userId });
+        this.io.to(udpatedGame.presentator.socketId).emit("player-answered", { userId });
 
     }
 
