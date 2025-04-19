@@ -43,13 +43,23 @@ const LeaderBoardRow = forwardRef(function LeaderBoardRow ({
     setDisplayScore(score);
   }, [currentRound]);
 
+  const vibrateClass = showResponseIndicator ? 'animate-vibrate' : '';
+
 
   return (
-    <tr ref={ref} className='border-b'>
+    <tr ref={ref} className={`border-b ${vibrateClass}`}>
       <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap">
         {rank}
       </th>
-      <td className="px-6 py-4">{pseudo} {showResponseIndicator && <span className='animate-pop'>✅</span>}</td>
+      <td className="px-6 py-4 flex items-center">
+        <span className={`flex-1 `}>{pseudo}</span> 
+        {showResponseIndicator && (
+          <span
+            className="w-2 h-2 bg-green-500 rounded-full ml-2 animate-pop-dot"
+            aria-label="a répondu"
+          />
+        )}
+      </td>
       <td className="px-6 py-4">{displayScore}</td>
     </tr>
   );

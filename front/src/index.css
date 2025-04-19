@@ -17,3 +17,26 @@
 .flash-answer {
   animation: flash-answer 1s ease-out forwards;
 }
+
+
+
+@keyframes pop-dot {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.animate-pop-dot {
+  animation: pop-dot 0.3s ease-out forwards;
+}
+
+
+@keyframes vibrate {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-4px); }
+  40%  { transform: translateX(4px); }
+  60%  { transform: translateX(-4px); }
+  80%  { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+.animate-vibrate {
+  animation: vibrate 0.5s ease-in-out;
+}
