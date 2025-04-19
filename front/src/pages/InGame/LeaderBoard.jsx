@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import FlipMove from 'react-flip-move';
 
 export default function LeaderBoard({ players, setPlayers, socket, currentRound }) {
 
     const [answeredSet, setAnsweredSet] = useState(new Set());
+    const [animatingSet, setAnimatingSet] = useState(new Set());
+    const timeouts = useRef({});
+
 
     // reset Set at each new round
     useEffect(() => {
         setAnsweredSet(new Set());
-    }, [socket]);
+        setAnsweredSet(new Set());
+
+        // clear all timeouts
+        Object.values(timeouts.current).forEach(clearTimeout);
+        timeouts.current = {};
+    }, [currentRound]);
 
 
     useEffect(() => {
@@ -19,10 +27,30 @@ export default function LeaderBoard({ players, setPlayers, socket, currentRound 
                 next.add(userId);
                 return next;
             });
+            setAnimatingSet(prev => {
+                if(prev.has(userId)) return prev;
+                const next = new Set(prev);
+                next.add(userId);
+                
+                // remove animation after 1 sec
+                timeouts.current[userId] = setTimeout(() => {
+                setAnimatingSet(curr => {
+                    const s = new Set(curr);
+                    s.delete(userId);
+                    return s;
+                });
+                delete timeouts.current[userId];
+                }, 1000);
+                return next;
+            });
         };
         socket.on('player-answered', onAnwser);
-        return () => socket.off('player-anwsered', onAnwser);
-    })
+        return () => {
+            socket.off('player-anwsered', onAnwser);
+            Object.values(timeouts.current).forEach(clearTimeout);
+            timeouts.current = {};
+        }
+    }, [socket])
 
     return (
         <table className='w-full text-sm text-left'>
@@ -36,17 +64,21 @@ export default function LeaderBoard({ players, setPlayers, socket, currentRound 
             
             <FlipMove className='' typeName="tbody">
                 {players.map((player, index) => {
-                const isAnswered = answeredSet.has(player.userId);
+                const hasAnswered = answeredSet.has(player.userId);
+                const isAnimating = animatingSet.has(player.userId);
+
+                const staticBg = hasAnswered && !isAnimating ? 'bg-green-200' : '';
+                const flash   = isAnimating               ? 'flash-answer' : '';
+
                 return (
                     <tr 
                         key={ player.userId } 
                         className={[
-                        'border-b',
-                        'transition-all duration-500',
-                        isAnswered && 'bg-green-200 ring-4 ring-green-400 animate-pulse'
-                        ]
-                        .filter(Boolean)
-                        .join(' ')}
+                            'border-b',
+                            'transition-colors duration-300',
+                            staticBg,
+                            flash
+                        ].filter(Boolean).join(' ')}
                     >
                         <th scope="row" className='px-6 py-4 font-medium whitespace-nowrap'>{index + 1}</th>
                         <td className='px-6 py-4'>{player.pseudo}</td>

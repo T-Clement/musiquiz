@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes flsh-answer {
+  0% {
+      background-color: #c6f6d5;
+    }
+    50% {
+        background-color: #c6f6d5;
+    }
+    100% {
+      background-color: transparent;
+  }
+}
+
+.flash-answer {
+  animation: flash-answer 1s ease-out forwards;
+}
