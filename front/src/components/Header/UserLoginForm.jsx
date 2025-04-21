@@ -2,15 +2,19 @@ import React, { useContext, useState } from 'react'
 import apiAxios from '../../libs/axios';
 import { AuthContext } from '../../hooks/authContext';
 import Button from '../Button';
+import { Eye, EyeIcon, EyeOff, EyeOffIcon } from 'lucide-react';
+import PasswordInput from '../PasswordInput';
 // import { useContext } from 'react';
 // import { useAuth } from '../../hooks/useAuth';
 // import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, user}) {
+export default function UserLoginForm({setModalContent, open, setOpen, setIsLoggedIn, user}) {
 
     const { setUser } =  useContext(AuthContext);
 
     // const {login} = useAuth();
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,15 +113,17 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
                     disabled={isSubmitting} // disable button during submission pending 
                 />
             </div>
-            <div>
+            <div className=''>
                 <label className="text-gray-800 text-sm mb-2 block">Votre mot de passe</label>
-                <input 
-                    name="password" 
-                    type="password" 
-                    className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500" 
-                    placeholder="Entrez votre mot de passe"
-                    disabled={isSubmitting} // disable button during submission pending 
+                
+                <PasswordInput 
+                    name='password'
+                    placeholder='Entrez votre mot de passe'
+                    disabled = { isSubmitting }
+                    resetOn = { open }
+
                 />
+
             </div>
 
             <p className='place-self-end'><a className='text-blue-600 text-sm underline hover:cursor-pointer' onClick={() => setModalContent('forgot-password')}>Mot de passe oublié ?</a></p>
@@ -148,7 +154,7 @@ export default function UserLoginForm({setModalContent, setOpen, setIsLoggedIn, 
 
         { error && <p className='text-red-600'>{error}</p> }
         </div>
-        <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscivez vous</a></p>
+        <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscrivez vous</a></p>
     </form>
   )
 }

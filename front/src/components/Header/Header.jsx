@@ -74,7 +74,7 @@ export function Header({user, setUser}) {
               }
               
 
-            { modalContent === "login" && <UserLoginForm setModalContent={setModalContent} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo} /> }
+            { modalContent === "login" && <UserLoginForm setModalContent={setModalContent} open={open} setOpen={setOpen} setIsLoggedIn={setIsLoggedIn} user={userInfo} /> }
             { modalContent === "register" && <UserRegisterForm setModalContent={setModalContent} /> }
             { modalContent === "forgot-password" && <UserForgotPassword setModalContent={setModalContent} />}
 

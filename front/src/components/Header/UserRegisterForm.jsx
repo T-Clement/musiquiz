@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import apiAxios from "../../libs/axios";
 import Button from "../Button";
+import PasswordInput from "../PasswordInput";
 
 export default function UserRegisterForm({ setModalContent, setOpen }) {
   const [errors, setErrors] = useState([]);
@@ -81,14 +82,15 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
           <label className="text-gray-800 text-sm mb-2 block">
             Mot de passe
           </label>
-          <input
+
+          <PasswordInput 
             name="password"
-            type="password"
-            className="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-3 rounded-md outline-blue-500"
             placeholder="Entrez votre mot de passe"
             disabled={isSubmitting}
-            />
-            { errors.password ? <p className="mt-4 text-red-500 font-semibold text-sm">{ errors.password }</p> : "" }
+            error = { errors.password ?? "" }
+          />
+
+          
         </div>
       </div>
 
