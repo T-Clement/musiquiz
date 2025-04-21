@@ -1,4 +1,6 @@
 const pool = require('../db');
+const Theme = require('./Theme');
+const Game = require('./Game'); 
 
 class Room {
 
@@ -124,7 +126,6 @@ class Room {
 
     static async getRoomScores(roomId, limit = 20, offset = 0) {
         
-        const Game = require('../models/Game'); 
         
         // console.log(Game.tableName);
         const tableNameGame = Game.tableName;
@@ -153,7 +154,7 @@ class Room {
         try {
 
             const [rows, fields] = await pool.execute(query, values);
-            console.log(rows);
+            // console.log(rows);
             return rows.map(row => new Game(row.id, row.score, row.date_score, row.id_user, row.id_room));
 
         } catch(error) {
@@ -164,7 +165,32 @@ class Room {
     }
 
 
+    static async getRandomRooms (count = 5) {
+        const themeTableName = Theme.tableName;
+        const query = `
+            SELECT ${this.tableName}.id, ${this.tableName}.name, ${themeTableName}.name as theme
+            FROM ${this.tableName}
+            LEFT JOIN ${themeTableName} ON ${this.tableName}.id_theme = ${themeTableName}.id
+            ORDER BY RAND()
+            LIMIT ?
+        `;
+        const values = [count];
+        
 
+        try {
+            const [rows, fields] = await pool.execute(query, values);
+            
+            if (rows.length === 0) {
+                return null;
+            }
+            console.log(rows)
+            return rows;
+
+        } catch (error) {
+            console.error('Error getting random rooms : ' + error.message);
+            throw error;
+        }
+    }
     
     
 

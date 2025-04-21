@@ -43,15 +43,28 @@ const validateNewStoredRoom = [
         .trim()
         .escape()
         .isLength({max: Room.ROOM_DESCRIPTION_MAX_LENGTH}).withMessage(InputValidationMessage.DESCRIPTION_LENGTH_ERROR),
-    body("theme_id")
+        body("theme_id")
         .exists()
         .trim()
         .escape()
         .isString()
         // check if theme passed is in the stored themes
-];
+    ];
+    
+    
+router.get('/random', async (req, res, next) => {
+
+    const randomRooms = await Room.getRandomRooms(5);
+
+    if(!randomRooms) {
+        return res.status(500).json({message: "Random room fetching as failed"})
+    }
+
+    return res.status(200).json({message: "Yay !", rooms: randomRooms});
 
 
+
+});
 
 router.get('/:id', roomCtrl.show);
 
@@ -140,7 +153,6 @@ router.post("/check-new-playlist", validateCheckNewPlaylist, validateRequest, as
 
 
 router.post("/store", validateNewStoredRoom, validateRequest, roomCtrl.store);
-
 
 
 module.exports = router;
