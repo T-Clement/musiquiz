@@ -19,7 +19,6 @@ export default function Nav({setOpen, isLoggedIn, setIsLoggedIn, user, setUser})
           { isLoggedIn ? 
 
           ( <ul className='flex gap-x-6'>
-              <li>Parcourir</li>
               <li><Link to={`/user/${user.userId}`}>Compte</Link></li> 
               {/** use optionjal chaining to check is previous property exits before getting access to next property  */}
               <li><Logout setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/></li>
