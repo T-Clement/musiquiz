@@ -60,7 +60,7 @@ router.get('/random', async (req, res, next) => {
         return res.status(500).json({message: "Random room fetching as failed"})
     }
 
-    return res.status(200).json({message: "Yay !", rooms: randomRooms});
+    return res.status(200).json({rooms : randomRooms});
 
 
 

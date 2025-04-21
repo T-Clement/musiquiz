@@ -2,32 +2,29 @@ import React, { useEffect, useState } from 'react'
 import Button, { VARIANT_STYLES } from '../../components/Button';
 import { RotateCcw } from 'lucide-react'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
  
-export default function RandomRoomCard() {
-    const [rooms, setRooms] = useState([]);      // pre fetch a small pool of room to avoid multiple API calls
-    const [current, setCurrent] = useState(null);
+export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
+    const [rooms, setRooms] = useState(intialRandomRoomsPool);      // pre fetch a small pool of room to avoid multiple API calls
+    const [current, setCurrent] = useState(intialRandomRoomsPool[0] || null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-  
+
+
+    // to fetch a new pool a rooms
     const fetchRooms = async (count = 5) => {
         setLoading(true)
         setError(null)
         try {
             // endpoint example
-        //   const resp = await apiAxios.get(
-        //     `${import.meta.env.VITE_API_URL}/api/rooms/random?count=${count}`
-        //   )
-            const resp = { data : [
-                {
-                    "id": "abcd1234",
-                    "name": "Electro Essentiels",
-                    "theme": "Electro",
-                  }
-            ]}
-
-          setRooms(resp.data)        // resp.data = Array<room>
-          setCurrent(resp.data[0])   // on affiche la première
+          const resp = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/room/random`
+          );
+          
+          console.log(resp);
+          setRooms(resp.data.rooms)        
         } catch (err) {
+            console.log(err);
           setError("Impossible de charger une room aléatoire.")
         } finally {
           setLoading(false)
@@ -37,7 +34,6 @@ export default function RandomRoomCard() {
 
       const nextRoom = () => {
         if (rooms.length <= 1) {
-          // Si plus rien en stock, on recharge
           // if no more rooms in in pre fetched stock, reload the api call
           return fetchRooms()
         }
@@ -49,11 +45,7 @@ export default function RandomRoomCard() {
         })
       }
 
-      // on component mount, load the pool
-      useEffect(() => {
-        fetchRooms()
-      }, [])
-
+    
 
       if (loading) {
         return (
@@ -88,7 +80,7 @@ export default function RandomRoomCard() {
       <div className="flex justify-center gap-4">
         <Link 
             className={`${VARIANT_STYLES.blue} transition`}
-            onClick={() => onJoin(current.id)}
+            to={`/room/${current.id}`}
         >
           Rejoindre
         </Link>

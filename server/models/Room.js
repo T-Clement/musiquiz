@@ -1,6 +1,5 @@
 const pool = require('../db');
 const Theme = require('./Theme');
-const Game = require('./Game'); 
 
 class Room {
 
@@ -126,10 +125,9 @@ class Room {
 
     static async getRoomScores(roomId, limit = 20, offset = 0) {
         
-        
-        // console.log(Game.tableName);
-        const tableNameGame = Game.tableName;
+        const Game = require('../models/Game');
 
+        const tableNameGame = Game.tableName;
         // const query = 
         // `SELECT * FROM ${tableNameGame} WHERE id_room = ? ORDER BY score DESC LIMIT ? OFFSET ?`;
         
