@@ -15,7 +15,7 @@ import { Navigation } from "swiper/modules";
 import { RoomItem } from "../../components/RoomItem";
 import Button, { VARIANT_STYLES } from "../../components/Button";
 import RandomRoomCard from "./RandomRoomCard";
-import DashboardCard from "../../components/DashborardCard";
+import DashboardCard from "../../components/DashboardCard";
 
 export async function loader() {
   // console.log(import.meta.env.VITE_API_URL);
