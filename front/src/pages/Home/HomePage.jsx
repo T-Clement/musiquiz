@@ -130,7 +130,7 @@ export function HomePage() {
           <RandomRoomCard intialRandomRoomsPool = { randomRooms.rooms } onJoin={ '' } />
         </DashboardCard>
 
-        <DashboardCard icon="🏠" title="Toutes les rooms">
+        <DashboardCard icon="🕹️" title="Toutes les rooms">
           <p className="text-gray-300 mb-4">
             Parcourez toutes les parties disponibles.
           </p>
