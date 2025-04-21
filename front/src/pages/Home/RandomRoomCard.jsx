@@ -21,7 +21,6 @@ export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
             `${import.meta.env.VITE_API_URL}/api/room/random`
           );
           
-          console.log(resp);
           setRooms(resp.data.rooms)        
         } catch (err) {
             console.log(err);
