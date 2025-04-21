@@ -1,5 +1,5 @@
 const pool = require('../db');
-const Game = require('./Game');
+// const Game = require('./Game');
 const User = require('./User');
 
 
@@ -60,6 +60,7 @@ class Theme {
 
     static async getRoomsOfOneTheme(themeId) {
         const Room = require("./Room");
+        const Game = require("./Game");
         const query = `
         SELECT r.id AS room_id, 
             r.name AS room_name, 
