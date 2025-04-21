@@ -15,7 +15,7 @@ export default function ResetPassword() {
 
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get("token");
-  console.log(token);
+  // console.log(token);
 
 
   const handleSubmit = async (e) => {
@@ -23,7 +23,7 @@ export default function ResetPassword() {
 
     setError('');
     setMessage('');
-
+    console.log(password, confirmPassword)
     if(password != confirmPassword) {
       setError('Les mots de passes ne correspondent pas.')
       return;
@@ -41,13 +41,9 @@ export default function ResetPassword() {
 
       }
 
-
-
-
-
     } catch (error) {
-      console.error(error);
-      setError("Une erreur est survenue");
+      console.error(error.response.data.message);
+      setError(error.response.data.errors ? error.response.data.errors[0].msg : error.response.data.message);
     }
 
 
@@ -88,7 +84,7 @@ export default function ResetPassword() {
         <Button type="submit" variant="blue">Réinitiliaser</Button>
 
       </form>
-
+      {error && <p className="text-red-500 italic">{error}</p>}
       {success && <RedirectAfterDelay pageToRedirect='/' />}
 
     </div>
