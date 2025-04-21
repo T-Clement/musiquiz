@@ -135,7 +135,7 @@ export function HomePage() {
             Parcourez toutes les parties disponibles.
           </p>
           <Link
-            to="/room"
+            to="/room/browse"
             className={`${VARIANT_STYLES.blue} flex self-center`}
           >
             Voir les rooms

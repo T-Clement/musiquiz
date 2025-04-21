@@ -21,6 +21,7 @@ import PlaygroundPage from './pages/Playground/PlaygroundPage';
 import FinalLeaderBoardPage from './pages/InGame/FinalLeaderBoardPage';
 import UserPage, { loader as userPageLoader } from './pages/UserPage';
 import ResetPassword from './pages/ResetPassword';
+import BrowseRoomsPage from './pages/BrowseRoomsPage';
 
 // import apiAxios from './libs/axios';
 
@@ -68,6 +69,10 @@ export function App() {
         {
           path: "room/new",
           element: <NewRoomPage />,
+        },
+        {
+          path: "room/browse",
+          element: <BrowseRoomsPage />
         },
         {
           path: "user/:id",
