@@ -76,7 +76,7 @@ export default function ChooseRole() {
 
         try {
             // send role to server
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/game/add-user-to-game`, {
+            const response = await apiAxios.post(`${import.meta.env.VITE_API_URL}/api/game/add-user-to-game`, {
                 role: roleInForm,
                 userId: user ? user.userId : "",
                 gameId: gameId,

@@ -17,6 +17,7 @@ const Game = require('../schema/Game');
 const { checkIfTracksAreReadable, shuffle } = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
 const { default: mongoose } = require('mongoose');
+const { optionalAuth } = require('../middleware/Auth');
 
 
 
@@ -68,22 +69,63 @@ router.post('/check-sharing-code', async (req, res, next) => {
 
 
 
-router.post('/add-user-to-game', async (req, res, next) => {
+router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
 
     try {
         
         // put body data in variables
-        const { gameId, userId, role, socketId } = req.body;
+        const { gameId, role, socketId, token } = req.body;
         
-        // SQL DATA
-        const userData = await User.getUserForGame(userId);
 
-        // if user is already in a running game, not allowed to join a new room
-        const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
-        if(userAlreadyInGame) {
-            console.log('user is already in a game ', userAlreadyInGame);
-            return res.status(403).json({ message : "User is already in a running game"});
+        let userId, userData;
+
+        // ----------------------------------------------------
+        // check for auth to join game
+        // ----------------------------------------------------
+
+        if(role === 'player') {
+            // player need to connected
+            if(!req.user) {
+                return res.status(401).json({message: 'Authentification requise pour être joueur'});
+            }
+            userId = req.user.userId;
+            userData = await User.getUserForGame(userId);
+            if (GameManager.checkIfUserIsAlreadyInOneGame(userId)) {
+                return res.status(403).json({ message: 'Vous êtes déjà dans une partie.' });
+            }
+        } else if (role === "presentator") {
+            if(req.user) {
+                userId = req.user.userId;
+                userData = await User.getUserForGame(userId);
+            } else {
+                if(!token) {
+                    return res.status(401).json({ message: 'Token de présentation requis.' });
+                }
+
+                // check for token integrity
+                // const ok = await verifyInviteToken(gameId, token); 
+                // if(!ok) {
+                //     return res.status(401).json({ message: 'Token invalide ou expiré.' });
+                // }
+                userId = null;
+            }
+        } else {
+            return res.status(400).json({ message: 'Role invalide.' });
         }
+
+
+
+
+
+        // SQL DATA
+        // const userData = await User.getUserForGame(userId);
+
+        // // if user is already in a running game, not allowed to join a new room
+        // const userAlreadyInGame = GameManager.checkIfUserIsAlreadyInOneGame(userId);
+        // if(userAlreadyInGame) {
+        //     console.log('user is already in a game ', userAlreadyInGame);
+        //     return res.status(403).json({ message : "User is already in a running game"});
+        // }
 
         const filter = { _id: gameId };
         // console.log(gameId);
@@ -111,7 +153,14 @@ router.post('/add-user-to-game', async (req, res, next) => {
 
         
 
-        return res.status(200).json({message: "Player and role updated successfully", game: updatedGame, role: role, user: role === "player" ?  {userId: userData.id, pseudo: userData.pseudo} : {} });
+        return res.status(200).json(
+            {
+                message: "Player and role updated successfully", 
+                game: updatedGame, 
+                role: role, 
+                user: role === "player" ?  {userId: userData.id, pseudo: userData.pseudo} : {} 
+            }
+        );
 
     } catch (error) {
         console.error("Error updating game role: ", error);

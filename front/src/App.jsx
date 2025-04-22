@@ -22,6 +22,7 @@ import FinalLeaderBoardPage from './pages/InGame/FinalLeaderBoardPage';
 import UserPage, { loader as userPageLoader } from './pages/UserPage';
 import ResetPassword from './pages/ResetPassword';
 import BrowseRoomsPage from './pages/BrowseRoomsPage';
+import JoinRoomQrCodePage from './pages/JoinRoomQrCodePage';
 
 // import apiAxios from './libs/axios';
 
@@ -73,6 +74,10 @@ export function App() {
         {
           path: "room/browse",
           element: <BrowseRoomsPage />
+        },
+        {
+          path: "qr-code-join-room",
+          element: <JoinRoomQrCodePage/>
         },
         {
           path: "user/:id",

@@ -194,7 +194,7 @@ export default function WaitingRoomPage() {
 
 
         <div className="">
-          <QRCode size={170} value={`${window.location.origin}/join-room?sharing-code=${game.sharingCode}`} />
+          <QRCode size={170} value={`${window.location.origin}/qr-code-join-room?sharing-code=${game.sharingCode}`} />
         </div>
       </h2>
 
