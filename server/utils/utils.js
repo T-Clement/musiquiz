@@ -50,3 +50,20 @@ exports.checkIfTracksAreReadable = (listOfTracks) => {
 exports.shuffle = (array) => {
     return array.sort(() => Math.random() - 0.5);
 }
+
+
+exports.generatePresentatorToken = (gameId) => {
+    const jwt = require('jsonwebtoken');
+    return jwt.sign(
+        { gameId, role: 'presentator' },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: '24h', noTimestamp: true } // no timeStamp to generate same token at any time
+    );
+}
+
+exports.verifyPresentatorToken = (gameId, token) => {
+    const jwt = require('jsonwebtoken');
+    const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    return payload.role === 'presentator' && payload.gameId === gameId;
+    
+}

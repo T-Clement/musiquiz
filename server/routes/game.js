@@ -18,7 +18,7 @@ const { checkIfTracksAreReadable, shuffle } = require('../utils/utils');
 const { v4: uuidv4 } = require('uuid');
 const { default: mongoose } = require('mongoose');
 const { optionalAuth } = require('../middleware/Auth');
-
+const utils = require('../utils/utils');
 
 
 router.get('/:id', async (req, res, next) => {
@@ -54,10 +54,13 @@ router.post('/check-sharing-code', async (req, res, next) => {
            return res.status(404).json({message: "Pas de partie en cours avec ce code"});
         }
 
+        const presentatorToken = utils.generatePresentatorToken(game._id);
 
-
-        return res.status(200).json({message: "", game: game});
-
+        return res.status(200).json({
+            message: "", 
+            game: game, 
+            token: presentatorToken
+        });
 
     } catch(error) {
         console.log('Error in check sharing code ', error);
@@ -84,7 +87,7 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
         // ----------------------------------------------------
 
         if(role === 'player') {
-            // player need to connected
+            // player need to be connected
             if(!req.user) {
                 return res.status(401).json({message: 'Authentification requise pour être joueur'});
             }
@@ -94,19 +97,21 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
                 return res.status(403).json({ message: 'Vous êtes déjà dans une partie.' });
             }
         } else if (role === "presentator") {
+            // presentator but connected
             if(req.user) {
                 userId = req.user.userId;
                 userData = await User.getUserForGame(userId);
             } else {
+                // USER IS NOT CONNECTED
                 if(!token) {
                     return res.status(401).json({ message: 'Token de présentation requis.' });
                 }
 
                 // check for token integrity
-                // const ok = await verifyInviteToken(gameId, token); 
-                // if(!ok) {
-                //     return res.status(401).json({ message: 'Token invalide ou expiré.' });
-                // }
+                const ok = utils.verifyPresentatorToken(gameId, token); 
+                if(!ok) {
+                    return res.status(401).json({ message: 'Token invalide ou expiré.' });
+                }
                 userId = null;
             }
         } else {
@@ -158,7 +163,8 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
                 message: "Player and role updated successfully", 
                 game: updatedGame, 
                 role: role, 
-                user: role === "player" ?  {userId: userData.id, pseudo: userData.pseudo} : {} 
+                user: role === "player" ?  {userId: userData.id, pseudo: userData.pseudo} : {},
+                presentatorToken: presentatorToken 
             }
         );
 
@@ -370,6 +376,9 @@ router.post('/create-game', async (req, res, next) => {
 
         // use method of Schema to create random sharing code starting with roomId
         newGame.generateSharingCode();
+
+        const presentatorToken = utils.generatePresentatorToken(gameId)
+
 
         await newGame.save();
 

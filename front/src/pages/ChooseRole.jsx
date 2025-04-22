@@ -4,7 +4,7 @@ import { useLoaderData, useNavigate, useOutletContext, useParams } from 'react-r
 import axios from 'axios';
 import { useWebSocket } from '../layouts/GameLayout';
 import Button from '../components/Button';
-
+import {useState} from 'react'
 
 // vérifier si le joueur est connecté
 // si non, ne laisser le choix que du rôle de présentateur
@@ -15,25 +15,31 @@ import Button from '../components/Button';
 
 
 
-export async function loader() {
+export async function loader({request}) {
     console.log("choose role loader")
+
+    const url = new URL(request.url);
+    const source = url.searchParams.get('source') || null;
+    const sharingCode = url.searchParams.get('sharingCode') || null;
+
+    let user = null;
+
+    // fetch current user
     try {
         const response = await apiAxios.get(`${import.meta.env.VITE_API_URL}/api/me`);
-        console.warn(response.data);
-        return response.data.user || null;
+        // console.warn(response.data);
+        user =  response.data.user || null;
     } catch (error) {
         if (error.response && error.response.status === 401) {
             console.log("User not authenticated");
-            return null;
         }else {
-            console.error("dans le else");
+            // console.error("dans le else");
             console.error(error);
+            throw error; // rethrow other errors
         }
-        throw error; // rethrow other errors
     }
 
-
-    // check if user is not already in game ? (prev in navigator go back to role selection page ...)
+    return { user, source, sharingCode };
 
 }
 
@@ -41,31 +47,26 @@ export async function loader() {
 
 export default function ChooseRole() {
     
+    const {user, source, sharingCode} = useLoaderData();
     const {role, setRole} = useOutletContext();
+    const { id: gameId } = useParams();
+    const navigate = useNavigate();
     
-    console.log('Choose role component Choose role value', role);
-
-    // return;
+    // console.log('Choose role component Choose role value', role);
 
 
-
-    const user = useLoaderData();
     // console.warn(user)
 
-    const { id: gameId } = useParams();
-
-    const navigate = useNavigate();
-
-
-    // const socket = useWebSocket();
     const {socket, isSocketReady} = useWebSocket();
     const socketInstance = socket.current;
 
+    const [step, setStep] = useState('');
+    const [error, setError] = useState(null);
 
+    // const handleChooseRole = async (roleInForm) => {
 
-    // if(!socket) return <div>Loading ...</div>;
+    // }
 
-    // console.warn(socket);
 
     const handleChooseRole = async (roleInForm) => {
         console.log('choix du rôle dans le formualaire: ', roleInForm);
@@ -133,7 +134,7 @@ export default function ChooseRole() {
             <h1>ChooseRole</h1>
 
             <div>
-                <div className="min-h-screen bg-gradient-to-br flex items-center justify-center">
+                <div className="min-h-screen bg-gradient-to-br flex flex-col items-center justify-center">
                     <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
                         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Choisissez votre rôle</h1>
                         <p className="text-center text-gray-600 mb-8">
@@ -156,7 +157,10 @@ export default function ChooseRole() {
                             </Button>
                         </div>
                     </div>
+                {   !user && (<p className='italic text-sm pt-3'>Vous voulez être joueur, connectez vous !</p>)}
                 </div>
+
+
             </div>
         </div>
     )
