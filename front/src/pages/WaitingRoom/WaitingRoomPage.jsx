@@ -13,6 +13,9 @@ import { useWebSocket } from "../../layouts/GameLayout";
 import WaitingRoomPresentator from "./WaitingRoomPresentator";
 import WaitingRoomPlayer from "./WaitingRoomPlayer";
 
+import QRCode from "react-qr-code";
+
+
 export async function loader({ params }) {
   const { id } = params;
   console.log("id:", id);
@@ -188,6 +191,11 @@ export default function WaitingRoomPage() {
         <strong className="p-4 bg-white rounded-lg text-black inline-block mx-auto">
           {game.sharingCode}
         </strong>
+
+
+        <div className="">
+          <QRCode size={170} value={`${window.location.origin}/join-room?sharing-code=${game.sharingCode}`} />
+        </div>
       </h2>
 
       <h3 className="font-bold">Role utilisateur: {role}</h3>
