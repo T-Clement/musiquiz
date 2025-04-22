@@ -81,7 +81,9 @@ export default function ChooseRole() {
                 role: roleInForm,
                 userId: user ? user.userId : "",
                 gameId: gameId,
-                socketId: socketInstance.id || null
+                socketId: socketInstance.id || null,
+                sharingCode: sharingCode
+                // token : presentatorToken
             }, {
                 headers: {
                     "Content-Type": "application/json"

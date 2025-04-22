@@ -5,6 +5,7 @@ import JoinRoomSearchInput from './JoinRoomSearchInput';
 import JoinRoomQrCode from './JoinRoomQrCode';
 import axios from 'axios';
 import { AuthContext } from '../../hooks/authContext';
+import apiAxios from '../../libs/axios';
 
 function JoinGameSection() {
 
@@ -29,7 +30,7 @@ function JoinGameSection() {
         // check to specific API route if game exists in noSQL database
         try {
             // send role to server
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/game/check-sharing-code`, {
+            const response = await apiAxios.post(`${import.meta.env.VITE_API_URL}/api/game/check-sharing-code`, {
                 sharingCode: roomCode
             }, {
                 headers: {
@@ -43,7 +44,7 @@ function JoinGameSection() {
             // console.log(response);
             // if response is ok, redirect to waiting room
             if (response.data) {
-                navigate(`/game/${response.data.game._id}/choose-role`, { state: { game: response.data, user: user } });
+                navigate(`/game/${response.data.game._id}/choose-role?source=sharingCode&sharingCode=${response.data.sharingCode}`, { state: { game: response.data, user: user } });
             } else {
                 // setErrorMessage("Aucune salle n'a été trouvée avec cet identifiant");
             }

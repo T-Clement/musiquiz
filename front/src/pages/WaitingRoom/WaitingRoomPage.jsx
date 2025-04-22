@@ -35,6 +35,7 @@ export async function loader({ params }) {
     });
   }
 
+
   return response.data;
 }
 
@@ -51,6 +52,7 @@ export default function WaitingRoomPage() {
   // data coming from component loader
   const { game } = useLoaderData();
 
+  // console.log(game)
   // initialization with players connected in
   const [players, setPlayers] = useState(game.players || []);
 
@@ -177,6 +179,9 @@ export default function WaitingRoomPage() {
     return <div>Loading in WaitingRoom...</div>;
   }
 
+
+  
+
   // console.log(players);
 
   return (
@@ -194,7 +199,7 @@ export default function WaitingRoomPage() {
 
 
         <div className="">
-          <QRCode size={170} value={`${window.location.origin}/qr-code-join-room?sharing-code=${game.sharingCode}`} />
+          <QRCode size={170} value={`${window.location.origin}/game/${game._id}/choose-role?source=qrcode&sharingCode=${game.sharingCode}`} />
         </div>
       </h2>
 

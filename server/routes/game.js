@@ -32,7 +32,7 @@ router.get('/:id', async (req, res, next) => {
     if(!game) {
         return res.status(404).json({message: "Game not found"});
     }
-    
+
     return res.status(200).json({game: game}); 
 });
 
@@ -48,18 +48,16 @@ router.post('/check-sharing-code', async (req, res, next) => {
 
     try {
 
-        const game = await Game.findOne(filter);
+        const game = await Game.findOne(filter, {projection : { _id: 1}});
 
         if(!game) {
            return res.status(404).json({message: "Pas de partie en cours avec ce code"});
         }
 
-        const presentatorToken = utils.generatePresentatorToken(game._id);
-
         return res.status(200).json({
             message: "", 
             game: game, 
-            token: presentatorToken
+            sharingCode: sharingCode
         });
 
     } catch(error) {
@@ -77,7 +75,7 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
     try {
         
         // put body data in variables
-        const { gameId, role, socketId, token } = req.body;
+        const { gameId, role, socketId, sharingCode } = req.body;
         
 
         let userId, userData;
@@ -103,15 +101,15 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
                 userData = await User.getUserForGame(userId);
             } else {
                 // USER IS NOT CONNECTED
-                if(!token) {
-                    return res.status(401).json({ message: 'Token de présentation requis.' });
+                if(!sharingCode) {
+                    return res.status(401).json({ message: 'Code manquant. Le présentateur invité ne peux pas être authentifié' });
+                }
+                const game = Game.findOne({_id: gameId, sharingCode, status: 'waiting'});
+                if(!game) {
+                    return res.status(401).json({ message: 'Code invalide. Le présentateur invité ne peux pas être authentifié' });
                 }
 
-                // check for token integrity
-                const ok = utils.verifyPresentatorToken(gameId, token); 
-                if(!ok) {
-                    return res.status(401).json({ message: 'Token invalide ou expiré.' });
-                }
+
                 userId = null;
             }
         } else {
@@ -146,7 +144,7 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
             return res.status(400).json({message: "Invalid role specified"});
         }
     
-        const updatedGame = await Game.findOneAndUpdate(filter, update);
+        const updatedGame = await Game.findOneAndUpdate(filter, update, {projection: {rounds: 0}});
         
         console.log("User added");
         console.log(`Game ${gameId} updated`, updatedGame);
@@ -164,7 +162,7 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
                 game: updatedGame, 
                 role: role, 
                 user: role === "player" ?  {userId: userData.id, pseudo: userData.pseudo} : {},
-                presentatorToken: presentatorToken 
+                // presentatorToken: presentatorToken 
             }
         );
 
@@ -375,10 +373,7 @@ router.post('/create-game', async (req, res, next) => {
         });
 
         // use method of Schema to create random sharing code starting with roomId
-        newGame.generateSharingCode();
-
-        const presentatorToken = utils.generatePresentatorToken(gameId)
-
+        const generatedSharingCode = newGame.generateSharingCode();
 
         await newGame.save();
 
@@ -389,13 +384,13 @@ router.post('/create-game', async (req, res, next) => {
         });
 
 
-        res.status(201).json({ gameId: newGame._id })
+        res.status(201).json({ gameId: newGame._id,  sharingCode: generatedSharingCode})
 
 
     } catch (error) {
         console.error('Error creating new Game', error.message);
         // console.error()
-next(error)
+        next(error)
 
 
         // res.status(error.status).json({ error: 'Failed to create game' });

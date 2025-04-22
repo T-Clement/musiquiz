@@ -62,13 +62,13 @@ export function RoomPage() {
         }
       );
 
-      const { gameId } = response.data;
+      const { gameId, sharingCode } = response.data;
 
       // navigate(`/game/${gameId}/waiting-room`);
 
       // send gameId (_id) to next page
       setLoading(false);
-      navigate(`/game/${gameId}/choose-role`, { state: { gameId } });
+      navigate(`/game/${gameId}/choose-role?source=create&sharingCode=${sharingCode}`, { state: { gameId } });
     } catch (error) {
       console.error("Error creating game : ", error);
     }
