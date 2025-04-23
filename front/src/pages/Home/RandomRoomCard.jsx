@@ -5,11 +5,15 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
  
 export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
+    
     const [rooms, setRooms] = useState(intialRandomRoomsPool);      // pre fetch a small pool of room to avoid multiple API calls
-    const [current, setCurrent] = useState(intialRandomRoomsPool[0] || null);
+    // const [current, setCurrent] = useState(intialRandomRoomsPool[0] || null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // at each render of component, current is initialize with 
+    // first value of rooms
+    const current = rooms[0] || null;
 
     // to fetch a new pool a rooms
     const fetchRooms = async (count = 5) => {
@@ -21,7 +25,8 @@ export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
             `${import.meta.env.VITE_API_URL}/api/room/random`
           );
           
-          setRooms(resp.data.rooms)        
+          setRooms(resp.data.rooms);
+          // console.log(resp.data.rooms);        
         } catch (err) {
             console.log(err);
           setError("Impossible de charger une room aléatoire.")
@@ -36,12 +41,9 @@ export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
           // if no more rooms in in pre fetched stock, reload the api call
           return fetchRooms()
         }
-        // remove the first room and take next room
-        setRooms(prev => {
-          const [, ...rest] = prev
-          setCurrent(rest[0])
-          return rest
-        })
+        // remove first element
+        setRooms(prev => prev.slice(1));
+
       }
 
     
