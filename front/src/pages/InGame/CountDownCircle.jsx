@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import "./CountDownCircle.css";
 
-export default function CountDownCircle({currentRound, roundInProgress, timeLeft,}) {
+export default function CountDownCircle({currentRound, roundInProgress, timeLeft, className = ''}) {
   // function who handle the rendering of time in the circle
   const renderTime = ({ remainingTime }) => {
     const currentTime = useRef(remainingTime);
@@ -35,7 +35,7 @@ export default function CountDownCircle({currentRound, roundInProgress, timeLeft
     const isTimeUp = isNewTimeFirstTick.current;
 
     return (
-      <div className="time-wrapper">
+      <div className={`time-wrapper ${{...className}}`}>
         <div key={remainingTime} className={`time ${isTimeUp ? "up" : ""}`}>
           {remainingTime}
         </div>

@@ -79,7 +79,7 @@ export default function InGamePresentatorPage() {
       </p>
 
       {/*  */}
-      <div className="flex justify-around">
+      <div className="flex flex-col-reverse md:flex-row justify-around">
         {/* Left */}
         <div className="relative p-10 ">
           
@@ -108,7 +108,7 @@ export default function InGamePresentatorPage() {
           </audio>
 
           {/** Local counter */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-center gap-3 ">
             <CountDownCircle
               currentRound={roundData.currentRound}
               roundInProgress={roundData.roundInProgress}
@@ -116,9 +116,9 @@ export default function InGamePresentatorPage() {
             />
 
             {roundData.correctAnswer && (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 ">
                 
-                <p className="text-white ">
+                <p className="text-white">
                   Bonne réponse :
                 </p>
                 <span className="bg-white text-black rounded-md p-4">
