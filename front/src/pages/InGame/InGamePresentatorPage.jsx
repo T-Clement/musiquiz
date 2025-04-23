@@ -79,7 +79,7 @@ export default function InGamePresentatorPage() {
       </p>
 
       {/*  */}
-      <div className="flex flex-col-reverse md:flex-row justify-around">
+      <div className="flex flex-col-reverse md:flex-row justify-around mx-auto max-w-7xl">
         {/* Left */}
         <div className="relative p-10 ">
           
