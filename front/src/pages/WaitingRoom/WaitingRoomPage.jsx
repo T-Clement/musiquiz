@@ -14,6 +14,7 @@ import WaitingRoomPresentator from "./WaitingRoomPresentator";
 import WaitingRoomPlayer from "./WaitingRoomPlayer";
 
 import QRCode from "react-qr-code";
+import Modal from "../../components/Modal";
 
 
 export async function loader({ params }) {
@@ -58,6 +59,8 @@ export default function WaitingRoomPage() {
 
   // state to display if there is a presentator in game
   const [presentator, setPresentator] = useState(game.presentator || null);
+
+  const [qrCodeModalIsOpen, setQrCodeModalIsOpen] = useState(false);
 
   // id of game in url params
   const { id: gameId } = useParams();
@@ -199,7 +202,12 @@ export default function WaitingRoomPage() {
 
 
         <div className="">
-          <QRCode size={170} value={`${window.location.origin}/game/${game._id}/choose-role?source=qrcode&sharingCode=${game.sharingCode}`} />
+          <QRCode onClick={() => setQrCodeModalIsOpen(true)} size={170} value={`${window.location.origin}/game/${game._id}/choose-role?source=qrcode&sharingCode=${game.sharingCode}`} />
+          {qrCodeModalIsOpen && 
+          <Modal open={qrCodeModalIsOpen} onClose = {() => setQrCodeModalIsOpen(false) } >
+              <QRCode size={340} value={`${window.location.origin}/game/${game._id}/choose-role?source=qrcode&sharingCode=${game.sharingCode}`} />
+
+          </Modal>}
         </div>
       </h2>
 
