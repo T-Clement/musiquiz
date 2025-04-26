@@ -189,11 +189,13 @@ router.delete('/:id/delete', async(req, res, next) => {
             // console.log("before")
             // console.log(gameState);
             // console.log("after")
-            if(gameState) { // if game is in memory, delete it
-                
-                // kill / clear timeOut of game in server
-                GameManager.killGameInstance(gameId);
+            if(!gameState) {
+                return res.status(404).json({ message: "Partie non trouvée ou déjà supprimée.", redirect: "home"});
             }
+            
+        // if game is in memory, delete it
+        // kill / clear timeOut of game in Map server
+        GameManager.killGameInstance(gameId);
 
         // delete the record from the database
         const deletedGame = await Game.findByIdAndDelete(gameId);

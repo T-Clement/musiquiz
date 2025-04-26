@@ -66,6 +66,32 @@ class Game {
         return ;
     }
 
+    //** */
+    static async insertNewEndedGame (id_user, score, id_room) {
+        const query = `
+        INSERT INTO ${this.tableName} (score, date_score, id_user, id_room) VALUES (?, NOW(), ?, ?);
+        `;
+
+        const values = [score, id_user, id_room];
+
+        try {
+            const [result] = await pool.execute(query, values);
+            if(result.affectedRows == 1) {
+                // new inserted row in database
+                return result.insertId;
+            } 
+
+
+        } catch (error) {
+            console.error('Error inserting ended game data : ' + error.message);
+            throw error;
+            
+        }
+
+
+    }
+
+
 }
 
 module.exports = Game;

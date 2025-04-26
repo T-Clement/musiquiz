@@ -1,4 +1,6 @@
+const Room = require("../models/Room");
 const Game = require("../schema/Game");
+const GameSQL = require("../models/Game");
 
 class GameManager {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties
@@ -58,18 +60,8 @@ class GameManager {
 
 
     initGame(gameId, gameData) {
+        // get gameState already initialized and add properties
         const gameState = GameManager.inMemoryGames.get(gameId);
-
-        // gameState.set(gameId, {
-        //     currentRound: 0,
-        //     totalRounds: gameData.totalRounds,
-        //     roundDuration: gameData.roundDuration,
-        //     rounds: gameData.rounds,
-        //     status: 'NOT_STARTED',
-        //     timerId: null,
-        //     players: gameData.players,
-        // });
-
 
         Object.assign(gameState, {
             currentRound: 0,
@@ -80,7 +72,6 @@ class GameManager {
             timerId: null,
             players: gameData.players,
         });
-
 
         this.io.to(gameId).emit("game-initialized", {
             gameId,
@@ -151,17 +142,7 @@ class GameManager {
             extractUrl : roundExtractUrl
         });
 
-
-
-        // // 3s delay between rounds 
-        // const LOADING_DELAY = 3000;
-        // gameState.timerId = setTimeout(() => {
-            //     console.log("round launched");
-            //     this._launchRound(gameId);
-            // }, LOADING_DELAY);
-            
-            
-        }
+    }
         
         
         
@@ -249,46 +230,36 @@ class GameManager {
         gameState.timerId = setTimeout(() => {
             this.#_startNextRound(gameId);
         }, RESULTS_DELAY);
-        
-        
-        
-        
-        
-        
-        // this.io.to(gameId).emit("round-ended", {
-            //     roundNumber: gameState.currentRound,
-            //     // correctAnswer,
-            //     // updatedPlayers
-            // });
-            
-            
-            
-            // // delay between each rounds
-            // setTimeout(() => {
-                //     this._startNextRound(gameId);
-                // }, 5000);
                 
                 
     }
             
             
             
-    _endGame(gameId) {
+    async _endGame(gameId) {
 
         // scores 
+        // extract game data in const variables
         const gameState = GameManager.inMemoryGames.get(gameId);
         const scores = gameState.players;
-
-        // delete game from memory
-        GameManager.inMemoryGames.delete(gameId);
         
-        // remove all the players in a game
-        GameManager.removePlayersFromInGamePlayers(gameId);
-
-        // GameManager.inMemoryPlayersInGames.delete()
-        console.log(`P=== endGame ===> End of game ${gameId}`);
+        console.log(`=== endGame ===> End of game ${gameId}`);
         console.log(scores);
-
+        
+        // update in database
+        const updatedEndedGame = await Game.findOneAndUpdate(
+            { _id: gameId }, 
+            { $set: {
+                status: "finished",
+                endedAt: new Date()
+            }},
+            {new: true} // tells to Mongoose to returns new updated object
+        );
+        
+        // console.log(updatedEndedGame);
+        
+        if(!updatedEndedGame) return;
+            
         // ??? this.io.in or this.io.to ???
         this.io.in(gameId).emit("game-ended", {
             message: "La partie est terminée, merci d'avoir joué !",
@@ -296,14 +267,49 @@ class GameManager {
             scores,
             roomName: gameState.roomName,
             tracks : GameManager.getGameExtracts(gameState) // filter this to return only the correct answer
+        });
+
+
+        // SQL differate as async task
+        setImmediate(async () => {
+            try {
+                // register in SQL database
+                const room_id = updatedEndedGame.roomId;
+
+                await Promise.all(
+                    updatedEndedGame.players.map(player => {
+                        GameSQL.insertNewEndedGame(
+                            parseInt(player.userId), 
+                            parseInt(player.score), 
+                            parseInt(room_id)
+                        );
+                    })
+                );
+
+                this.io.in(gameId).emit('game-registered');
+                console.log(`=== endGame ===> ${gameId} games (${updatedEndedGame.players.length} players) registered in SQL database in as games of room ${updatedEndedGame.roomId}`);
+            } catch (error) {
+                console.error('SQL insert failed', error);
+                // TODO table failed_jobs who stores task to be reschedule
+            } finally {
+                // kill websocket channel -> in sockethandler ?
+                // remove all users from socket room
+                this.io.socketsLeave(gameId); // method on websocket server
+            }
         })
+    
+        // CLEANING MAPS
+        // delete game from memory
+        GameManager.inMemoryGames.delete(gameId);
+        // remove all the players in a game
+        GameManager.removePlayersFromInGamePlayers(gameId);
     }
-
-
+    
+    
     static getGameState(gameId) {
         return this.inMemoryGames.get(gameId);
     }
-
+    
     static killGameInstance(gameId) {
         const gameState = GameManager.inMemoryGames.get(gameId);
         if(!gameState) return; // nothing to kill
