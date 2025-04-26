@@ -319,6 +319,7 @@ class GameManager {
         }
         this.inMemoryGames.delete(gameId);
 
+        this.io.socketsLeave(gameId); // method on websocket server
         GameManager.removePlayersFromInGamePlayers(gameId);
     }
 
