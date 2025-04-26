@@ -22,6 +22,9 @@ export default function GameLayout() {
   const [isSocketReady, setIsSocketReady] = useState(false);
   const [role, setRole] = useState(null);
 
+  const [showDeleteButton, setShowDeleteButton] = useState(true);
+
+
   useEffect(() => {
     if (loading) return;
 
@@ -53,6 +56,8 @@ export default function GameLayout() {
       // console.log(data);
       // console.warn("game-layout"  + data.message);
 
+      setShowDeleteButton(false);
+
       navigate(`/game/${gameId}/leaderboard`, {
         state: {
           scores: data.scores,
@@ -60,6 +65,9 @@ export default function GameLayout() {
           tracks: data.tracks,
         },
       });
+
+
+
     });
 
     return () => {
@@ -109,12 +117,15 @@ export default function GameLayout() {
             <p>GameLayout</p>
             <div className="mx-auto flex items-center justify-center">
               
-              <Button onClick={handleDeleteGame} variant="danger">
+            {showDeleteButton 
+            && 
+            <Button onClick={handleDeleteGame} variant="danger">
                 Supprimer la partie
-              </Button>
+            </Button>
+            }
 
             </div>
-            <Outlet context={{ role, setRole }} />
+            <Outlet context={{ role, setRole, setShowDeleteButton}} />
           </div>
         </AudioContextProvider>
       </GameSocketProvider>

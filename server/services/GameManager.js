@@ -294,6 +294,7 @@ class GameManager {
             } finally {
                 // kill websocket channel -> in sockethandler ?
                 // remove all users from socket room
+                console.log(gameId + " ==> Disconnect all players of WS room ");
                 this.io.socketsLeave(gameId); // method on websocket server
             }
         })

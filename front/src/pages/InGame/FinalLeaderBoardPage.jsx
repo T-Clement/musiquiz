@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import TopPlayers from "./TopPlayers";
 import RankedPlayers from "./RankedPlayers";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import Tab from "../../components/Tab";
 import RoundsSection from "./RoundsSection";
+import { VARIANT_STYLES } from "../../components/Button";
 
 export default function LeaderboardPage() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // const { setShowDeleteButton } = useOutletContext();
+
   console.log(location.state);
   const { scores, roomName, tracks } = location.state;
 
+  // const userId;
   // console.log(scores);
 
   const [tabSelected, setTabSelected] = useState("Classement");
@@ -18,6 +23,13 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen flex flex-col items-center p-6">
       <h3 className="mb-8 text-3xl">{roomName}</h3>
+
+      <div className="flex mb-6">
+        <Link className={VARIANT_STYLES.blue} to="/">Accueil</Link>
+        {/* <Link className={VARIANT_STYLES.outline} to="/user">Compte</Link> */}
+      </div>
+
+
       <div className="rounded-full mb-8 overflow-hidden">
 
         <Tab
