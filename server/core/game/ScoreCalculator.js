@@ -20,4 +20,4 @@ function getScoreFromResponseTime(tMs) {
 
 }
 
-module.exports = {MAX_SCORE, getScoreFromResponseTime}
+module.exports = {MAX_SCORE, THRESHOLD, getScoreFromResponseTime}
