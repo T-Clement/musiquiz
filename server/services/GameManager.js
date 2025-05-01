@@ -3,11 +3,14 @@ const Game = require("../schema/Game");
 const GameSQL = require("../models/Game");
 const { getScoreFromResponseTime } = require("../core/game/ScoreCalculator");
 
+const { store } = require('./AppWiring');
+
+
 class GameManager {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties
 
-    static inMemoryGames = new Map();
-    static inMemoryPlayersInGames = new Map();
+    static inMemoryGames = store.games;
+    static inMemoryPlayersInGames = store.playersInGames;
 
     static roundsNumber = process.env.ROUND_NUMBER || 10;
     static numberOfResponsePropositions = 4;

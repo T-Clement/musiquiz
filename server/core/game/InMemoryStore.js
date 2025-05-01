@@ -27,6 +27,22 @@ class InMemoryStore {
   playerGame(uid) {
     return this.#players.get(uid);
   }
+
+
+
+
+
+
+  // ---------- TO USE FOR REFACTO -------
+  // to give access to Maps in this store
+  get games()  {
+    return this.#games;
+  }
+
+  get playersInGames() {
+    return this.#players;
+  }
+
 }
 
 module.exports = InMemoryStore;
