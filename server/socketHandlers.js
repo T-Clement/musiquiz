@@ -245,28 +245,6 @@ module.exports = (io) => {
     });
 
 
-    // socket.on("trigger-round-loading", (gameId) => {
-    //   const gameState = GameManager.inMemoryGames.get(gameId);
-    //   if (!gameState) {
-    //     console.error(`trigger-round-loading: Game not found: ${gameId}`);
-    //     return;
-    //   }
-    //   // Calculer le prochain round (ici on suppose qu'on passe au round suivant)
-    //   const nextRound = gameState.currentRound + 1;
-    //   if (nextRound > gameState.totalRounds) {
-    //     console.log("Tous les rounds sont terminés.");
-    //     return;
-    //   }
-    //   // Récupérer l'URL de l'extrait audio pour le prochain round
-    //   const roundExtractUrl = gameManager._getRoundExctractUrl(gameId, nextRound);
-    //   // Émettre l'événement "round-loading" à tous les clients de la room
-    //   io.to(gameId).emit("round-loading", {
-    //     roundNumber: nextRound,
-    //     totalRounds: gameState.totalRounds,
-    //     extractUrl: roundExtractUrl,
-    //   });
-    //   // (Optionnel) Vous pouvez mettre à jour gameState.currentRound ici si la logique le demande
-    // });
 
 
     socket.on("audio-ready", ({ gameId, roundNumber}) => {
