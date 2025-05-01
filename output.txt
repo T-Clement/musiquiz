@@ -1,0 +1,154 @@
+.
+├── docker-compose.yml
+├── dump.sql
+├── front
+│   ├── default.conf.template
+│   ├── Dockerfile
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── public
+│   │   ├── assets
+│   │   │   ├── circle-user-solid.svg
+│   │   │   ├── circle-xmark-solid.svg
+│   │   │   ├── cup.svg
+│   │   │   └── play.svg
+│   │   └── currentRoomsAvailable.json
+│   ├── README.md
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── components
+│   │   │   ├── Button.jsx
+│   │   │   ├── DashboardCard.jsx
+│   │   │   ├── Header
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── Logout.jsx
+│   │   │   │   ├── Nav.jsx
+│   │   │   │   ├── UserForgotPassword.jsx
+│   │   │   │   ├── UserLoginForm.jsx
+│   │   │   │   └── UserRegisterForm.jsx
+│   │   │   ├── Modal.jsx
+│   │   │   ├── PasswordInput.jsx
+│   │   │   ├── RedirectAfterDelay.jsx
+│   │   │   ├── RoomItem.jsx
+│   │   │   ├── Spinner.jsx
+│   │   │   └── Tab.jsx
+│   │   ├── contexts
+│   │   │   ├── AudioContextProvider.jsx
+│   │   │   └── GameSocketProvider.jsx
+│   │   ├── hooks
+│   │   │   ├── authContext.jsx
+│   │   │   └── useAnsweredPlayers.js
+│   │   ├── index.css
+│   │   ├── layouts
+│   │   │   ├── DefaultLayout.jsx
+│   │   │   └── GameLayout.jsx
+│   │   ├── libs
+│   │   │   └── axios.js
+│   │   ├── main.jsx
+│   │   ├── pages
+│   │   │   ├── BrowseRoomsPage.jsx
+│   │   │   ├── ChooseRole.jsx
+│   │   │   ├── ErrorPage.jsx
+│   │   │   ├── Home
+│   │   │   │   ├── HomePage.jsx
+│   │   │   │   ├── JoinGameSection.jsx
+│   │   │   │   ├── JoinRoomQrCode.jsx
+│   │   │   │   ├── JoinRoomSearchInput.jsx
+│   │   │   │   └── RandomRoomCard.jsx
+│   │   │   ├── InGame
+│   │   │   │   ├── CountDownCircle.css
+│   │   │   │   ├── CountDownCircle.jsx
+│   │   │   │   ├── FinalLeaderBoardPage.jsx
+│   │   │   │   ├── InGamePlayerPage.jsx
+│   │   │   │   ├── InGamePresentatorPage.jsx
+│   │   │   │   ├── LeaderBoard.jsx
+│   │   │   │   ├── LeaderBoardRow.jsx
+│   │   │   │   ├── PlayerCard.jsx
+│   │   │   │   ├── RankedPlayers.jsx
+│   │   │   │   ├── RankedPlayersRow.jsx
+│   │   │   │   ├── RoundsSection.jsx
+│   │   │   │   └── TopPlayers.jsx
+│   │   │   ├── JoinRoomQrCodePage.jsx
+│   │   │   ├── NewRoom
+│   │   │   │   └── NewRoomPage.jsx
+│   │   │   ├── Page404.jsx
+│   │   │   ├── Playground
+│   │   │   │   └── PlaygroundPage.jsx
+│   │   │   ├── ResetPassword.jsx
+│   │   │   ├── Room
+│   │   │   │   └── RoomPage.jsx
+│   │   │   ├── Theme
+│   │   │   │   └── ThemePage.jsx
+│   │   │   ├── UserPage.jsx
+│   │   │   └── WaitingRoom
+│   │   │       ├── WaitingRoomPage.jsx
+│   │   │       ├── WaitingRoomPlayer.jsx
+│   │   │       └── WaitingRoomPresentator.jsx
+│   │   ├── rooms.js
+│   │   ├── services
+│   │   │   └── authService.js
+│   │   └── swiper.css
+│   ├── tailwind.config.js
+│   └── vite.config.js
+├── nginx.conf
+├── output.txt
+├── package.json
+├── README.md
+├── server
+│   ├── app.js
+│   ├── config
+│   │   └── config.json
+│   ├── controllers
+│   │   ├── gameSQL.js
+│   │   ├── login.js
+│   │   ├── room.js
+│   │   ├── theme.js
+│   │   └── user.js
+│   ├── createSocketServer.js
+│   ├── db
+│   │   ├── index.js
+│   │   └── mongo.js
+│   ├── Dockerfile
+│   ├── :memory
+│   ├── middleware
+│   │   ├── Auth.js
+│   │   └── validateRequest.js
+│   ├── models
+│   │   ├── Game.js
+│   │   ├── InputValidationMessage.js
+│   │   ├── ResetPassword.js
+│   │   ├── Room.js
+│   │   ├── Theme.js
+│   │   └── User.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── routes
+│   │   ├── auth.js
+│   │   ├── game.js
+│   │   ├── reset-password.js
+│   │   ├── room.js
+│   │   ├── theme.js
+│   │   └── user.js
+│   ├── schema
+│   │   └── Game.js
+│   ├── seeders
+│   ├── server.js
+│   ├── services
+│   │   ├── emailService.js
+│   │   └── GameManager.js
+│   ├── socketHandlers.js
+│   ├── tests
+│   │   ├── example.test.js
+│   │   ├── fakeGame.js
+│   │   ├── setup.js
+│   │   └── test-setup.sql
+│   └── utils
+│       └── utils.js
+├── start.js
+├── start-project.sh
+├── test.drawio
+└── tree.txt
+
+32 directories, 120 files
