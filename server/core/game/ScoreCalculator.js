@@ -1,11 +1,10 @@
-export const MAX_SCORE = 1000;
-const t = tMs / 1000; // convert ms to seconds
+const MAX_SCORE = 1000;
 const T = 20;
 const THRESHOLD = 1.2; // if under or equals this value -> it's max score
 
-
-export default function getScoreFromResponseTime(tMs) {
-
+function getScoreFromResponseTime(tMs) {
+    const t = tMs / 1000; // convert ms to seconds
+    
     // user responded in a very short time, so he gets max point
     if(t <= THRESHOLD) {
         return MAX_SCORE;
@@ -20,3 +19,5 @@ export default function getScoreFromResponseTime(tMs) {
     return Math.floor(Math.max( 0, MAX_SCORE - slope * (t - THRESHOLD) ));
 
 }
+
+module.exports = {MAX_SCORE, getScoreFromResponseTime}

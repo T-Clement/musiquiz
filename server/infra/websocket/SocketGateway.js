@@ -1,7 +1,7 @@
 // link together GameEngine and Socket.io
 // each GameEngine Event become a Websocket event
 
-export default class SocketGateway {
+class SocketGateway {
     constructor(io, engine) {
         this.io = io;
     
@@ -39,3 +39,5 @@ export default class SocketGateway {
 
 
 }
+
+module.exports = SocketGateway;

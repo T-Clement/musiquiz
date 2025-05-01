@@ -1,6 +1,6 @@
 // Store: where all the application states are stored
 
-export default class InMemoryStore {
+class InMemoryStore {
   #games = new Map(); // gameId as key
   #players = new Map();
 
@@ -28,3 +28,5 @@ export default class InMemoryStore {
     return this.#players.get(uid);
   }
 }
+
+module.exports = InMemoryStore;

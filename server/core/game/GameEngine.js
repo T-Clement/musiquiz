@@ -1,13 +1,13 @@
 // the idea here is to habve 0 dependencies
 // to be able to test easily
 
-import EventEmitter from 'events';
-import getScoreFromResponseTime from './ScoreCalculator';
+const EventEmitter = require('events');
+const { getScoreFromResponseTime } = require('./ScoreCalculator');
 
 // EventEmitter : server is going to be abble to react to 'events'
 // such as browser event like a click, a submit, ...
 
-export default class GameEngine extends EventEmitter {
+class GameEngine extends EventEmitter {
 
     constructor( { store } ) {
         super();
@@ -82,3 +82,5 @@ export default class GameEngine extends EventEmitter {
 
 
 }
+
+module.exports = GameEngine;

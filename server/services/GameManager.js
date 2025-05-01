@@ -1,7 +1,7 @@
 const Room = require("../models/Room");
 const Game = require("../schema/Game");
 const GameSQL = require("../models/Game");
-const { default: getScoreFromResponseTime } = require("../core/game/ScoreCalculator");
+const { getScoreFromResponseTime } = require("../core/game/ScoreCalculator");
 
 class GameManager {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties
