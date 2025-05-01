@@ -19,7 +19,8 @@ class GameEngine extends EventEmitter {
         const state = {
             ...payload,
             currentRound: 0,
-            status: 'waiting', // values available in mongoDB schema ['waiting', 'in_progress', 'finished', 'failed']
+            status: 'waiting', // values available in mongoDB schema ['waiting', 'in_progress', 'finished', 'failed'], 
+            // but here it's the Map so doesnt really matters
             timerId: null
         };
 
@@ -49,7 +50,7 @@ class GameEngine extends EventEmitter {
         const isCorrect = state.rounds[roundIndex].correctAnswer.toString() === choiceId;
 
         const score = isCorrect ? getScoreFromResponseTime(responseTime) : 0;
-        this.emit('answer-submited', { gameId, userId, score });
+        this.emit('answer-submitted', { gameId, userId, score });
         return score;
 
     }

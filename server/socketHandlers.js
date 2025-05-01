@@ -2,9 +2,13 @@ const Game = require("./schema/Game");
 const User = require("./models/User");
 const GameManager = require("./services/GameManager");
 const { gameEngine } = require('./services/AppWiring');
+const SocketGateway = require("./infra/websocket/SocketGateway");
 
 module.exports = (io) => {
   const gameManager = new GameManager(io);
+
+  new SocketGateway(io, gameEngine);
+
 
   io.on("connection", (socket) => {
     console.log("Nouvelle connexion WS : ", socket.id);
@@ -204,14 +208,22 @@ module.exports = (io) => {
           return;
         }
 
-        gameManager.initGame(gameId, {
+        // gameManager.initGame(gameId, {
+        //   totalRounds: foundGame.totalRounds,
+        //   roundDuration: foundGame.roundDuration,
+        //   rounds: foundGame.rounds,
+        //   players: foundGame.players,
+        //   timerId: null,
+        //   // status: 'NOT'
+        // });
+
+        gameEngine.initGame(gameId, {
           totalRounds: foundGame.totalRounds,
           roundDuration: foundGame.roundDuration,
           rounds: foundGame.rounds,
-          players: foundGame.players,
-          timerId: null,
-          // status: 'NOT'
+          players: foundGame.players
         });
+
 
         foundGame.status = "in_progress";
         await foundGame.save();
@@ -220,7 +232,8 @@ module.exports = (io) => {
         io.to(gameId).emit("move-in-game");
 
 
-        gameManager.startGame(gameId);
+        // gameManager.startGame(gameId);
+        gameEngine.startGame(gameId);
 
 
       } catch (error) {
