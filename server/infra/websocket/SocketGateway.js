@@ -26,9 +26,23 @@ class SocketGateway {
 
         });
 
+        engine.on('game-ended', payload => {
+            console.log('event émis !', payload),
+            this.io.to(payload.gameId).emit('game-ended', payload);
+        });
+
         engine.on('round-loading', payload => {
             this.io.to(payload.gameId).emit('round-loading', payload);
         });
+
+        engine.on('round-started', payload => {
+            this.io.to(payload.gameId).emit('round-started', payload);
+        });
+
+        engine.on('round-results', payload => {
+            this.io.to(payload.gameId).emit('round-results', payload);
+        });
+
 
         engine.on('answer-submitted', ({ gameId, userId }) => {
             this.io.to(gameId).emit('player-answered', { userId });

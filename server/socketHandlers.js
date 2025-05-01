@@ -261,28 +261,32 @@ module.exports = (io) => {
 
 
 
-    socket.on("audio-ready", ({ gameId, roundNumber}) => {
-      const gameState = GameManager.inMemoryGames.get(gameId);
-      if (!gameState) return;
+    // socket.on("audio-ready", ({ gameId, roundNumber}) => {
+    //   const gameState = GameManager.inMemoryGames.get(gameId);
+    //   if (!gameState) return;
       
-      if (gameState.currentRound !== roundNumber) return;
+    //   if (gameState.currentRound !== roundNumber) return;
     
-      // audio is ready
-      gameState.audioReadyReceived = true;
+    //   // audio is ready
+    //   gameState.audioReadyReceived = true;
         
-      console.log("Presentator has audio extract loaded", roundNumber);
+    //   console.log("Presentator has audio extract loaded", roundNumber);
 
-      // start round 
-      // 3s delay between rounds 
-      const LOADING_DELAY = 3000;
-      setTimeout(() => {
-          console.log("round launched");
-          if(gameState.audioReadyReceived ) {
-            gameManager._launchRound(gameId);
-          }
-      }, LOADING_DELAY);
+    //   // start round 
+    //   // 3s delay between rounds 
+    //   const LOADING_DELAY = 3000;
+    //   setTimeout(() => {
+    //       console.log("round launched");
+    //       if(gameState.audioReadyReceived ) {
+    //         gameManager._launchRound(gameId);
+    //       }
+    //   }, LOADING_DELAY);
 
-    })
+    // })
+
+    socket.on("audio-ready", ({ gameId, roundNumber }) => {
+      gameEngine.audioReady({ gameId, roundNumber });
+    });
 
 
     socket.on("ping", () => {
