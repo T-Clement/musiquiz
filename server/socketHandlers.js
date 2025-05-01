@@ -1,6 +1,7 @@
 const Game = require("./schema/Game");
 const User = require("./models/User");
 const GameManager = require("./services/GameManager");
+const { gameEngine } = require('./services/AppWiring');
 
 module.exports = (io) => {
   const gameManager = new GameManager(io);
