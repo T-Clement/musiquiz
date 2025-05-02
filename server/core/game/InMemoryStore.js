@@ -28,6 +28,16 @@ class InMemoryStore {
     return this.#players.get(uid);
   }
 
+  removePlayersFromInGameState(gameId) {
+    // remove from store all users who are in this game who as ended
+    for(let [key, value] of this.#players.entries()) { // get all players in a game
+      if(value === gameId) { // delete of player is in the game who as ended
+          console.log(`user ${key} deleted from game ${value}`)
+          this.#players.delete(key); // key is the userId
+      }
+    }
+  }
+
 
 
 

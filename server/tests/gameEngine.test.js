@@ -35,7 +35,7 @@ describe('GameEngine - submitAnswer & round cycle', () => {
 
         // add event to array to be able to react to it
         engine.on('answer-submitted', payload => events.push(payload));
-
+        // console.log(events);
 
         engine.initGame(fakeGameId, {
             totalRounds: 1,
@@ -55,6 +55,7 @@ describe('GameEngine - submitAnswer & round cycle', () => {
 
         expect(playerPointsAfterAnwsering).toBe(MAX_SCORE);
         expect(events).toHaveLength(1);
+        // console.log(events);
         expect(events[0]).toMatchObject({ userId: fakeUserId, score: MAX_SCORE });
 
 

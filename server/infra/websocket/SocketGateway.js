@@ -27,7 +27,7 @@ class SocketGateway {
         });
 
         engine.on('game-ended', payload => {
-            console.log('event émis !', payload),
+            // console.log('event émis !', payload),
             this.io.to(payload.gameId).emit('game-ended', payload);
         });
 
@@ -46,6 +46,12 @@ class SocketGateway {
 
         engine.on('answer-submitted', ({ gameId, userId }) => {
             this.io.to(gameId).emit('player-answered', { userId });
+        });
+
+
+        engine.on('disconnect-players-from-room', gameId => {
+            // remove all users from socket room and delete room as their is no more socket in it
+            this.io.socketsLeave(gameId); 
         });
 
         

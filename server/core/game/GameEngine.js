@@ -1,5 +1,7 @@
-// the idea here is to habve 0 dependencies
+// the idea here is to have 0 dependencies
 // to be able to test easily
+// dont need any Weboscket server because it's just a way to achieve communication
+// and everything is handle by GameEngine who emits also events
 
 
 
@@ -14,11 +16,13 @@ const DEFAULT_ROUND_LOADING_DELAY = 7000;
 
 class GameEngine extends EventEmitter {
 
-    constructor( { store, roundLoadingDelay = DEFAULT_LOADING_DELAY, defaultRoundLoadingDelay = DEFAULT_ROUND_LOADING_DELAY } ) {
+    constructor( { store, roundLoadingDelay = DEFAULT_LOADING_DELAY, defaultRoundLoadingDelay = DEFAULT_ROUND_LOADING_DELAY, gameRepo, sqlRepo } ) {
         super();
         this.store = store;
         this.LOADING_DELAY = roundLoadingDelay;
         this.DEFAULT_ROUND_LOADING_DELAY = defaultRoundLoadingDelay;
+        this.gameRepo = gameRepo;
+        this.sqlRepo = sqlRepo;
     }
 
     // preload of gameData in storage / store
@@ -217,10 +221,24 @@ class GameEngine extends EventEmitter {
 
     }
 
-    #endGame(gameId, state) {
+    async #endGame(gameId, state) {
 
         // clearTimeout(state.timerId);
+
+        // noSQL database registration and add flag finished
+        const finishedGame = await this.gameRepo.finishGame(gameId);
         
+        // register all games with players and their score in the related room in SQL database
+        setImmediate(() => {
+            try {
+                this.sqlRepo.registerEndedGame(finishedGame.room_id, finishedGame.players).catch(console.error)
+            } catch(error) {
+                console.error(error);
+            } finally {
+                this.emit('disconnect-players-from-room', gameId);
+            }
+        }); 
+
         this.emit('game-ended', { 
             gameId,
             message: "La partie est terminée, merci d'avoir joué !",
@@ -228,6 +246,13 @@ class GameEngine extends EventEmitter {
             roomName: state.roomName, // undefined
             tracks: this.#getGameTracks(state) 
         });
+
+        // delete data from store
+        this.store.deleteGame(gameId);
+
+        // remove players from inGamePlayers
+        this.store.removePlayersFromInGameState(gameId);
+
         return;
     }
 
