@@ -246,7 +246,8 @@ module.exports = (io) => {
     socket.on("submit-answer", async ({ gameId, userId, choiceId }) => {
       try {
 
-        await gameManager.submitAnswer(gameId, userId, choiceId);
+        // await gameManager.submitAnswer(gameId, userId, choiceId);
+        gameEngine.submitAnswer(gameId, userId, choiceId);
 
         socket.emit("answer-received", { success: true });
 

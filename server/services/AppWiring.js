@@ -11,5 +11,8 @@ const engine = new GameEngine({ store });
 // // hook / wire WS and engine events
 // new SocketGateway(io, engine);
 
+// Dependency Injection and Repository Pattern
+https://psid23.medium.com/dependency-injection-and-the-repository-design-pattern-7664df76fb93
+
 
 module.exports = { gameEngine: engine, store };

@@ -7,7 +7,6 @@
 // such as browser event like a click, a submit, ...
 const EventEmitter = require('events');
 const { getScoreFromResponseTime } = require('./ScoreCalculator');
-const { roundsNumber } = require('../../services/GameManager');
 
 const DEFAULT_LOADING_DELAY = 3000;
 const DEFAULT_ROUND_LOADING_DELAY = 7000; 
@@ -15,10 +14,11 @@ const DEFAULT_ROUND_LOADING_DELAY = 7000;
 
 class GameEngine extends EventEmitter {
 
-    constructor( { store, roundLoadingDelay = DEFAULT_LOADING_DELAY } ) {
+    constructor( { store, roundLoadingDelay = DEFAULT_LOADING_DELAY, defaultRoundLoadingDelay = DEFAULT_ROUND_LOADING_DELAY } ) {
         super();
         this.store = store;
         this.LOADING_DELAY = roundLoadingDelay;
+        this.DEFAULT_ROUND_LOADING_DELAY = defaultRoundLoadingDelay;
     }
 
     // preload of gameData in storage / store
@@ -67,11 +67,31 @@ class GameEngine extends EventEmitter {
         if(!state) throw new Error(`submit answer: game ${gameId} not found`);
 
         const roundIndex = state.currentRound - 1;
+
+        // to have entry,
+        // when app is launched, data is here due to Collection / Document Object but
+        // in test it's not here yet  
+        const round = state.rounds[roundIndex];
+
+        // if no data, initialized with an empty array
+        round.playersResponses = round.playersResponses || [];
+
+        
         const responseTime = Date.now() - state.roundStartTimeStamp;
         const isCorrect = state.rounds[roundIndex].correctAnswer.toString() === choiceId;
 
         const score = isCorrect ? getScoreFromResponseTime(responseTime) : 0;
+        console.log(`User ${userId} // response : ${isCorrect} // scoreRound : ${score}`);
+
+        // add choice and related data made by player to playerResponses for this round
+        state.rounds[roundIndex].playersResponses.push({
+            userId, userChoice: choiceId, responseTime, score
+        });
+        console.log(state);
         this.emit('answer-submitted', { gameId, userId, score });
+        
+        
+        
         return score;
 
     }
@@ -155,10 +175,33 @@ class GameEngine extends EventEmitter {
         );
 
 
-        // needs to handle calculation of score and
-        // check if each player has made a response
 
-        // ...
+        // check if all players have made a response, if not
+        // add a push in score for this round a score of 0 for this player
+        const roundResponses = state.rounds[index].playersResponses;
+
+        state.players.forEach(player => {
+            const playerResponse = roundResponses.find((response) => response.userId === player.userId);
+
+            // if player has not made a response at this round, put a default score to 0 for keeping history
+            if(!playerResponse) {
+                roundResponses.push({
+                    userId: player.userId,
+                    score: 0
+                })
+                console.log(`${player.pseudo} has not make a response for this round`);
+            } else {
+                // add to score of player the new score wether it's a correct or incorrect answer 
+                player.score += playerResponse.score;
+            }
+
+        });
+
+        // sort scores in store
+        state.players.sort((a, b) => b.score - a.score);
+
+
+        // permanent storage -> udpate / push  
 
 
         this.emit('round-results', {
@@ -206,16 +249,6 @@ class GameEngine extends EventEmitter {
 
     }
 
-
-
-    async #calculateScores(state, roundIndex) {
-        // all players in the game
-        const gamePlayers = state.players;
-
-        const roundResponses = state.rounds[roundIndex].playersResponses;
-
-
-    } 
 
 
 
