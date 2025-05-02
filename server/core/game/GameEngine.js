@@ -232,13 +232,14 @@ class GameEngine extends EventEmitter {
         state.players.sort((a, b) => b.score - a.score);
 
         await this.gameRepo.saveRoundResults(gameId, index, roundResponses, state.players)
-
+        
+        console.log(state.players);
 
         this.emit('round-results', {
             gameId,
             roundNumber: state.currentRound,
             correctAnswer: correctRoundChoice,
-            udpatedPlayers: state.players
+            updatedPlayers: state.players
         });
 
 
