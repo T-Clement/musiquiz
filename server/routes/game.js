@@ -21,6 +21,11 @@ const { optionalAuth } = require('../middleware/Auth');
 const utils = require('../utils/utils');
 
 
+const { gameEngine } = require('../services/AppWiring');
+
+ 
+
+
 router.get('/:id', async (req, res, next) => {
     const {id} = req.params;
 
@@ -184,18 +189,18 @@ router.delete('/:id/delete', async(req, res, next) => {
 
     try {
 
-        // if gameIsLaunched
-            const gameState = GameManager.inMemoryGames.get(gameId);
-            // console.log("before")
-            // console.log(gameState);
-            // console.log("after")
-            if(!gameState) {
-                return res.status(404).json({ message: "Partie non trouvée ou déjà supprimée.", redirect: "home"});
-            }
+        // // if gameIsLaunched
+        //     const gameState = GameManager.inMemoryGames.get(gameId);
+        //     // console.log("before")
+        //     // console.log(gameState);
+        //     // console.log("after")
+        //     if(!gameState) {
+        //         return res.status(404).json({ message: "Partie non trouvée ou déjà supprimée.", redirect: "home"});
+        //     }
             
         // if game is in memory, delete it
         // kill / clear timeOut of game in Map server
-        GameManager.killGameInstance(gameId);
+        gameEngine.killGameInstance(gameId);
 
         // delete the record from the database
         const deletedGame = await Game.findByIdAndDelete(gameId);

@@ -100,6 +100,20 @@ class GameEngine extends EventEmitter {
 
     }
 
+    killGameInstance(gameId) {
+        const state = this.store.getGame(gameId);
+        if(!state) return; // nothing to kill
+
+        if(state.timerId) {
+            clearTimeout(state.timerId);
+        }
+
+        this.store.deleteGame(gameId);
+        this.store.removePlayersFromInGameState(gameId);
+        this.emit("disconnect-players-from-room");
+
+    }
+
 
 
     
