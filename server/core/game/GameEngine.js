@@ -66,7 +66,7 @@ class GameEngine extends EventEmitter {
 
 
     //
-    submitAnswer(gameId, userId, choiceId) {
+    async submitAnswer(gameId, userId, choiceId) {
         const state = this.store.getGame(gameId);
         if(!state) throw new Error(`submit answer: game ${gameId} not found`);
 
@@ -91,8 +91,21 @@ class GameEngine extends EventEmitter {
         state.rounds[roundIndex].playersResponses.push({
             userId, userChoice: choiceId, responseTime, score
         });
-        console.log(state);
-        this.emit('answer-submitted', { gameId, userId, score });
+        // console.log(state);
+
+        const udpatedGame = await this.gameRepo.savePlayerResponse(
+            gameId, 
+            roundIndex,
+            userId,
+            responseTime,
+            choiceId,
+            score 
+        );
+
+
+        const presentatorSocketId = udpatedGame.presentator.socketId;
+
+        this.emit('answer-submitted', { presentatorSocketId, userId, score });
         
         
         
@@ -206,7 +219,7 @@ class GameEngine extends EventEmitter {
                 roundResponses.push({
                     userId: player.userId,
                     score: 0
-                })
+                });
                 console.log(`${player.pseudo} has not make a response for this round`);
             } else {
                 // add to score of player the new score wether it's a correct or incorrect answer 
@@ -218,8 +231,7 @@ class GameEngine extends EventEmitter {
         // sort scores in store
         state.players.sort((a, b) => b.score - a.score);
 
-
-        // permanent storage -> udpate / push  
+        await this.gameRepo.saveRoundResults(gameId, index, roundResponses, state.players)
 
 
         this.emit('round-results', {

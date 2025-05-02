@@ -13,7 +13,7 @@ class SocketGateway {
 
         engine.on('game-started', payload => {
             // adapter who allows to broadcast event to a subset of clients
-            console.log(payload);
+            // console.log(payload);
             const gameId = payload.gameId;
             const clients = this.io.sockets.adapter.rooms.get(gameId);
             if(clients) {
@@ -44,8 +44,8 @@ class SocketGateway {
         });
 
 
-        engine.on('answer-submitted', ({ gameId, userId }) => {
-            this.io.to(gameId).emit('player-answered', { userId });
+        engine.on('answer-submitted', ({ presentatorSocketId, userId }) => {
+            this.io.to(presentatorSocketId).emit('player-answered', { userId });
         });
 
 

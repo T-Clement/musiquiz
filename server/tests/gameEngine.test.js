@@ -17,8 +17,19 @@ function roundTemplate() {
 
 
 function makeFakeEngine() {
+
+    const fakeMongoRepo = {
+        savePlayerResponse: jest.fn().mockResolvedValue({ presentator: { socketId: 'socket#123' } }),
+    };
+
     const store = new InMemoryStore();
-    const engine = new GameEngine({store, roundLoadingDelay : 10, defaultRoundLoadingDelay: 10});
+    const engine = new GameEngine(
+    {
+        store, 
+        roundLoadingDelay : 10, 
+        defaultRoundLoadingDelay: 10,
+        gameRepo: fakeMongoRepo
+    });
     
     return { engine, store };
 }
@@ -26,13 +37,13 @@ function makeFakeEngine() {
 
 describe('GameEngine - submitAnswer & round cycle', () => {
 
-    test("response is correct, maxscore + event answer-submitted", () => {
+    test("response is correct, maxscore + event answer-submitted", async () => {
         const { engine, store } = makeFakeEngine();
         const events = [];
 
         const fakeUserId = "fakeUserId-1";
         const fakeGameId = 'fakegame-id';
-
+        const fakePresentatorSocketId = 'socket#123';
         // add event to array to be able to react to it
         engine.on('answer-submitted', payload => events.push(payload));
         // console.log(events);
@@ -41,7 +52,8 @@ describe('GameEngine - submitAnswer & round cycle', () => {
             totalRounds: 1,
             roundDuration: 3,
             rounds: roundTemplate(),
-            players: [{ userId: fakeUserId }]
+            players: [{ userId: fakeUserId }],
+            presentator: { socketId: fakePresentatorSocketId }
         });
 
         engine.startGame(fakeGameId);
@@ -51,7 +63,7 @@ describe('GameEngine - submitAnswer & round cycle', () => {
         jest.advanceTimersByTime(10);
 
 
-        const playerPointsAfterAnwsering = engine.submitAnswer(fakeGameId, fakeUserId, 'choice1');
+        const playerPointsAfterAnwsering = await engine.submitAnswer(fakeGameId, fakeUserId, 'choice1');
 
         expect(playerPointsAfterAnwsering).toBe(MAX_SCORE);
         expect(events).toHaveLength(1);
@@ -59,7 +71,7 @@ describe('GameEngine - submitAnswer & round cycle', () => {
         expect(events[0]).toMatchObject({ userId: fakeUserId, score: MAX_SCORE });
 
 
-    })
+    });
 
 
 })
