@@ -8,5 +8,14 @@ describe('authenticateJWT', () => {
         const res = await request(app).get("/api/me");
         expect(res.statusCode).toBe(401);
     });
+
+    
+    it.todo("successfully authenticate user");
+
+    it.todo("cannot access a auth protected route");
+
+    it.todo("cannot access a route user owner id route");
+
+
 });
 

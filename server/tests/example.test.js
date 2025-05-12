@@ -88,6 +88,11 @@ describe("POST /api/user/register", () => {
       .set("Accept", "application/json");
     
       expect(res.statusCode).toBe(201);
+    // add some expects ...
+
+
+
+
   });
 
 
