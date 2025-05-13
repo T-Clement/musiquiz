@@ -32,7 +32,7 @@ export function Header({user, setUser}) {
   return (
     <header className='max-w-screen-xl mx-auto flex p-6'>
         
-        <h1 className='me-auto'>
+        <h1 className='me-auto uppercase font-black text-2xl'>
           <Link to="/">Musiquiz</Link>
         </h1>
 
