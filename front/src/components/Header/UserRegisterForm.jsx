@@ -3,7 +3,7 @@ import apiAxios from "../../libs/axios";
 import Button from "../Button";
 import PasswordInput from "../PasswordInput";
 
-export default function UserRegisterForm({ setModalContent, setOpen }) {
+export default function UserRegisterForm({ switchTo, setOpen }) {
   const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -131,7 +131,7 @@ export default function UserRegisterForm({ setModalContent, setOpen }) {
       <p className="text-gray-800 text-sm mt-6 text-center">
         Vous avez un compte ?{" "}
         <a
-          onClick={() => setModalContent("login")}
+          onClick={() => switchTo("login")}
           className="text-blue-600 font-semibold hover:underline ml-1"
         >
           Connectez vous

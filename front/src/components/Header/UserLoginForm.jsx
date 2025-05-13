@@ -1,27 +1,15 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import apiAxios from '../../libs/axios';
 import { AuthContext } from '../../hooks/authContext';
 import Button from '../Button';
-import { Eye, EyeIcon, EyeOff, EyeOffIcon } from 'lucide-react';
 import PasswordInput from '../PasswordInput';
-// import { useContext } from 'react';
-// import { useAuth } from '../../hooks/useAuth';
-// import { Form, useFetcher } from 'react-router-dom';
 
-export default function UserLoginForm({setModalContent, open, setOpen, setIsLoggedIn, user}) {
+
+export default function UserLoginForm({switchTo, user, closeModal}) {
 
     const { setUser } =  useContext(AuthContext);
-
-    // const {login} = useAuth();
-
-    const [showPassword, setShowPassword] = useState(false);
-
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // const isSubmitting = fetcher.state === 'submitting';
-
-    // const isSubmitting = false;
 
 
     const handleSubmit = async (e) => {
@@ -30,8 +18,6 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
         
         // toggle loading
         setIsSubmitting(true);
-
-
 
         
         const formData = new FormData(e.target);
@@ -51,19 +37,7 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
                     "Content-Type": 'application/json'
                 }
             });
-            // const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-type' : 'application/json'
-            //     },
-            //     body: JSON.stringify({ email, password })
-                
-            // });
 
-
-            
-            // const response = await login(email, password);
-            console.warn(response);
 
             if(response.status === 500 || response.status === 401) {
                 console.error("Connection failed");
@@ -73,10 +47,9 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
 
             // get response
             // const userData = await response.data();
-            console.log('User data:', response.data);
+            // console.log('User data:', response.data);
 
-
-            setIsLoggedIn(true);
+            // setIsLoggedIn(true);
 
             // update context
             setUser(response.data.user);
@@ -86,8 +59,8 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
             e.target.reset();
             
             // close modal
-            setOpen(false);
-
+            // setOpen(false);
+            closeModal();
 
         } catch(error) {
             console.error('Error during form submission : ', error);
@@ -95,9 +68,6 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
         } finally {
             setIsSubmitting(false);
         }
-
-
-
     };
 
 
@@ -120,13 +90,13 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
                     name='password'
                     placeholder='Entrez votre mot de passe'
                     disabled = { isSubmitting }
-                    resetOn = { open }
+                    // resetOn = { open }
 
                 />
 
             </div>
 
-            <p className='place-self-end'><a className='text-blue-600 text-sm underline hover:cursor-pointer' onClick={() => setModalContent('forgot-password')}>Mot de passe oublié ?</a></p>
+            <p className='place-self-end'><a className='text-blue-600 text-sm underline hover:cursor-pointer' onClick={() => switchTo('forgot-password')}>Mot de passe oublié ?</a></p>
         </div>
 
 
@@ -154,7 +124,15 @@ export default function UserLoginForm({setModalContent, open, setOpen, setIsLogg
 
         { error && <p className='text-red-600'>{error}</p> }
         </div>
-        <p className="text-gray-800 text-sm mt-6 text-center">Vous n'avez pas de compte ? <a onClick={() => {setModalContent("register")}} className="text-blue-600 font-semibold hover:underline ml-1">Inscrivez vous</a></p>
+        <p className="text-gray-800 text-sm mt-6 text-center">
+            Vous n'avez pas de compte ? 
+            <button 
+                onClick={() => switchTo("register")} 
+                className="text-blue-600 font-semibold  hover:underline ml-1"
+            >
+                Inscrivez vous
+            </button>
+        </p>
     </form>
   )
 }

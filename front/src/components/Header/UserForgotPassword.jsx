@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import apiAxios from '../../libs/axios';
 import Button from '../Button';
 
-export default function UserForgotPassword({setModalContent}) {
+export default function UserForgotPassword({switchTo}) {
 
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,7 +81,7 @@ export default function UserForgotPassword({setModalContent}) {
             
             <p className="text-gray-800 text-sm mt-6 place-self-end">
                 <a
-                onClick={() => setModalContent("login")}
+                onClick={() => switchTo("login")}
                 className="text-blue-600 font-semibold hover:underline hover:cursor-pointer ml-1"
                 >
                 Se connecter
