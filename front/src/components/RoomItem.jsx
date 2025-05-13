@@ -1,5 +1,4 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import LinkWithViewTransition from './LinkWithViewTransition';
 
 // assets
 import svgPlay from '/assets/play.svg';
@@ -24,10 +23,10 @@ export function RoomItem({room}) {
         <div className='w-[280px] sm:w-[300px] bg-violet-900 flex rounded-lg items-stretch shadow-lg'>
 
           <div className='basis-1/2 flex justify-center items-center px-4 py-8'>
-            <Link className='relative p-5 rounded-full transform transition duration-500 hover:scale-125' to={`/room/${roomId}`}>
+            <LinkWithViewTransition className='relative p-5 rounded-full transform transition duration-500 hover:scale-125' to={`/room/${roomId}`}>
               <img src={svgPlay} alt="Play Icon" className="relative z-10 ps-1 w-8 h-8 fill-current text-white"/>
               <span className="absolute inset-0 rounded-full bg-white opacity-25"></span>
-            </Link>
+            </LinkWithViewTransition>
           </div>
 
           <div className='basis-1/2 flex flex-row justify-center items-center gap-2 px-4 py-8 relative'>

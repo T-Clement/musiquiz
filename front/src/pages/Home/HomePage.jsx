@@ -1,7 +1,6 @@
-import { useState } from "react";
 
 import JoinGameSection from "./JoinGameSection";
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
 // import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,6 +15,7 @@ import { RoomItem } from "../../components/RoomItem";
 import Button, { VARIANT_STYLES } from "../../components/Button";
 import RandomRoomCard from "./RandomRoomCard";
 import DashboardCard from "../../components/DashboardCard";
+import LinkWithViewTransition from "../../components/LinkWithViewTransition";
 
 export async function loader() {
   // console.log(import.meta.env.VITE_API_URL);
@@ -52,12 +52,12 @@ export function HomePage() {
   return (
     <div className="px-4 mb-4">
       <section className="mt-8">
-        <h2 className="text-lg font-semibold mb-2">Rejoindre une partie</h2>
+        <h2 className="text-3xl font-semibold mb-2">Rejoindre une partie</h2>
         <JoinGameSection />
       </section>
 
       <section className="mt-8">
-        <h2 className="text-lg font-semibold mb-2">Top 3</h2>
+        <h2 className="text-3xl font-semibold mb-2 uppercase">Top 3</h2>
         {/* <p>
           Voici les parties les plus jouées du site. Vous pensez être meilleur
           qu'eux, à vous de jouer !
@@ -69,7 +69,7 @@ export function HomePage() {
               key={room.id}
               className="flex max-[320px]:flex-col min-[300px]:gap-y-4 sm:flex-row items-center gap-x-5"
             >
-              <span className="text-6xl">{index + 1}</span>
+              <span className="text-8xl">{index + 1}</span>
 
               <RoomItem room={room} />
             </li>
@@ -78,7 +78,7 @@ export function HomePage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-lg font-semibold mb-2">Themes</h2>
+        <h2 className="text-3xl font-semibold mb-2 uppercase">Themes</h2>
 
         <Swiper
           direction="horizontal"
@@ -108,12 +108,12 @@ export function HomePage() {
           {themes.map((theme) => (
             <SwiperSlide key={theme.id}>
               <div className="slide-content">
-                <Link
+                <LinkWithViewTransition
                   to={`theme/${theme.id}`}
                   className="swiper-theme-link uppercase font-semibold p-6"
                 >
                   {theme.name}
-                </Link>
+                </LinkWithViewTransition>
               </div>
             </SwiperSlide>
           ))}
@@ -134,12 +134,12 @@ export function HomePage() {
           <p className="text-gray-300 mb-4">
             Parcourez toutes les parties disponibles.
           </p>
-          <Link
+          <LinkWithViewTransition
             to="/room/browse"
             className={`${VARIANT_STYLES.blue} flex self-center`}
           >
             Voir les rooms
-          </Link>
+          </LinkWithViewTransition>
         </DashboardCard>
 
       </section>

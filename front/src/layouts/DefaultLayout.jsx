@@ -41,11 +41,14 @@ export function DefaultLayout() {
 
   return (
     <>
-      <div className="sticky top-0 z-20 bg-gradient-to-b from-black/70 to-black/50 backdrop-blur-md">
+      <div className="sticky top-0 z-20 bg-gradient-to-b from-black/100 to-black/40 backdrop-blur-md">
         <Header user={user} setUser={setUser} openModal={openModal}/>
       </div>
-      <div className="max-w-screen-xl	mx-auto">
-        <p>DefaultLayout</p>
+      <div 
+        className="max-w-screen-xl mx-auto mb-8" 
+        // style={{viewTransitionName: "content"}}
+      >
+        {/* <p>DefaultLayout</p> */}
         <Outlet />
       </div>
 

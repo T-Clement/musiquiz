@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Button, { VARIANT_STYLES } from '../../components/Button';
 import { RotateCcw } from 'lucide-react'
-import { Link } from 'react-router-dom';
 import axios from 'axios';
+import LinkWithViewTransition from '../../components/LinkWithViewTransition';
  
 export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
     
@@ -79,12 +79,12 @@ export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
       </p>
       
       <div className="flex justify-center gap-4">
-        <Link 
+        <LinkWithViewTransition
             className={`${VARIANT_STYLES.blue} transition`}
             to={`/room/${current.id}`}
         >
           Rejoindre
-        </Link>
+        </LinkWithViewTransition>
         <Button 
             variant="outline" 
             onClick={nextRoom} 

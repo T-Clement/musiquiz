@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react'
 // import { AuthContext } from '../../App';
 import Logout from './Logout';
-import { Link } from 'react-router-dom';
 import Button from '../Button';
+import LinkWithViewTransition from '../LinkWithViewTransition';
 
 export default function Nav({openModal, isLoggedIn, setIsLoggedIn, user, setUser}) {
 
@@ -19,7 +19,7 @@ export default function Nav({openModal, isLoggedIn, setIsLoggedIn, user, setUser
           { isLoggedIn ? 
 
           ( <ul className='flex gap-x-6'>
-              <li><Link to={`/user/${user.userId}`}>Compte</Link></li> 
+              <li><LinkWithViewTransition unstable_viewTransition to={`/user/${user.userId}`}>Compte</LinkWithViewTransition></li> 
               {/** use optionjal chaining to check is previous property exits before getting access to next property  */}
               <li><Logout setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/></li>
             </ul> 

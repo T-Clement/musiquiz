@@ -7,6 +7,7 @@ import UserRegisterForm from './UserRegisterForm';
 import Logout from './Logout';
 import Nav from './Nav';
 import UserForgotPassword from './UserForgotPassword';
+import LinkWithViewTransition from '../LinkWithViewTransition';
 
 export function Header({user, setUser, openModal}) {
 
@@ -21,7 +22,7 @@ export function Header({user, setUser, openModal}) {
     <header className='max-w-screen-xl mx-auto flex p-6'>
         
         <h1 className='me-auto uppercase font-black text-2xl'>
-          <Link to="/">Musiquiz</Link>
+          <LinkWithViewTransition to="/">Musiquiz</LinkWithViewTransition>
         </h1>
         
         <Nav 

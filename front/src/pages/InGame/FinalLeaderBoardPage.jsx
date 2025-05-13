@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TopPlayers from "./TopPlayers";
 import RankedPlayers from "./RankedPlayers";
-import { Link, useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import Tab from "../../components/Tab";
 import RoundsSection from "./RoundsSection";
 import { VARIANT_STYLES } from "../../components/Button";
+import LinkWithViewTransition from "../../components/LinkWithViewTransition";
 
 export default function LeaderboardPage() {
   const location = useLocation();
@@ -25,7 +26,7 @@ export default function LeaderboardPage() {
       <h3 className="mb-8 text-3xl">{roomName}</h3>
 
       <div className="flex mb-6">
-        <Link className={VARIANT_STYLES.blue} to="/">Accueil</Link>
+        <LinkWithViewTransition className={VARIANT_STYLES.blue} to="/">Accueil</LinkWithViewTransition>
         {/* <Link className={VARIANT_STYLES.outline} to="/user">Compte</Link> */}
       </div>
 
