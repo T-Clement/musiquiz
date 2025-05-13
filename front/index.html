@@ -5,8 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Musiquiz</title>
   </head>
-  <body style="background-color: #2e0043;">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+
+
+<style>
+  body {
+    background-image: url("public/assets/background-md.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+
+
+  @media (min-width: 800px) {
+    body {
+      background-image: url("public/assets/background-lg.png");     
+    }
+  }
+</style>

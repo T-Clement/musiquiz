@@ -30,7 +30,7 @@ export function Header({user, setUser}) {
 
 
   return (
-    <header className='flex border border-white-800 p-6'>
+    <header className='max-w-screen-xl mx-auto flex p-6'>
         
         <h1 className='me-auto'>
           <Link to="/">Musiquiz</Link>
@@ -41,7 +41,7 @@ export function Header({user, setUser}) {
         
 
         <Modal open={open} onClose={() => {setOpen(false)}}>
-          <div className='text-center w-72'>
+          <div className='text-center w-72 z-80'>
 
 
               {modalContent === "login" &&
