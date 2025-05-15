@@ -1,8 +1,14 @@
 const request = require('supertest'); 
 const app = require('../app');
 const jwt = require('jsonwebtoken');
-
+const pool = require('../db/index');
 const utils = require("../utils/utils");
+const User = require('../models/User');
+const fs = require("fs");
+
+let mysqlTestConnection;
+const dumpFilePath = "./tests/test-setup.sql";
+
 
 describe("unit tests on jwt token functions", () => {
     
@@ -13,8 +19,8 @@ describe("unit tests on jwt token functions", () => {
 
         const token = await utils.generateAccessToken(user, secret,'1h');
         const payload = jwt.verify(token, secret);
-        console.log(payload, user)
         expect(payload).toMatchObject({ userId: user.id, pseudo: user.pseudo });
+        expect(payload.exp - payload.iat).toBe(3600);
     });
 
 
@@ -23,6 +29,50 @@ describe("unit tests on jwt token functions", () => {
 
 
 describe('authenticateJWT', () => {
+    let agent; // keep cookies / token between requests
+    let fakeUser ; // fakeUser inserted in database
+    let credentials; // creadentials to logged in as fakeUser
+    
+    beforeAll(async() => {
+
+        // agent (comes from supertest) is used to keep cookies 
+        agent = request.agent(app);
+
+
+        // open a database connection
+        mysqlTestConnection = await pool.getConnection();
+        await mysqlTestConnection.beginTransaction();
+        
+        
+        const dumpContent = fs.readFileSync(dumpFilePath, 'utf-8');
+
+        // initlialize database
+        await mysqlTestConnection.query(dumpContent);
+        
+        const password = "secret123";
+        const hashedPassword = await utils.generatePasswordHash(password, 10);
+        
+        // create a fake user in test database
+        fakeUser = {
+            pseudo: "John",
+            email: "john@doe.com",
+            password: hashedPassword
+        };
+    
+        const insertedFakeUser = await User.insertNewUser(fakeUser.pseudo, fakeUser.password, fakeUser.email);
+        fakeUser.id = insertedFakeUser.id;
+        credentials = { email: fakeUser.email, password: password };
+
+    });
+
+
+    afterAll(async() => {
+        // roolback of transaction to keep database clean
+        await mysqlTestConnection.rollback();
+        await mysqlTestConnection.release();
+        await pool.end();
+    })
+
 
 
     it("returns 401 when no token", async () => {
@@ -31,11 +81,24 @@ describe('authenticateJWT', () => {
     });
 
     
-    it.todo("successfully authenticate user");
+    it("successfully authenticate user", async() => {
+        // log in fakeUser
+        const login = await agent.post('/api/login').send(credentials);
+        expect(login.statusCode).toEqual(200);
+
+        // check if we can do a protected route, related to the current user connected
+        const me = await agent.get("/api/me");
+        expect(me.statusCode).toBe(200);
+        console.log(me.body)
+        expect(me.body.user).toMatchObject({ userId: fakeUser.id, pseudo: fakeUser.pseudo });
+    });
 
     it.todo("cannot access a auth protected route");
 
     it.todo("cannot access a route user owner id route");
+
+
+    it.todo("test accessToken newly generated due to valid refreshToken");
 
 
 });

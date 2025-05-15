@@ -63,7 +63,7 @@ afterAll(async () => {
 // each test use the database connection
 
 describe("GET /api/ping", () => {
-  it("Healtcheck of api, should return a 'pong' response", async () => {
+  it("Healthcheck of api, should return a 'pong' response", async () => {
     const res = await request(app).get("/api/ping");
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe("pong");
