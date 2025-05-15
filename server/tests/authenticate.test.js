@@ -95,7 +95,13 @@ describe('authenticateJWT', () => {
 
     it.todo("cannot access a auth protected route");
 
-    it.todo("cannot access a route user owner id route");
+    it("cannot access a route user owner id route", async () => {
+        await agent.post("/api/login").send(credentials);
+
+        const otherUserId = 1;
+        const res = await agent.get(`/api/user/${otherUserId}`);
+        expect(res.statusCode).toBe(403);
+    });
 
 
     it.todo("test accessToken newly generated due to valid refreshToken");
