@@ -38,7 +38,7 @@ exports.authenticateJWT = async (req, res, next) => {
           sameSite: "Strict",
           maxAge: 15 * 60 * 1000, // 15 minutes validation
         });
-
+        console.log("accessToken regenerated due to valid refreshToken");
         req.user = { userId: user.userId, pseudo: user.pseudo };
         next();
         // envoyer les infos utilisateur

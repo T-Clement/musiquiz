@@ -71,12 +71,12 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
                     res.cookie('refreshToken', refreshToken, {
                         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiration
                         httpOnly: true,
-                        secure: false
+                        secure: process.env.NODE_ENV === "production" ? true : false
                     }); // secure to true if https
                     res.cookie('accessToken', accessToken, {
                         expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes expiration
                         httpOnly: true,
-                        secure: false
+                        secure: process.env.NODE_ENV === "production" ? true : false
                     });
 
 

@@ -6,6 +6,8 @@ const utils = require("../utils/utils");
 const User = require('../models/User');
 const fs = require("fs");
 
+const { Cookie, CookieAccessInfo } = require('cookiejar');
+
 let mysqlTestConnection;
 const dumpFilePath = "./tests/test-setup.sql";
 
@@ -93,9 +95,8 @@ describe('authenticateJWT', () => {
         expect(me.body.user).toMatchObject({ userId: fakeUser.id, pseudo: fakeUser.pseudo });
     });
 
-    it.todo("cannot access a auth protected route");
 
-    it("cannot access a route user owner id route", async () => {
+    it("as a connected user, cannot access a route user owner id route", async () => {
         await agent.post("/api/login").send(credentials);
 
         const otherUserId = 1;
@@ -103,8 +104,39 @@ describe('authenticateJWT', () => {
         expect(res.statusCode).toBe(403);
     });
 
+    it.todo("cannot acces a auth protected route with invalid token");
 
-    it.todo("test accessToken newly generated due to valid refreshToken");
+
+    it("as a not connected user, cannot access a route link to a user", async () => {
+
+        const res = await request(app).get(`/api/user/1`);
+        expect(res.statusCode).toBe(401);
+    });
+
+
+    it("test accessToken newly generated due to valid refreshToken", async () => {
+        
+        
+        
+        // const someCookie = agent.jar.getCookie('accessToken', CookieAccessInfo.All);
+        // console.log(someCookie);
+
+        // expires cookie by setting a date in the past
+        await agent.jar.setCookie(
+        'accessToken=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; HttpOnly'
+        , "127.0.0.1");
+
+        const after = agent.jar.getCookie('accessToken', CookieAccessInfo.All);
+
+        const res = await agent.get('/api/me');
+        // console.log(res.body);
+        expect(res.statusCode).toBe(200);
+
+        
+
+    });
+
+
 
 
 });
