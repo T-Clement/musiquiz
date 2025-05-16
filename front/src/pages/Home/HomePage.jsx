@@ -18,15 +18,12 @@ import DashboardCard from "../../components/DashboardCard";
 import LinkWithViewTransition from "../../components/LinkWithViewTransition";
 
 export async function loader() {
-  // console.log(import.meta.env.VITE_API_URL);
   const top3 = await fetch(`${import.meta.env.VITE_API_URL}/api/top3`).then(
     (response) => response.json()
   );
-  // console.log(top3)
   const themes = await fetch(`${import.meta.env.VITE_API_URL}/api/theme`).then(
     (response) => response.json()
   );
-
   const randomRooms = await fetch(`${import.meta.env.VITE_API_URL}/api/room/random`).then(
     (response) => response.json()
   );
@@ -38,16 +35,9 @@ export async function loader() {
 export function HomePage() {
   console.log("Render HomePage");
 
-  // Loader
-
-  // if no current room at this id -> show error message
-
-  // else if current room at this id -> navigate to it
-
   // get data coming from react-router loader
   const { top3, themes, randomRooms } = useLoaderData();
 
-  // console.log(top3, themes);
 
   return (
     <div className="px-4 mb-4">
