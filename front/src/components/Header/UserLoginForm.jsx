@@ -5,7 +5,7 @@ import Button from '../Button';
 import PasswordInput from '../PasswordInput';
 
 
-export default function UserLoginForm({switchTo, user, closeModal}) {
+export default function UserLoginForm({switchTo, closeModal}) {
 
     const { setUser } =  useContext(AuthContext);
     const [error, setError] = useState(null);

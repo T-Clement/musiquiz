@@ -24,43 +24,22 @@ import ResetPassword from './pages/ResetPassword';
 import BrowseRoomsPage from './pages/BrowseRoomsPage';
 import JoinRoomQrCodePage from './pages/JoinRoomQrCodePage';
 
-// import apiAxios from './libs/axios';
 
-// export const AuthContext = createContext(null);
-
-// async function AppLoader() {
-//   try {
-//     // const response = await apiAxios.get('/api/me');
-  
-//     return { user: response.data };
-
-//   } catch (error) {
-//     console.error('Error in AppLoader : ', error);
-//     return { user: null };
-
-//   }
-// }
 
 export function App() {
 
-  //  const [user, setUser] = useState(null);
-
   console.log("Render App");
 
-  const router = useMemo(() => createBrowserRouter([
+  const router =  createBrowserRouter([
     {
       path: "/",
       element: <DefaultLayout />,
       errorElement: <ErrorPage />,
-      // loader: AppLoader,
       children: [
         {
           index: true, 
           element: <HomePage />,
           loader: homeLoader,
-          // shouldRevalidate: ({currentUrl, nextUrl}) => {
-          //   return false;
-          // },
         },
         {
           path: "room/:id",
@@ -112,9 +91,6 @@ export function App() {
       element: <GameLayout />,
       errorElement: <ErrorPage />,
       children: [
-        // {
-        //   path:
-        // },
         {
           path: ":id/choose-role",
           element: <ChooseRole />,
@@ -139,19 +115,15 @@ export function App() {
         }
       ]
     }
-  ]), []);
+  ]);
 
-  return <AuthContextProvider><RouterProvider router = {router} fallbackElement={ <div>Loading ...</div> }/></AuthContextProvider>
-
-
-  // return <AuthContext.Provider value = { { user, setUser }}>
-  //           <RouterProvider router = {router} />
-  //         </AuthContext.Provider>
-//   <RouterProvider
-//   router={Router}
-//   fallbackElement={
-//    <YourLoadingComponent/>
-//   }
-// />
+  return (
+    <AuthContextProvider>
+      <RouterProvider 
+        router = {router} 
+        fallbackElement={ <div>Loading ...</div> }
+      />
+    </AuthContextProvider>
+  )
 }
 

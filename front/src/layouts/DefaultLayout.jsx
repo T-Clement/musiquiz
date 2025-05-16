@@ -15,12 +15,7 @@ export function DefaultLayout() {
   const closeModal = () => setModal({open: false, view: modal.view});
   const setView = (view) => setModal((prev) => ({...prev, view}));
 
-  
-  
   const { user, setUser, loading } = useContext(AuthContext);
-  const userInfo = user ?? null;
-
-
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!user);
   useEffect(() => {
@@ -87,7 +82,7 @@ export function DefaultLayout() {
               }
               
 
-            { modal.view === "login" && <UserLoginForm switchTo={setView}  user={userInfo} closeModal={closeModal}/> }
+            { modal.view === "login" && <UserLoginForm switchTo={setView} closeModal={closeModal}/> }
             { modal.view === "register" && <UserRegisterForm switchTo={setView} /> }
             { modal.view === "forgot-password" && <UserForgotPassword switchTo={setView} />}
 
