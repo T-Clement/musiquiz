@@ -1,0 +1,48 @@
+@startuml name Diagramme des cas d'utilisation - Application Musiquiz
+title Diagramme des cas d'utilisation - Application Musiquiz
+
+left to right direction
+
+actor Utilisateur_non_connecté
+actor Joueur_connecté
+actor Présentateur
+
+rectangle Application_Musiquiz {
+
+    usecase "S'inscrire" as UC1
+    usecase "Se connecter" as UC2
+    usecase "Rechercher une partie" as UC3
+    usecase "Créer une instance de partie (room) en tant que présentateur" as UC4
+    usecase "Créer une instance de partie (room)" as UC5
+    usecase "Rejoindre une partie via code/QRcode" as UC6
+    usecase "Choisir son rôle : joueur ou présentateur" as UC7
+    usecase "Lancer officiellement la partie" as UC8
+    usecase "Diffuser un extrait musical" as UC9
+    usecase "Afficher un timer pour chaque round" as UC10
+    usecase "Afficher les bonnes réponses à la fin du round" as UC11
+    usecase "Afficher les scores en temps réel" as UC12
+    usecase "Voir les 4 propositions de réponse" as UC13
+    usecase "Choisir une réponse pour chaque extrait" as UC14
+    usecase "Voir la prise en compte de sa réponse" as UC15
+
+    Utilisateur_non_connecté --> UC1
+    Utilisateur_non_connecté --> UC2
+    Utilisateur_non_connecté --> UC3
+    Utilisateur_non_connecté --> UC4
+
+    Joueur_connecté --> UC3
+    Joueur_connecté --> UC5
+    Joueur_connecté --> UC6
+    Joueur_connecté --> UC7
+    Joueur_connecté --> UC13
+    Joueur_connecté --> UC14
+    Joueur_connecté --> UC15
+
+    Présentateur --> UC8
+    Présentateur --> UC9
+    Présentateur --> UC10
+    Présentateur --> UC11
+    Présentateur --> UC12
+}
+
+@enduml

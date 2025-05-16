@@ -1,12 +1,16 @@
 const Room = require("../models/Room");
 const Game = require("../schema/Game");
 const GameSQL = require("../models/Game");
+const { getScoreFromResponseTime } = require("../core/game/ScoreCalculator");
+
+const { store } = require('./AppWiring');
+
 
 class GameManager {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_properties
 
-    static inMemoryGames = new Map();
-    static inMemoryPlayersInGames = new Map();
+    static inMemoryGames = store.games;
+    static inMemoryPlayersInGames = store.playersInGames;
 
     static roundsNumber = process.env.ROUND_NUMBER || 10;
     static numberOfResponsePropositions = 4;
@@ -341,7 +345,7 @@ class GameManager {
 
         
         // 0 if false, else calculate score with related method
-        const scoreRound = isCorrect ? this._getScoreFromResponseTime(responseTime) : 0;
+        const scoreRound = isCorrect ? getScoreFromResponseTime(responseTime) : 0;
         console.log(`User ${userId} // response : ${isCorrect} // scoreRound : ${scoreRound}`);
 
         // gameDocument.rounds[roundIndex].playersResponses.push({
@@ -455,26 +459,7 @@ class GameManager {
 
 
 
-    _getScoreFromResponseTime(tMs) {
-        const t = tMs / 1000; // convert ms to seconds
-        const MAX_SCORE = 1000;
-        const T = 20;
-        const THRESHOLD = 1.2; // if under or equals this value -> it's max score
 
-        // user responded in a very short time, so he gets max point
-        if(t <= THRESHOLD) {
-            return MAX_SCORE;
-          }
-      
-        // it's here but it should not be concerned
-        if(t >= T) {
-        return 0;
-        }
-    
-        const slope = MAX_SCORE / (T - THRESHOLD);
-        return Math.floor(Math.max( 0, MAX_SCORE - slope * (t - THRESHOLD) ));
-
-    }
 
 
 

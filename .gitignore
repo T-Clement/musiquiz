@@ -7,3 +7,5 @@ node_modules
 # start-project.sh
 start.js
 *:memory
+tree.txt
+output.txt

@@ -20,25 +20,22 @@ exports.generatePasswordHash = async (password, saltRounds) => {
 
 exports.generateAccessToken = async (user, SECRET_KEY, TOKEN_EXPIRATION) => {
     const jwt = require('jsonwebtoken');
-    try {
-        return jwt.sign({ userId: user.id, pseudo: user.pseudo }, SECRET_KEY, { expiresIn: TOKEN_EXPIRATION });
-
-    } catch(error) {
-        console.log(error);
-        
-    }
+    return jwt.sign(
+        { userId: user.id, pseudo: user.pseudo }, 
+        SECRET_KEY, 
+        { expiresIn: TOKEN_EXPIRATION }
+    );
+  
 }
 
 
 exports.generateRefreshToken = async (user, REFRESH_SECRET, REFRESH_EXPIRATION) => {
     const jwt = require('jsonwebtoken');
-    try {
-        
-        return jwt.sign({ userId: user.id, pseudo: user.pseudo }, REFRESH_SECRET, { expiresIn: REFRESH_EXPIRATION });
-    } catch (error) {
-        console.log(error);
-        
-    }
+    return jwt.sign(
+        { userId: user.id, pseudo: user.pseudo }, 
+        REFRESH_SECRET, 
+        { expiresIn: REFRESH_EXPIRATION }
+    );
 }
 
 // check if there is enough tracks to play game with the settings setted

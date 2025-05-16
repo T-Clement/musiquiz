@@ -38,7 +38,7 @@ exports.authenticateJWT = async (req, res, next) => {
           sameSite: "Strict",
           maxAge: 15 * 60 * 1000, // 15 minutes validation
         });
-
+        console.log("accessToken regenerated due to valid refreshToken");
         req.user = { userId: user.userId, pseudo: user.pseudo };
         next();
         // envoyer les infos utilisateur
@@ -72,6 +72,7 @@ exports.optionalAuth = async (req, res, next) => {
     if (err) {
       // invalid or expired token -> act as non auth user
       req.user = null;
+      console.error(err);
     } else {
       // token is verified and add user to request
       req.user = { userId: payload.userId, pseudo: payload.pseudo };

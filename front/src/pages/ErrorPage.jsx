@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link, useRouteError } from "react-router-dom";
+import { useRouteError } from "react-router-dom";
+import LinkWithViewTransition from '../components/LinkWithViewTransition';
 
 
 export function ErrorPage() {
@@ -14,7 +14,7 @@ export function ErrorPage() {
       <p>
         <i>{error.statusText || error.message}</i>
       </p>
-      <p>Retour à la page <Link className='text-blue-500' to="/">Home</Link></p>
+      <p>Retour à la page <LinkWithViewTransition className='text-blue-500' to="/">Home</LinkWithViewTransition></p>
     </div>
   )
 }

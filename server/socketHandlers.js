@@ -1,9 +1,14 @@
 const Game = require("./schema/Game");
 const User = require("./models/User");
 const GameManager = require("./services/GameManager");
+const { gameEngine } = require('./services/AppWiring');
+const SocketGateway = require("./infra/websocket/SocketGateway");
 
 module.exports = (io) => {
   const gameManager = new GameManager(io);
+
+  new SocketGateway(io, gameEngine);
+
 
   io.on("connection", (socket) => {
     console.log("Nouvelle connexion WS : ", socket.id);
@@ -203,14 +208,22 @@ module.exports = (io) => {
           return;
         }
 
-        gameManager.initGame(gameId, {
+        // gameManager.initGame(gameId, {
+        //   totalRounds: foundGame.totalRounds,
+        //   roundDuration: foundGame.roundDuration,
+        //   rounds: foundGame.rounds,
+        //   players: foundGame.players,
+        //   timerId: null,
+        //   // status: 'NOT'
+        // });
+
+        gameEngine.initGame(gameId, {
           totalRounds: foundGame.totalRounds,
           roundDuration: foundGame.roundDuration,
           rounds: foundGame.rounds,
-          players: foundGame.players,
-          timerId: null,
-          // status: 'NOT'
+          players: foundGame.players
         });
+
 
         foundGame.status = "in_progress";
         await foundGame.save();
@@ -219,7 +232,8 @@ module.exports = (io) => {
         io.to(gameId).emit("move-in-game");
 
 
-        gameManager.startGame(gameId);
+        // gameManager.startGame(gameId);
+        gameEngine.startGame(gameId);
 
 
       } catch (error) {
@@ -232,7 +246,8 @@ module.exports = (io) => {
     socket.on("submit-answer", async ({ gameId, userId, choiceId }) => {
       try {
 
-        await gameManager.submitAnswer(gameId, userId, choiceId);
+        // await gameManager.submitAnswer(gameId, userId, choiceId);
+        gameEngine.submitAnswer(gameId, userId, choiceId);
 
         socket.emit("answer-received", { success: true });
 
@@ -247,28 +262,32 @@ module.exports = (io) => {
 
 
 
-    socket.on("audio-ready", ({ gameId, roundNumber}) => {
-      const gameState = GameManager.inMemoryGames.get(gameId);
-      if (!gameState) return;
+    // socket.on("audio-ready", ({ gameId, roundNumber}) => {
+    //   const gameState = GameManager.inMemoryGames.get(gameId);
+    //   if (!gameState) return;
       
-      if (gameState.currentRound !== roundNumber) return;
+    //   if (gameState.currentRound !== roundNumber) return;
     
-      // audio is ready
-      gameState.audioReadyReceived = true;
+    //   // audio is ready
+    //   gameState.audioReadyReceived = true;
         
-      console.log("Presentator has audio extract loaded", roundNumber);
+    //   console.log("Presentator has audio extract loaded", roundNumber);
 
-      // start round 
-      // 3s delay between rounds 
-      const LOADING_DELAY = 3000;
-      setTimeout(() => {
-          console.log("round launched");
-          if(gameState.audioReadyReceived ) {
-            gameManager._launchRound(gameId);
-          }
-      }, LOADING_DELAY);
+    //   // start round 
+    //   // 3s delay between rounds 
+    //   const LOADING_DELAY = 3000;
+    //   setTimeout(() => {
+    //       console.log("round launched");
+    //       if(gameState.audioReadyReceived ) {
+    //         gameManager._launchRound(gameId);
+    //       }
+    //   }, LOADING_DELAY);
 
-    })
+    // })
+
+    socket.on("audio-ready", ({ gameId, roundNumber }) => {
+      gameEngine.audioReady({ gameId, roundNumber });
+    });
 
 
     socket.on("ping", () => {
