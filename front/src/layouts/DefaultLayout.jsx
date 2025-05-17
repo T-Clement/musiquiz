@@ -14,19 +14,8 @@ export function DefaultLayout() {
   const openModal = (view) => setModal({open: true, view});
   const closeModal = () => setModal({open: false, view: modal.view});
   const setView = (view) => setModal((prev) => ({...prev, view}));
-
+  
   const { user, setUser, loading } = useContext(AuthContext);
-
-  const [isLoggedIn, setIsLoggedIn] = useState(!!user);
-  useEffect(() => {
-    if(user != null) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [user]);
-
-
 
   if (loading) {
     return <div>Chargement ...</div>;
@@ -41,9 +30,7 @@ export function DefaultLayout() {
       </div>
       <div 
         className="max-w-screen-xl mx-auto mb-8" 
-        // style={{viewTransitionName: "content"}}
       >
-        {/* <p>DefaultLayout</p> */}
         <Outlet />
       </div>
 
@@ -88,12 +75,7 @@ export function DefaultLayout() {
 
           </div>
 
-        </Modal>
-
-
-
-
-
+      </Modal>
     </>
   );
 }

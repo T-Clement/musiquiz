@@ -1,6 +1,7 @@
-import React from 'react'
 import { useLoaderData } from 'react-router-dom';
 import { RoomItem } from '../../components/RoomItem';
+import { useEffect } from 'react';
+import { useRenderLogger } from '../../hooks/useRenderLogger';
 
 
 export async function loader({request, params}) {
@@ -13,12 +14,17 @@ export async function loader({request, params}) {
 
 export function ThemePage() {
 
-    console.log("Render ThemePage");
+    // console.log("Render ThemePage");
 
     const { theme } = useLoaderData();
     console.log(theme);
 
-
+    useEffect(() => {
+      console.log("ThemePage mounted");
+      return () => console.log("ThemePage unmounted");
+    }, []);
+    // useRenderLogger("ThemePage");  
+  
 
   return (
     
@@ -29,9 +35,9 @@ export function ThemePage() {
             
         {/* min-[320px]: */}
         {theme.rooms.map((room, index) => 
-            <li key={room.id} className='flex max-[320px]:flex-col min-[300px]:gap-y-4 sm:flex-row items-center gap-x-5'>
+            <li key={room.room_id} className='flex max-[320px]:flex-col min-[300px]:gap-y-4 sm:flex-row items-center gap-x-5'>
                        
-            <RoomItem room = {room} />
+            <RoomItem key={room.room_id} room = {room} />
             
 
             </li>

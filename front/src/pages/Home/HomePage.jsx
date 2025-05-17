@@ -1,6 +1,6 @@
 
 import JoinGameSection from "./JoinGameSection";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 
 // import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,6 +16,7 @@ import Button, { VARIANT_STYLES } from "../../components/Button";
 import RandomRoomCard from "./RandomRoomCard";
 import DashboardCard from "../../components/DashboardCard";
 import LinkWithViewTransition from "../../components/LinkWithViewTransition";
+import { useRenderLogger } from "../../hooks/useRenderLogger";
 
 export async function loader() {
   const top3 = await fetch(`${import.meta.env.VITE_API_URL}/api/top3`).then(
@@ -33,10 +34,13 @@ export async function loader() {
 
 
 export function HomePage() {
-  console.log("Render HomePage");
+  
+  // useRenderLogger("Homepage");  
+  // console.log("Render HomePage");
 
   // get data coming from react-router loader
   const { top3, themes, randomRooms } = useLoaderData();
+
 
 
   return (
