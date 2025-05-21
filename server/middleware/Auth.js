@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 
 exports.authenticateJWT = async (req, res, next) => {
-  console.log("in authenticate middleware");
-  console.log("log of list of cookies");
-  console.log(req.cookies);
+  // console.log("in authenticate middleware");
+  // console.log("log of list of cookies");
+  // console.log(req.cookies);
   const token = req.cookies.accessToken;
   console.log(token);
   if (!token) {
-    console.log("Dans le if !token");
+    // console.log("Dans le if !token");
     // si pas de token, essayer de renouveler avec le refresh token
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
@@ -38,7 +38,7 @@ exports.authenticateJWT = async (req, res, next) => {
           sameSite: "Strict",
           maxAge: 15 * 60 * 1000, // 15 minutes validation
         });
-        console.log("accessToken regenerated due to valid refreshToken");
+        // console.log("accessToken regenerated due to valid refreshToken");
         req.user = { userId: user.userId, pseudo: user.pseudo };
         next();
         // envoyer les infos utilisateur
@@ -51,10 +51,6 @@ exports.authenticateJWT = async (req, res, next) => {
       if (err) {
         return res.status(403).json({ message: "Token expiré ou invalide" });
       }
-      console.log(
-        "dans le verify du token présent dans authenticateJWT méthode"
-      );
-      console.log(user);
       req.user = { userId: user.userId, pseudo: user.pseudo };
       next();
     });

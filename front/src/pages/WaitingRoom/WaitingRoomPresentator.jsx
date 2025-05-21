@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
-// import { useAudioContext } from "../../contexts/AudioContextProvider";
 
 export default function WaitingRoomPresentator({
   players,
@@ -10,51 +9,10 @@ export default function WaitingRoomPresentator({
   handleLaunchGame,
 }) {
   const [showModal, setShowModal] = useState(false);
-  // const { audioContext, initializeAudioContext } = useAudioContext();
 
-
-  // const handleAudioAcceptance = async () => {
-  //   const updatedAudioContext = await initializeAudioContext();
-  //   if (updatedAudioContext && updatedAudioContext.state === "suspended") {
-  //     await updatedAudioContext.resume();
-  //   }
-  //   setShowModal(false);
-
-  //   // handleLaunchGame();
-  // };
 
   const handleClick = async () => {
-    // check if audio can be play in presentor browser's
-    // try {
-    // //   const updatedAudioContext = await initializeAudioContext();
-    // // console.log(audioContext);
-    //   const updatedAudioContext = audioContext;
-    //   if (!updatedAudioContext) {
-    //     alert("Impossible d'initialiser l'audio.");
-    //     return;
-    //   }
 
-    //   console.log("État audio après update :", updatedAudioContext.state);
-
-    //   if (updatedAudioContext.state === "suspended") {
-    //     setShowModal(true);
-    //     return;
-    //   }
-
-    //   if (updatedAudioContext.state !== "running") {
-    //     alert(
-    //       "L'activation de l'audio sur ce site par votre navigateur est requise pour lancer une partie. Veuillez activer l'audio et réessayer."
-    //     );
-    //     return;
-    //   }
-    // } catch (error) {
-    //   alert(
-    //     "Votre navigateur ne supporte pas l'API audio nécessaire pour cette application. Veuillez réessayer en changeant de navigateur."
-    //   );
-    //   return;
-    // }
-
-    // if everything ok, launches the game
     handleLaunchGame();
   };
 
@@ -75,7 +33,6 @@ export default function WaitingRoomPresentator({
               <Button
                 variant="success"
                 type="button"
-                // onClick={handleAudioAcceptance}
                 onClick={handleClick}
               >
                 Activer l'audio pour ce site
@@ -112,7 +69,6 @@ export default function WaitingRoomPresentator({
                   />
                   <p>
                     {player.pseudo}{" "}
-                    {/*player.socketId === socket.id ? "(You)" : ""*/}
                   </p>
                   <button type="button">
                     <svg

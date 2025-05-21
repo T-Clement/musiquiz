@@ -13,7 +13,6 @@ export default function Nav({
 }) {
   console.log("Render Nav");
   return (
-    // <nav className='hidden md:block'>
     <nav className="block">
       {isLoggedIn ? (
         <ul className="flex gap-x-6">

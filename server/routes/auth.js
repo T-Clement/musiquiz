@@ -60,25 +60,30 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
                 try {
 
                     // generate accessToken
-                    const accessToken = await utils.generateAccessToken(user, process.env.JWT_SECRET_KEY, process.env.TOKEN_EXPIRATION);
-                    // console.log(accessToken);
-
+                        // custom function to put only specific data in token
+                    const accessToken = await utils.generateAccessToken(
+                        user,
+                        process.env.JWT_SECRET_KEY, 
+                        process.env.TOKEN_EXPIRATION
+                    );
+                    
                     // generate refreshToken
-                    const refreshToken = await utils.generateRefreshToken(user, process.env.JWT_REFRESH_SECRET_KEY, process.env.REFRESH_EXPIRATION);
-                    // console.log(refreshToken);
-
+                    const refreshToken = await utils.generateRefreshToken(
+                        user, process.env.JWT_REFRESH_SECRET_KEY, 
+                        process.env.REFRESH_EXPIRATION
+                    );
+                    
                     // send cookies
-                    res.cookie('refreshToken', refreshToken, {
-                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiration
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === "production" ? true : false
-                    }); // secure to true if https
                     res.cookie('accessToken', accessToken, {
                         expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes expiration
                         httpOnly: true,
                         secure: process.env.NODE_ENV === "production" ? true : false
                     });
-
+                    res.cookie('refreshToken', refreshToken, {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiration
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === "production" ? true : false
+                    }); 
 
                     res.status(200).json({ 
                         message: "Connexion Réussie", 
@@ -114,7 +119,6 @@ router.post('/api/logout', authenticateJWT, (req, res) => {
         httpOnly: true,
         expires: new Date(0)
     });
-
     res.status(200).json({ message: 'Déconnexion réussie, cookies supprimés' });
 });
 
@@ -161,7 +165,6 @@ router.get("/api/me", authenticateJWT, (req, res) => {
         return res.status(401).json({ message: "Non authentifié" });
     }
     res.status(200).json({ message: "in user connected route", user: req.user });
-
 });
 
 

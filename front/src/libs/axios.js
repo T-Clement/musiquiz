@@ -14,11 +14,11 @@ apiAxios.interceptors.response.use(
         if (error.response.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                await authService.refreshToken();
+                await authService.refreshToken(); //api call to refresh token
                 return apiAxios(originalRequest);
             } catch (refreshError) {
                 console.error("Erreur lors de la tentative de refresh token", refreshError);
-                // gérer la déconnexion ou la redirection ici
+                // handle disconnection
                 return Promise.reject(refreshError);
             }
         }
@@ -27,3 +27,10 @@ apiAxios.interceptors.response.use(
 );
 
 export default apiAxios;
+
+
+
+
+
+
+
