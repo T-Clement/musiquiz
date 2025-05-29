@@ -28,7 +28,8 @@ const validateNewStoredRoom = [
         .escape()
         .notEmpty().withMessage(InputValidationMessage.MISSING_TITLE)
         .isString().withMessage("Le titre doit être une chaine de caractères")
-        .isLength({min: Room.ROOM_TITLE_MIN_LENGTH, max: Room.ROOM_TITLE_MAX_LENGTH}).withMessage(InputValidationMessage.TITLE_LENGTH_ERROR)
+        .isLength({min: Room.ROOM_TITLE_MIN_LENGTH, max: Room.ROOM_TITLE_MAX_LENGTH})
+            .withMessage(InputValidationMessage.TITLE_LENGTH_ERROR)
     ,
     body("playlist_id")
         .exists()
@@ -42,14 +43,15 @@ const validateNewStoredRoom = [
         .exists()
         .trim()
         .escape()
-        .isLength({max: Room.ROOM_DESCRIPTION_MAX_LENGTH}).withMessage(InputValidationMessage.DESCRIPTION_LENGTH_ERROR),
+        .isLength({max: Room.ROOM_DESCRIPTION_MAX_LENGTH})
+            .withMessage(InputValidationMessage.DESCRIPTION_LENGTH_ERROR),
         body("theme_id")
         .exists()
         .trim()
         .escape()
         .isString()
         // check if theme passed is in the stored themes
-    ];
+];
     
     
 router.get('/random', async (req, res, next) => {
