@@ -47,7 +47,7 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
 
     const validCredentials = await bcrypt.compare(password, user.password);
     if(!validCredentials) {
-        res.status(401).json({ message: "Paire identifiant / mot de passe incorrect" });
+        return res.status(401).json({ message: "Paire identifiant / mot de passe incorrect" });
     }
 
     const userForTokenGeneration = new User(user.id, user.pseudo, null, user.email);
