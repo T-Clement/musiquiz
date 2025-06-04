@@ -33,79 +33,46 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() })
     }
 
-    // get validated data
+    // get validated data coming from validator
     const validatedData = matchedData(req);
-
     const { email, password } = validatedData;
 
-    // check if user exists with the credentials comming from post request and validated with validator
-    User.findUserByMail(email).then(async user => {
-        // no user
-        if (user === null) {
-            console.log("No user for this email");
-            return res.status(401).json({ message: "Paire identifiant/mot de passe incorrect" })
-        } else {
-            // a user with this email has been found
-            // check passwords hashs
-            const valid = await bcrypt.compare(password, user.password)
-            console.log(`validn value ${valid}`);
-            if (!valid) {
-                console.log("Invalid comparison of hashed passwords");
-                res.status(500).json({ message: "Paire identifiant/mot de passe incorrect" });
-            } else {
-                console.log("Match, a user with correct credentials is found");
-
-                user = new User(user.id, user.pseudo, null, user.email, user.createdAt, user.updatedAt);
-
-                try {
-
-                    // generate accessToken
-                        // custom function to put only specific data in token
-                    const accessToken = await utils.generateAccessToken(
-                        user,
-                        process.env.JWT_SECRET_KEY, 
-                        process.env.TOKEN_EXPIRATION
-                    );
-                    
-                    // generate refreshToken
-                    const refreshToken = await utils.generateRefreshToken(
-                        user, process.env.JWT_REFRESH_SECRET_KEY, 
-                        process.env.REFRESH_EXPIRATION
-                    );
-                    
-                    // send cookies
-                    res.cookie('accessToken', accessToken, {
-                        expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes expiration
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === "production" ? true : false
-                    });
-                    res.cookie('refreshToken', refreshToken, {
-                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days expiration
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === "production" ? true : false
-                    }); 
-
-                    res.status(200).json({ 
-                        message: "Connexion Réussie", 
-                        user: {
-                            userId: user.id,
-                            pseudo: user.pseudo
-                        } 
-                    });
+    // check if user with this email exists in database
+    const user = await User.findUserByMail(email);
+    if(!user) {
+        console.log("No user for this email");
+        return res.status(401).json({ message: "Paire identifiant / mot de passe incorrect" });
+    }
 
 
-                } catch (error) {
-                    console.log("ERROR");
-                    console.log(error);
-                    res.status(500).json({ error });
-                }
-            }
+    const validCredentials = await bcrypt.compare(password, user.password);
+    if(!validCredentials) {
+        res.status(401).json({ message: "Paire identifiant / mot de passe incorrect" });
+    }
 
-        };
-    })
-        .catch(error => res.status(500).json({ error }));
+    const userForTokenGeneration = new User(user.id, user.pseudo, null, user.email);
 
+    const accessToken = utils.generateAccessToken(userForTokenGeneration, process.env.JWT_SECRET_KEY, process.env.TOKEN_EXPIRATION);
+    const refreshToken = utils.generateRefreshToken(userForTokenGeneration, process.env.JWT_REFRESH_SECRET_KEY, process.env.REFRESH_EXPIRATION);
 
+    // clears cookies if some are remaining
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
+
+    const sharedCookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite : "Strict",
+        // path: "/"
+    };
+    
+    res.cookie("accessToken", accessToken, { ...sharedCookieOptions, maxAge: 15 * 60 * 1000 }); // 15mins
+    res.cookie("refreshToken", refreshToken, { ...sharedCookieOptions, maxAge: 7 * 24 *  60 * 60 * 1000 }); // 7days
+
+    return res.status(200).json({
+        message: "Connexion réussie",
+        user: { userId: user.id, pseudo: user.pseudo }
+    });
 });
 
 router.post('/api/logout', authenticateJWT, (req, res) => {

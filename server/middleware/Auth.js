@@ -3,13 +3,15 @@ const jwt = require("jsonwebtoken");
 const { generateAccessToken } = require("../utils/utils");
 
 async function handleRefreshToken(req, res, next) {
-  console.log("Handling refresh token...");
+  // console.log("Handling refresh token...");
   const refreshToken = req.cookies.refreshToken;
+  
   if (!refreshToken) {
     return res.status(401).json({ message: "Non authentifié" });
   }
-  // verify refresh token
+
   try {
+    // verify refresh token
     const payload = await verifyJwt(refreshToken, process.env.JWT_REFRESH_SECRET_KEY);
 
     const newAccessToken = generateAccessToken(
@@ -26,10 +28,10 @@ async function handleRefreshToken(req, res, next) {
     });
 
     // add user data to request
-    req.user = { userId: payload.userId, pseudo: payload.pseudo };
-    
+    req.user = { userId: payload.userId, pseudo: payload.pseudo };   
     next();
   } catch (err) { // for any error occured
+    console.error("error in handleRefreshToken : ", err);
     return res.status(401).json({ message: "Refresh token invalide ou expiré" });
   }
 }
@@ -71,7 +73,7 @@ exports.authenticateJWT = async (req, res, next) => {
   try {
     
     const token = req.cookies.accessToken;
-    console.log("accessToken in  authenticateJWT middleware", token);
+    // console.log("accessToken in  authenticateJWT middleware", token);
     // no access token, try to refresh it
     if(!token) return await handleRefreshToken(req, res, next);
 
@@ -86,8 +88,7 @@ exports.authenticateJWT = async (req, res, next) => {
 
   } catch (err) {
     // if any error occured, send 401
-    console.log("error in ")
-    console.error(err);
+    console.log("error in authenticateJWT", err.message);
     return res.sendStatus(401);
   }
 };

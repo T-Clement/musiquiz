@@ -18,7 +18,7 @@ exports.generatePasswordHash = async (password, saltRounds) => {
 };
 
 
-exports.generateAccessToken = async (user, SECRET_KEY, TOKEN_EXPIRATION) => {
+exports.generateAccessToken = (user, SECRET_KEY, TOKEN_EXPIRATION) => {
     const jwt = require('jsonwebtoken');
     return jwt.sign(
         { userId: user.id, pseudo: user.pseudo }, 
@@ -29,7 +29,7 @@ exports.generateAccessToken = async (user, SECRET_KEY, TOKEN_EXPIRATION) => {
 }
 
 
-exports.generateRefreshToken = async (user, REFRESH_SECRET, REFRESH_EXPIRATION) => {
+exports.generateRefreshToken = (user, REFRESH_SECRET, REFRESH_EXPIRATION) => {
     const jwt = require('jsonwebtoken');
     return jwt.sign(
         { userId: user.id, pseudo: user.pseudo }, 
