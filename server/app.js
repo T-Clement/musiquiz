@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-
+const helmet = require('helmet');
 
 const cookies = require("cookie-parser");
 
@@ -22,7 +22,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(helmet()); // security middleware to set various HTTP headers
 app.use(cookies());
 
 

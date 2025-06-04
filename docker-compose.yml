@@ -2,7 +2,7 @@ services:
 
 
   mariadb-musiquiz:
-    image: mariadb:latest
+    image: mariadb:latest # version précise
     container_name: mariadb-musiquiz
     ports: 
       - "${MYSQL_PORT}:3306"

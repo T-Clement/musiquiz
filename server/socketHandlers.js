@@ -5,7 +5,6 @@ const { gameEngine } = require('./services/AppWiring');
 const SocketGateway = require("./infra/websocket/SocketGateway");
 
 module.exports = (io) => {
-  const gameManager = new GameManager(io);
 
   new SocketGateway(io, gameEngine);
 
@@ -174,21 +173,26 @@ module.exports = (io) => {
 
 
 
-    socket.on("get-room-players", async (gameId) => {
-        const game = await Game.findById(gameId);
-
-        const players = game.players;
-
-        console.log("get-room-players event", players);
-        // respond only to the socket who makes the event ????
-        socket.emit("room-players-list", players);
-    });
-
+    socket.on("ping", () => {
+      console.log('socketHandlers : ping')
+      socket.emit("pong", { message : 'pong' });
+    })
+    
     // --------------------------------------
     // --------------------------------------
     // IN-GAME RELATED HANDLERS
     // --------------------------------------
     // --------------------------------------
+    socket.on("get-room-players", async (gameId) => {
+      const game = await Game.findById(gameId);
+      
+      const players = game.players;
+      
+      console.log("get-room-players event", players);
+      // respond only to the socket who makes the event ????
+      socket.emit("room-players-list", players);
+    });
+
     socket.on("launch-game", async (gameId) => {
       try {
 
@@ -199,8 +203,6 @@ module.exports = (io) => {
             );
             return;
         }
-
-
 
         const foundGame = await Game.findById(gameId);
         if (!foundGame) {
@@ -260,40 +262,11 @@ module.exports = (io) => {
     });
 
 
-
-
-    // socket.on("audio-ready", ({ gameId, roundNumber}) => {
-    //   const gameState = GameManager.inMemoryGames.get(gameId);
-    //   if (!gameState) return;
-      
-    //   if (gameState.currentRound !== roundNumber) return;
-    
-    //   // audio is ready
-    //   gameState.audioReadyReceived = true;
-        
-    //   console.log("Presentator has audio extract loaded", roundNumber);
-
-    //   // start round 
-    //   // 3s delay between rounds 
-    //   const LOADING_DELAY = 3000;
-    //   setTimeout(() => {
-    //       console.log("round launched");
-    //       if(gameState.audioReadyReceived ) {
-    //         gameManager._launchRound(gameId);
-    //       }
-    //   }, LOADING_DELAY);
-
-    // })
-
     socket.on("audio-ready", ({ gameId, roundNumber }) => {
       gameEngine.audioReady({ gameId, roundNumber });
     });
 
 
-    socket.on("ping", () => {
-      console.log('socketHandlers : ping')
-      socket.emit("pong", { message : 'pong' });
-    })
 
 
 

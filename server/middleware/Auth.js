@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { generateAccessToken } = require("../utils/utils");
 
 async function handleRefreshToken(req, res, next) {
+  console.log("Handling refresh token...");
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     return res.status(401).json({ message: "Non authentifié" });
@@ -32,8 +33,14 @@ async function handleRefreshToken(req, res, next) {
     return res.status(401).json({ message: "Refresh token invalide ou expiré" });
   }
 }
-
-
+ 
+/**
+ * This function verifies a JWT token using the provided secret key.
+ * It returns a promise that resolves with the payload if the token is valid,
+ * @param {*} token 
+ * @param {*} secret 
+ * @returns 
+ */
 function verifyJwt(token, secret) {
   // return a promise that resolves with the payload or rejects with an error
   return new Promise((resolve, reject) => {
@@ -44,7 +51,7 @@ function verifyJwt(token, secret) {
       }
       resolve(payload);
     });
-  });
+  })
 }
 
 /**
@@ -64,7 +71,7 @@ exports.authenticateJWT = async (req, res, next) => {
   try {
     
     const token = req.cookies.accessToken;
-    
+    console.log("accessToken in  authenticateJWT middleware", token);
     // no access token, try to refresh it
     if(!token) return await handleRefreshToken(req, res, next);
 
@@ -79,6 +86,8 @@ exports.authenticateJWT = async (req, res, next) => {
 
   } catch (err) {
     // if any error occured, send 401
+    console.log("error in ")
+    console.error(err);
     return res.sendStatus(401);
   }
 };
@@ -103,34 +112,3 @@ exports.optionalAuth = async (req, res, next) => {
   });
 };
 
-// exports.refreshToken = (req, res) => {
-//     const refreshToken = req.cookies.refreshToken;
-
-//     if (!refreshToken) {
-//         return res.status(401).json({ message: 'Non authentifié' });
-//     }
-
-//     // Vérifier le refresh token
-//     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => {
-//         if (err) {
-//             return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
-//         }
-
-//         // Générer un nouveau access token
-//         const newAccessToken = jwt.sign(
-//             { userId: user.userId, pseudo: user.pseudo, email: user.email },
-//             process.env.JWT_SECRET_KEY,
-//             { expiresIn: '15m' }
-//         );
-
-//         // Stocker le nouveau JWT dans un cookie httpOnly
-//         res.cookie('jwtToken', newAccessToken, {
-//             httpOnly: true,
-//             secure: process.env.NODE_ENV === 'production',
-//             sameSite: 'Strict',
-//             maxAge: 15 * 60 * 1000  // 15 minutes en ms
-//         });
-
-//         res.status(200).json({ message: "Token renouvelé" });
-//     });
-// };
