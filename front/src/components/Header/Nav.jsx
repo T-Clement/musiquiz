@@ -1,4 +1,3 @@
-import React, { useContext, useState } from "react";
 // import { AuthContext } from '../../App';
 import Logout from "./Logout";
 import Button from "../Button";

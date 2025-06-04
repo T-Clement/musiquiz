@@ -1,17 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
 
 import svgPlay from "/assets/play.svg";
 
 export default function RoundsSection({ rounds }) {
-  console.log(rounds);
+  // console.log(rounds);
   return (
     <ul
       role="list"
       className="divide-y divide-gray-100 bg-slate-600 rounded-lg"
     >
       {rounds.map((round) => (
-        <li className="flex flex-col justify-between gap-x-6 px-6 py-5 min-w-64 md:min-w-[420px]">
+        <li key={round.id} className="flex flex-col justify-between gap-x-6 px-6 py-5 min-w-64 md:min-w-[420px]">
           <div className="flex justify-between min-w-0 gap-x-4">
             <div className="flex-col self-center">
               <p className="font-semibold text-slate-50">{round.artist}</p>
@@ -27,7 +25,7 @@ export default function RoundsSection({ rounds }) {
                 alt="Play Icon"
                 className="relative z-10 ps-1 w-8 h-8 fill-current text-white"
                 />
-                <p>Ecouter l'extrait</p>
+                <p>Ecouter l&apos;extrait</p>
               <span className="absolute inset-0 rounded-full bg-white opacity-25"></span>
             </a>
           </div>

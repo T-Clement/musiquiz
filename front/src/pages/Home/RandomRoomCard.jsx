@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button, { VARIANT_STYLES } from '../../components/Button';
 import { RotateCcw } from 'lucide-react'
 import axios from 'axios';
 import LinkWithViewTransition from '../../components/LinkWithViewTransition';
  
-export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
+export default function RandomRoomCard({intialRandomRoomsPool = []}) {
     
     const [rooms, setRooms] = useState(intialRandomRoomsPool);      // pre fetch a small pool of room to avoid multiple API calls
     // const [current, setCurrent] = useState(intialRandomRoomsPool[0] || null);
@@ -16,7 +16,7 @@ export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
     const current = rooms[0] || null;
 
     // to fetch a new pool a rooms
-    const fetchRooms = async (count = 5) => {
+    const fetchRooms = async () => {
         setLoading(true)
         setError(null)
         try {
@@ -75,7 +75,7 @@ export default function RandomRoomCard({intialRandomRoomsPool = [], onJoin}) {
 
       <h3 className="text-md font-semibold text-white">{current.name}</h3>
       <p className="text-gray-300">
-        Thème : <span className="font-medium">{current.theme}</span>
+        Thème : <span className="font-medium">{current.theme}</span>
       </p>
       
       <div className="flex justify-center gap-4">

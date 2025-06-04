@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import apiAxios from "../../libs/axios";
 
 import Spinner from "../../components/Spinner";
@@ -99,12 +99,12 @@ export default function NewRoomPage() {
         <h2 className="text-2xl mb-4">Ajouter une nouvelle room</h2>
         <p className="my-3">
           Vous ne trouvez pas la room qui vous plaît ? Pas de soucis, il est
-          possible d'en rajouter une nouvelle.
+          possible d&apos;en rajouter une nouvelle.
         </p>
 
         <div>
           <p className="my-3">
-            Pour cela, munissez vous d'un identifiant de playlist Deezer avec
+            Pour cela, munissez vous d&apos;un identifiant de playlist Deezer avec
             une playlist qui remplit les conditions suivantes :
           </p>
 
@@ -172,16 +172,9 @@ export default function NewRoomPage() {
 
       <div className="mt-5">
         <p>
-          Vous trouverez ici les détails de l'analyse de votre playlist si elle
-          est acceptée ou non par l'application.
+          Vous trouverez ici les détails de l&apos;analyse de votre playlist si elle
+          est acceptée ou non par l&apos;application.
         </p>
-
-        {
-          // rendu conditionnel du bouton qui permet d'enregistrer la nouvelle playlist
-          // ainsi que du formulaire permettant de placer les données de
-          // la room
-          //
-        }
 
         {loading && (
           <div className="flex gap-3 my-4">
@@ -258,7 +251,7 @@ export default function NewRoomPage() {
                     >
                     <option className="text-gray-400" value="" disabled selected>Choisir un thème</option>
 
-                    {availableThemes.map((theme, index) => (
+                    {availableThemes.map((theme) => (
                       <option className="text-gray-400" key={theme.id} value={parseInt(theme.id)}>{theme.name}</option>
                     ))}
 

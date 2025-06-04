@@ -1,4 +1,3 @@
-import React from "react";
 import RankedPlayerRow from "./RankedPlayersRow";
 
 export default function RankedPlayers({ players }) {

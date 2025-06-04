@@ -1,10 +1,8 @@
-import React from 'react'
 import apiAxios from '../libs/axios'
 import { useLoaderData } from 'react-router-dom';
-import { RoomItem } from '../components/RoomItem';
 import Button from '../components/Button';
 
-export async function loader({request, params}) {
+export async function loader({ params }) {
     const userData = await apiAxios(
         `${import.meta.env.VITE_API_URL}/api/user/${params.id}`
     ).then((response) => response.data);
@@ -30,7 +28,7 @@ export default function UserPage() {
         <div>
 
           { userData.games.length > 0 ? userData.games.map(game => (
-            <div className='my-4'>
+            <div key={ game.game.id } className='my-4'>
               <p>{game.metaData.name}</p>
               <p>{game.game.score} points</p>
               <p><Button variant='info'>Détails</Button></p>
@@ -38,7 +36,7 @@ export default function UserPage() {
             </div>
             ))
             :
-            <p>Aucune partie n'a été jouée</p> 
+            <p>Aucune partie jouée</p> 
           }
 
 

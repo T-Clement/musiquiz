@@ -1,7 +1,4 @@
-import React, { useContext, useEffect } from 'react'
 import apiAxios from '../../libs/axios';
-// import { useFetcher } from 'react-router-dom'
-// import { AuthContext } from '../../App';
 
 export function action () {
 

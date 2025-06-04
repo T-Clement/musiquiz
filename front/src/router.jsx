@@ -8,7 +8,6 @@ import WaitingRoomPage, {
 import InGamePlayerPage from "./pages/InGame/InGamePlayerPage";
 import InGamePresentatorPage from "./pages/InGame/InGamePresentatorPage";
 import NewRoomPage from "./pages/NewRoom/NewRoomPage";
-import PlaygroundPage from "./pages/Playground/PlaygroundPage";
 import FinalLeaderBoardPage from "./pages/InGame/FinalLeaderBoardPage";
 import UserPage, { loader as userPageLoader } from "./pages/UserPage";
 import ResetPassword from "./pages/ResetPassword";
@@ -36,7 +35,6 @@ export const router = createBrowserRouter([
       { path: "user/:id", element: <UserPage />, loader: userPageLoader },
       { path: "theme/:id", element: <ThemePage />, loader: themePageLoader },
       { path: "reset-password", element: <ResetPassword /> },
-      { path: "playground", element: <PlaygroundPage /> },
       { path: "*", element: <Page404 /> },
       { path: "user/logout", action: logoutAction },
     ],

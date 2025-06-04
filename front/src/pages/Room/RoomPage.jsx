@@ -1,7 +1,6 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  Navigate,
   useLoaderData,
   useNavigate,
   useParams,
@@ -10,7 +9,7 @@ import Spinner from "../../components/Spinner";
 import Button from "../../components/Button";
 // import apiAxios from '../../libs/axios';
 
-export async function loader({ request, params }) {
+export async function loader({ params }) {
   // console.log(request, params);
   // let {id} = useParams();
   // console.log(id);
@@ -64,8 +63,6 @@ export function RoomPage() {
 
       const { gameId, sharingCode } = response.data;
 
-      // navigate(`/game/${gameId}/waiting-room`);
-
       // send gameId (_id) to next page
       setLoading(false);
       navigate(`/game/${gameId}/choose-role?source=create&sharingCode=${sharingCode}`, { state: { gameId } });
@@ -73,33 +70,6 @@ export function RoomPage() {
       console.error("Error creating game : ", error);
     }
 
-    // appel api qui récupère les données de la room et genère un document avec les données
-    // nécessaires (identifiant api playlist, joueurs, date de création, identi)
-
-    // {
-    //     "gameId": "unique_game_id",
-    //     "host": {
-    //       "userId": "host_user_id",
-    //       "pseudo": "host_pseudo"
-    //     },
-    //     "players": [
-    //       {
-    //         "userId": "player_1_id",
-    //         "pseudo": "player_1_pseudo"
-    //       },
-    //       {
-    //         "userId": "player_2_id",
-    //         "pseudo": "player_2_pseudo"
-    //       }
-    //     ],
-    //     "status": "waiting", // 'waiting', 'in_progress', 'completed'
-    //     "createdAt": "2024-09-12T12:34:56Z",
-    //     "settings": {
-    //       "maxPlayers": 10,
-    //       "gameMode": "classic",
-    //       "playlist": "playlist_id"
-    //     }
-    //   }
   };
 
   return (

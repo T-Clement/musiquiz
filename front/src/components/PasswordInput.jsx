@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PasswordInput({
   name = "password",
