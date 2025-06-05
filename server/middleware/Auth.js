@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const { generateAccessToken } = require("../utils/utils");
 
 async function handleRefreshToken(req, res, next) {
-  // console.log("Handling refresh token...");
   const refreshToken = req.cookies.refreshToken;
   
   if (!refreshToken) {
@@ -13,9 +12,8 @@ async function handleRefreshToken(req, res, next) {
   try {
     // verify refresh token
     const payload = await verifyJwt(refreshToken, process.env.JWT_REFRESH_SECRET_KEY);
-
     const newAccessToken = generateAccessToken(
-      { userId: payload.userId, pseudo: payload.pseudo },
+      { id: payload.userId, pseudo: payload.pseudo },
       process.env.JWT_SECRET_KEY,
       "15m"
     );
@@ -97,6 +95,8 @@ exports.optionalAuth = async (req, res, next) => {
   const token = req.cookies?.accessToken;
   if (!token) {
     // no token, non auth user
+    console.log("No access token found, acting as non-authenticated user.");
+    // set user to null to indicate non-authenticated user
     req.user = null;
     return next();
   }
