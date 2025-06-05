@@ -30,7 +30,7 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+        return res.status(400).json({ errors: errors.array() });
     }
 
     // get validated data coming from validator
@@ -40,7 +40,7 @@ router.post("/api/login", validateLogin, async (req, res, next) => {
     // check if user with this email exists in database
     const user = await User.findUserByMail(email);
     if(!user) {
-        console.log("No user for this email");
+        // console.log("No user for this email");
         return res.status(401).json({ message: "Paire identifiant / mot de passe incorrect" });
     }
 
@@ -89,43 +89,6 @@ router.post('/api/logout', authenticateJWT, (req, res) => {
     res.status(200).json({ message: 'Déconnexion réussie, cookies supprimés' });
 });
 
-// NOT TESTED
-router.get('/api/refresh-token', (req, res) => {
-
-
-
-    const refreshToken = req.cookies.refreshToken;
-
-    if (!refreshToken) {
-        return res.status(401).json({ message: 'Non authentifié' });
-    }
-
-    // verify refresh token
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Refresh token invalide ou expiré' });
-        }
-
-        console.log("dans le /api/refresh-token");
-        console.log(user);
-        // generate a new acces token
-        const newAccessToken = jwt.sign(
-            { userId: user.userId, pseudo: user.pseudo },
-            process.env.JWT_SECRET_KEY,
-            { expiresIn: process.env.TOKEN_EXPIRATION }
-        );
-
-        // store new JWT in httpOnly cookie
-        res.cookie('accessToken', newAccessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
-            maxAge: 15 * 60 * 1000  // 15 minutes in ms
-        });
-        console.log(newAccessToken);
-        res.status(200).json({ message: "Token renouvelé !", user: { userId: user.userId, pseudo: user.pseudo }});
-    });
-});
 
 router.get("/api/me", authenticateJWT, (req, res) => {
     if (!req.user) {

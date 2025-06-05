@@ -81,7 +81,6 @@ router.post('/add-user-to-game', optionalAuth, async (req, res, next) => {
         
         // put body data in variables
         const { gameId, role, socketId, sharingCode } = req.body;
-        
 
         let userId, userData;
 
