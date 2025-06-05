@@ -2,10 +2,17 @@ const redis = require("../redis");
 
 // this middleware returns cached data if available
 // otherwise it create a method to save the response to cache, and calls the next middleware
-module.exports = (prefix = "", duration = 3600) => {
+module.exports = (prefix = "musiquiz", duration = 3600) => {
   return async (req, res, next) => {
-    const key = `__musiquiz__${req.originalUrl || req.url}`;
-    const cachedBody = await redis.get(key);
+    const key = `_${prefix}_${req.originalUrl || req.url}`;
+    let cachedBody;
+    try {
+      cachedBody = await redis.get(key);
+    } catch (error) {
+      console.error(`Cache retrieval error for ${key}:`, error);
+      // Continue without cache if Redis fails
+      cachedBody = null;
+    }
 
     // if data is cached, return it
     if (cachedBody) {
@@ -18,10 +25,14 @@ module.exports = (prefix = "", duration = 3600) => {
     res.originalJson = res.json;
     res.json = (body) => {
       // put in cache
-      redis.set(key, JSON.stringify(body), "EX", 60 * 60); // Cache for 1 hour
+      try {
+        redis.set(key, JSON.stringify(body), "EX", duration);
+        console.log(`Cache set for ${key}`);
+      } catch (error) {
+        console.error(`Cache storage error for ${key}:`, error);
+      }
       // call original res.json
-      res.originalJson(body);
-      console.log(`Cache set for ${key}`);
+      return res.originalJson(body);
     };
 
     next();
