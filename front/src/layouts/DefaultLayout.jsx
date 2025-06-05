@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Header } from "../components/Header/Header";
 import { AuthContext } from "../hooks/authContext";
@@ -50,7 +50,7 @@ export function DefaultLayout() {
 
                 {modal.view === "register" &&
                 <div className='mx-auto my-4 w-64'>           
-                  <h3 className='text-lg font-black text-gray-800'>S'inscrire</h3>
+                  <h3 className='text-lg font-black text-gray-800'>S&apos;inscrire</h3>
                   <p className='text-sm text-gray-500'>
                     Enregistrez vous pour pouvoir joueur au jeu
                   </p>
@@ -63,7 +63,7 @@ export function DefaultLayout() {
                   <p className='text-sm text-gray-500'>
                     Renseignez le mail associé à votre compte pour pouvoir réinitiliaser votre mot de passe.
                     <br/>
-                    Vous recevrez un lien permettant d'accéder à une page où vous pourrez choisir votre nouveau mot de passe.
+                    Vous recevrez un lien permettant d&apos;accéder à une page où vous pourrez choisir votre nouveau mot de passe.
                   </p>
                 </div>
               }

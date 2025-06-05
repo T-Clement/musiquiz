@@ -125,7 +125,7 @@ export default function UserLoginForm({switchTo, closeModal}) {
         { error && <p className='text-red-600'>{error}</p> }
         </div>
         <p className="text-gray-800 text-sm mt-6 text-center">
-            Vous n'avez pas de compte ? 
+            Vous n&apos;avez pas de compte ? 
             <button 
                 onClick={() => switchTo("register")} 
                 className="text-blue-600 font-semibold  hover:underline ml-1"

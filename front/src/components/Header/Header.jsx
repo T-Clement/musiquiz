@@ -1,12 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Link, useLoaderData } from 'react-router-dom'
-// import { AuthContext } from '../../App';
-import Modal from '../Modal';
-import UserLoginForm from './UserLoginForm';
-import UserRegisterForm from './UserRegisterForm';
-import Logout from './Logout';
+import { useEffect, useState } from 'react'
 import Nav from './Nav';
-import UserForgotPassword from './UserForgotPassword';
 import LinkWithViewTransition from '../LinkWithViewTransition';
 
 export function Header({user, setUser, openModal}) {

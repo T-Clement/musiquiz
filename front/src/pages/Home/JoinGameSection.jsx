@@ -3,15 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Tab from '../../components/Tab';
 import JoinRoomSearchInput from './JoinRoomSearchInput';
 import JoinRoomQrCode from './JoinRoomQrCode';
-import axios from 'axios';
 import { AuthContext } from '../../hooks/authContext';
 import apiAxios from '../../libs/axios';
 
 function JoinGameSection() {
 
-
     const { user } = useContext(AuthContext);
-
 
     const [tabSelected, setTabSelected] = useState("Code");
     const [roomCode, setRoomCode] = useState("");

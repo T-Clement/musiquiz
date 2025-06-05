@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef } from 'react'
+import { useEffect, useState, forwardRef } from 'react'
 
 
 const LeaderBoardRow = forwardRef(function LeaderBoardRow ({

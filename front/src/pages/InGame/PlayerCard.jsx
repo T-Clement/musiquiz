@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function PlayerCard({ player, index, totalPlayers }) {
 
     // size of tile related to number of players in the game

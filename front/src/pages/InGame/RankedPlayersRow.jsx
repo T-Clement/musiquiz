@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function RankedPlayerRow({ player }) {
   return (
     <div className="flex items-center bg-[#E69C81] rounded-full p-2 mb-2 shadow-md">

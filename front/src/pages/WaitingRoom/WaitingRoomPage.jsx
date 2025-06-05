@@ -1,8 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Link,
-  Navigate,
   useLoaderData,
   useLocation,
   useNavigate,
@@ -43,9 +41,9 @@ export async function loader({ params }) {
 export default function WaitingRoomPage() {
   // issue when page reload becaus state data is not available because there is no previous navigation
   const { state } = useLocation();
-  const { userId, pseudo } = state;
+  const { userId } = state;
 
-  const { role, setRole } = useOutletContext();
+  const { role } = useOutletContext();
 
   const { socket } = useWebSocket();
   const socketInstance = socket.current;
@@ -191,7 +189,7 @@ export default function WaitingRoomPage() {
     <div className="mt-5">
 
       <h1 className="text-2xl font-extrabold uppercase text-center mb-6">
-        Salle d'attente
+        Salle d&apos;attente
       </h1>
 
       <h2 className="flex flex-col items-center gap-4 mb-6">

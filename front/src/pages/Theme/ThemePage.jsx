@@ -1,10 +1,10 @@
 import { useLoaderData } from 'react-router-dom';
 import { RoomItem } from '../../components/RoomItem';
 import { useEffect } from 'react';
-import { useRenderLogger } from '../../hooks/useRenderLogger';
+// import { useRenderLogger } from '../../hooks/useRenderLogger';
 
 
-export async function loader({request, params}) {
+export async function loader({ params }) {
     const theme = await fetch(`${import.meta.env.VITE_API_URL}/api/theme/${params.id}`).then(response => response.json());
     return {theme};
 }
@@ -34,7 +34,7 @@ export function ThemePage() {
         <ul className='mt-6 flex flex-col lg:flex-row gap-12 lg:gap-12 items-center md:flex-wrap'>
             
         {/* min-[320px]: */}
-        {theme.rooms.map((room, index) => 
+        {theme.rooms.map((room) => 
             <li key={room.room_id} className='flex max-[320px]:flex-col min-[300px]:gap-y-4 sm:flex-row items-center gap-x-5'>
                        
             <RoomItem key={room.room_id} room = {room} />

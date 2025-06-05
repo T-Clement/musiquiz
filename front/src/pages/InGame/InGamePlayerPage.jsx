@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import {  useParams } from "react-router-dom";
 import { useWebSocket } from "../../layouts/GameLayout";
 import Spinner from "../../components/Spinner";
 import { AuthContext } from "../../hooks/authContext";
@@ -13,15 +13,15 @@ export default function InGamePlayerPage() {
   const { socket, isSocketReady } = useWebSocket();
   const socketInstance = socket.current;
 
-  const { role, setRole } = useOutletContext();
+  // const { role, setRole } = useOutletContext();
 
   // LOCAL STATES
   const [currentRound, setCurrentRound] = useState(null);
   const [roundChoices, setRoundChoices] = useState(null);
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [choiceIsSubmited, setChoiceIsSubmited] = useState(false);
+  // const [isGameStarted, setIsGameStarted] = useState(false);
+  // const [choiceIsSubmited, setChoiceIsSubmited] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [revealChoices, setRevealChoices] = useState(false);
+  // const [revealChoices, setRevealChoices] = useState(false);
 
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function InGamePlayerPage() {
       roundNumber: currentRound,
       choiceId,
     });
-    setChoiceIsSubmited(true);
+    // setChoiceIsSubmited(true);
     setRoundChoices(null);
     setIsLoading(true);
   };

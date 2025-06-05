@@ -1,10 +1,9 @@
 // import React from 'react'
 import apiAxios from '../libs/axios';
 import { useLoaderData, useNavigate, useOutletContext, useParams } from 'react-router-dom';
-import axios from 'axios';
 import { useWebSocket } from '../layouts/GameLayout';
 import Button from '../components/Button';
-import {useState} from 'react'
+// import {useState} from 'react'
 
 // vérifier si le joueur est connecté
 // si non, ne laisser le choix que du rôle de présentateur
@@ -47,7 +46,7 @@ export async function loader({request}) {
 
 export default function ChooseRole() {
     
-    const {user, source, sharingCode} = useLoaderData();
+    const {user, sharingCode} = useLoaderData();
     const {role, setRole} = useOutletContext();
     const { id: gameId } = useParams();
     const navigate = useNavigate();
@@ -60,8 +59,8 @@ export default function ChooseRole() {
     const {socket, isSocketReady} = useWebSocket();
     const socketInstance = socket.current;
 
-    const [step, setStep] = useState('');
-    const [error, setError] = useState(null);
+    // const [step, setStep] = useState('');
+    // const [error, setError] = useState(null);
 
     // const handleChooseRole = async (roleInForm) => {
 

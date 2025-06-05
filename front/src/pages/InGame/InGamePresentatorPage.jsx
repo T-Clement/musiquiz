@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useWebSocket } from "../../layouts/GameLayout";
 import { useOutletContext, useParams } from "react-router-dom";
 import LeaderBoard from "./LeaderBoard";
@@ -10,7 +10,7 @@ export default function InGamePresentatorPage() {
   const { id: gameId } = useParams();
   const {socket, isSocketReady} = useWebSocket();
   const socketInstance = socket.current;
-  const { role, setRole } = useOutletContext();
+  const { role } = useOutletContext();
 
 
   const { players, roundData } = useGameSocketContext(gameId);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TopPlayers from "./TopPlayers";
 import RankedPlayers from "./RankedPlayers";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Tab from "../../components/Tab";
 import RoundsSection from "./RoundsSection";
 import { VARIANT_STYLES } from "../../components/Button";
@@ -9,7 +9,7 @@ import LinkWithViewTransition from "../../components/LinkWithViewTransition";
 
 export default function LeaderboardPage() {
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // const { setShowDeleteButton } = useOutletContext();
 

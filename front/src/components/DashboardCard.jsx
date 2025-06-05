@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function DashboardCard({ icon, title, children }) {
     return (
       <div className="bg-[#1F2144]/80 p-6 rounded-2xl flex flex-col justify-between items-center text-center h-full">

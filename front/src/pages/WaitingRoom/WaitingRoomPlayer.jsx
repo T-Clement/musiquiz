@@ -1,7 +1,6 @@
-import React from 'react'
 import Spinner from '../../components/Spinner'
 
-export default function WaitingRoomPlayer({socket, presentator}) {
+export default function WaitingRoomPlayer({ presentator }) {
 
     // add presence of presentator in this view ???
 

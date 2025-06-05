@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
 import FlipMove from "react-flip-move";
 import LeaderBoardRow from "./LeaderBoardRow";
 import { useAnsweredPlayers } from "../../hooks/useAnsweredPlayers";
 
 export default function LeaderBoard({
   players,
-  setPlayers,
   socket,
   currentRound,
 }) {

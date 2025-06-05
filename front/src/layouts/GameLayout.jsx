@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useNavigate, Outlet, useLocation, useParams } from "react-router-dom";
+import { useNavigate, Outlet, useParams } from "react-router-dom";
 import { AuthContext } from "../hooks/authContext";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -12,7 +12,8 @@ const WebSocketContext = createContext();
 
 export default function GameLayout() {
   console.log("Render GameLayout");
-  const { user, setUser, loading } = useContext(AuthContext);
+  // const { user, setUser, loading } = useContext(AuthContext);
+  const { loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const { id: gameId } = useParams();

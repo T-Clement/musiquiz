@@ -5,7 +5,6 @@ import Button from "../../components/Button";
 export default function WaitingRoomPresentator({
   players,
   presentator,
-  socket,
   handleLaunchGame,
 }) {
   const [showModal, setShowModal] = useState(false);
@@ -23,10 +22,10 @@ export default function WaitingRoomPresentator({
           <div className="text-center w-72">
             <div className="mx-auto my-4 w-64">
               <h3 className="text-lg font-black text-gray-800">
-                Activation de l'audio requise
+                Activation de l&apos;audio requise
               </h3>
               <p className="text-sm text-gray-500">
-                Vous devez activer l'audio dans votre navigateur pour pouvoir
+                Vous devez activer l&apos;audio dans votre navigateur pour pouvoir
                 lancer la partie. Une fois cela fait, vous pouvez recliquer sur
                 lancer la partie
               </p>
@@ -35,7 +34,7 @@ export default function WaitingRoomPresentator({
                 type="button"
                 onClick={handleClick}
               >
-                Activer l'audio pour ce site
+                Activer l&apos;audio pour ce site
               </Button>
             </div>
           </div>
