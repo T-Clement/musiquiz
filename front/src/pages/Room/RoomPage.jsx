@@ -1,22 +1,15 @@
 import axios from "axios";
 import { useState } from "react";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import Spinner from "../../components/Spinner";
 import Button from "../../components/Button";
-// import apiAxios from '../../libs/axios';
+import { useContext } from "react";
+import { AuthContext } from "../../hooks/authContext";
 
 export async function loader({ params }) {
-  // console.log(request, params);
-  // let {id} = useParams();
-  // console.log(id);
   const roomData = await fetch(
     `${import.meta.env.VITE_API_URL}/api/room/${params.id}`
   ).then((response) => response.json());
-  // console.log(roomData);
   return { roomData };
 }
 
@@ -35,13 +28,11 @@ export function RoomPage() {
   console.log(roomData);
 
   // if user is connected, get id of user to compare if user is in list of table
-  // const user = useContext(AuthContext);
+  const user = useContext(AuthContext);
+  // console.log(user);
+  const userId = user?.user.userId;
 
   // count of parties played
-
-  // room classement
-
-  // Buttons create multi room custom or default
 
   // add datas related to previous games in this room (history of parties ??)
 
@@ -65,52 +56,83 @@ export function RoomPage() {
 
       // send gameId (_id) to next page
       setLoading(false);
-      navigate(`/game/${gameId}/choose-role?source=create&sharingCode=${sharingCode}`, { state: { gameId } });
+      navigate(
+        `/game/${gameId}/choose-role?source=create&sharingCode=${sharingCode}`,
+        { state: { gameId } }
+      );
     } catch (error) {
       console.error("Error creating game : ", error);
     }
-
   };
+
+  // used to style first rows of table of bestscores of room
+  const podiumClasses = [
+    "bg-amber-400/20 hover:bg-amber-400/30", // 1er
+    "bg-gray-300/20  hover:bg-gray-300/30", // 2e
+    "bg-yellow-700/20 hover:bg-yellow-700/30", // 3e
+  ];
 
   return (
     <div>
       <p className="mb-6">RoomPage - id : {id}</p>
       <p className="mb-6">{roomData.room.name}</p>
       <p className="mb-6">{roomData.room.description}</p>
-      <div className="flex flex-wrap gap-y-6 p-2">
-        <div className="w-full md:w-1/2">
-          <div className="relative overflow-x-auto">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    #
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Pseudo
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Points
-                  </th>
+      <div className="flex flex-wrap justify-center gap-y-6 p-8">
+        <div className="w-full md:w-1/2 flex justify-center max-w-md">
+          <div
+            className="relative fade-in rounded-lg bg-slate-900/85 backdrop-blur
+                ring-2 ring-violet-500/60 shadow-[0_0_20px_4px_rgba(124,58,237,0.25)]
+                overflow-hidden w-full"
+          >
+            <div className="absolute inset-0 -z-10 bg-[url('/assets/grid.svg')] opacity-5" />
+
+            <table className="min-w-full text-sm text-slate-200">
+              <thead>
+                <tr className="bg-violet-700/80 text-xs tracking-wider uppercase">
+                  <th className="px-4 py-3 text-center w-10">#</th>
+                  <th className="px-4 py-3">Pseudo</th>
+                  <th className="px-4 py-3 text-right">Points</th>
                 </tr>
               </thead>
+
               <tbody>
-                {roomData.room.scores && roomData.room.scores.length > 0 ? (
-                  roomData.room.scores.map((score, index) => (
-                    <tr key={score.id} className="bg-white border-b">
-                      <td className="px-6 py-4 text-gray-900">{index + 1}</td>
-                      <td className="px-6 py-4 text-gray-900">
-                        {score.pseudo_user}
+                {roomData.room.scores.length > 0 ? (
+                  roomData.room.scores.map((bestscore, index) => (
+                    <tr
+                      key={bestscore.id}
+                      className={`
+                      ${
+                        index < 3
+                          ? podiumClasses[index]
+                          : "even:bg-white/5 hover:bg-violet-600/25 transition-colors"
+                      }
+                      ${bestscore.id_user == userId ? "font-black" : ""}
+                      `}
+                    >
+                      <td className="px-4 py-3 text-center relative"><span
+                          className={
+                            bestscore.id_user == userId
+                              ? "absolute left-2 top-1/2 -translate-y-1/2 h-5 w-0.5 bg-emerald-400 rounded"
+                              : ""
+                          }
+                        />
+                        {index + 1}
                       </td>
-                      <td className="px-6 py-4 text-gray-900">
-                        {score.score} pts
+                      <td className="px-4 py-3">
+                        {bestscore.pseudo_user}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        {bestscore.score.toLocaleString()} pts
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan="3" className="text-center px-6 py-4">
-                      Aucun score enregistré pour cette salle.
+                  <tr className="">
+                    <td
+                      colSpan={3}
+                      className="px-4 py-10 text-center text-slate-300"
+                    >
+                      Aucune partie jouée
                     </td>
                   </tr>
                 )}
@@ -122,9 +144,9 @@ export function RoomPage() {
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
           <h3>Multijoueur</h3>
           <div className="flex flex-col gap-3 mt-6">
-            
             <Button
-              className="flex flex-row-reverse items-center gap-4" variant="secondaryDark"
+              className="flex flex-row-reverse items-center gap-4"
+              variant="secondaryDark"
               onClick={() => handleCreateGame(id)}
             >
               <span>{loading && <Spinner />}</span>
@@ -132,12 +154,12 @@ export function RoomPage() {
             </Button>
 
             <Button
-              className="cursor-not-allowed" variant="secondaryDark"
+              className="cursor-not-allowed disabled:"
+              variant="secondaryDark"
               disabled={true}
             >
               Créer une partie <br /> personnalisée
             </Button>
-
           </div>
         </div>
       </div>
