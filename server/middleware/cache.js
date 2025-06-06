@@ -21,7 +21,12 @@ module.exports = (prefix = "musiquiz", duration = 3600) => {
     }
     
     // modify response to cache the result
+      // store original express .json() method to use it afterwards
+      // (call in controller method who )
     res.originalJson = res.json;
+    
+    // replace original .json express function by custom
+      // but call original .json afterwards with the key originalJson
     res.json = (body) => {
         // put in cache without blocking the response
         if (body) {
