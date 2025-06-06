@@ -7,7 +7,7 @@ export default function PasswordInput({
   disabled = false,
   className = "",
   inputClassName = "",
-  iconColor = "#3e9392",
+  iconColor = "#1d4ed8",
   onChange,
   value,
   resetOn,

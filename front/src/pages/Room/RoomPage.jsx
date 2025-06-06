@@ -29,8 +29,7 @@ export function RoomPage() {
 
   // if user is connected, get id of user to compare if user is in list of table
   const user = useContext(AuthContext);
-  // console.log(user);
-  const userId = user?.user.userId;
+  const userId = user.user ? user.user.userId : null;
 
   // count of parties played
 
@@ -73,10 +72,17 @@ export function RoomPage() {
   ];
 
   return (
-    <div>
-      <p className="mb-6">RoomPage - id : {id}</p>
-      <p className="mb-6">{roomData.room.name}</p>
-      <p className="mb-6">{roomData.room.description}</p>
+    <div className="mx-2">
+      <section className="mb-6 max-w-lg">
+        <p className="mb-6">RoomPage - id : {id}</p>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">{roomData.room.name}</h2>
+        <div className="h-1 w-32 bg-white my-3" />
+
+        <p className="text-lg text-slate-300 leading-relaxed">{roomData.room.description}</p>
+
+      </section>
+
+
       <div className="flex flex-wrap justify-center gap-y-6 p-8">
         <div className="w-full md:w-1/2 flex justify-center max-w-md">
           <div
@@ -154,7 +160,7 @@ export function RoomPage() {
             </Button>
 
             <Button
-              className="cursor-not-allowed disabled:"
+              className="cursor-not-allowed"
               variant="secondaryDark"
               disabled={true}
             >
