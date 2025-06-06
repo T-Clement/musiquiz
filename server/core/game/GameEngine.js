@@ -272,7 +272,8 @@ class GameEngine extends EventEmitter {
             scores: state.players,
             roomName: finishedGame.roomName, // undefined
             tracks: this.#getGameTracks(state),
-            roomId: finishedGame.roomId
+            roomId: finishedGame.roomId,
+            themeId: finishedGame.themeId
         });
 
         // delete data from store

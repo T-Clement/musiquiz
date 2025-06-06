@@ -20,10 +20,9 @@ module.exports = (io) => {
       // invalidate top3
       await invalidate(`_musiquiz.top3_`);
 
-      // TODO: invalidate theme caches when theme data becomes available
-      // await invalidate(`_musiquiz.theme.show[id-${payload.themeId}]_`);
+      // invalidate theme caches when theme data becomes available
+      await invalidate(`_musiquiz.theme.show[id-${payload.themeId}]_`);
       
-      console.log(`Cache invalidated for ended game: ${payload.gameId}`);
     } catch (error) {
       console.error(`Failed to invalidate caches for game ${payload.gameId}:`, error);
     }
