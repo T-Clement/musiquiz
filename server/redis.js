@@ -6,7 +6,7 @@ const redisConfig = {
   port: parseInt(process.env.REDIS_PORT || "6379"),
   password: process.env.REDIS_PASSWORD,
   maxRetriesPerRequest: 3,
-  enableOfflineQueue: false, // Prevent commands from being queued while disconnected
+  enableOfflineQueue: false, // prevent commands from being queued while disconnected
   retryStrategy(times) {
     // limit of retry until fallback to in-memory cache
     if (times > 3) {
