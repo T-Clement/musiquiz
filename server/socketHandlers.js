@@ -12,16 +12,21 @@ module.exports = (io) => {
 
   // second game-ended listener to handle here cache invalidation
   // when a game as ended
-  gameEngine.on('game-ended', ( payload ) => {
-    // invalidate scores related to the room
-    invalidate(`_musiquiz.room.show[id-${payload.roomId}]_`);
+  gameEngine.on('game-ended', async ( payload ) => {
+    try {
+      // invalidate scores related to the room
+      await invalidate(`_musiquiz.room.show[id-${payload.roomId}]_`);
 
-    // invalidate rooms related to theme (GET /theme/:id) who returns rooms with bestscore in each room
-    // invalidate(`_musiquiz.theme.show[id-${payload.}_`); // no theme in state and Document ...
+      // invalidate top3
+      await invalidate(`_musiquiz.top3_`);
 
-    // invalidate top3
-    invalidate(`_musiquiz.top3_`);
-
+      // TODO: invalidate theme caches when theme data becomes available
+      // await invalidate(`_musiquiz.theme.show[id-${payload.themeId}]_`);
+      
+      console.log(`Cache invalidated for ended game: ${payload.gameId}`);
+    } catch (error) {
+      console.error(`Failed to invalidate caches for game ${payload.gameId}:`, error);
+    }
   });
 
 
