@@ -1,22 +1,17 @@
 const express = require('express');
 const router = express.Router();
 
-
+const cache = require('../middleware/cache');
 const themeCtrl = require('../controllers/theme');
 
 const { body } = require("express-validator");
-
-
-const validateRegisterUserTheme = [
-
-];
 
 
 const Theme = require('../models/Theme');
 
 
 
-router.get('/:id', themeCtrl.show);
-router.get('/', themeCtrl.index);
+router.get('/:id', cache(req => `_musiquiz.themes.show[id-${parseInt(req.params.id)}]_`), themeCtrl.show);
+router.get('/', cache("musiquiz.themes.index") ,themeCtrl.index);
 
 module.exports = router;

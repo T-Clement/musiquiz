@@ -16,6 +16,9 @@ const resetPasswordRoutes = require('./routes/reset-password');
 // controller for specific route
 const gameController = require('./controllers/gameSQL');
 
+// middlewares
+const cache = require('./middleware/cache');
+
 
 const app = express();
 
@@ -47,7 +50,7 @@ app.get('/api/ping', (req, res) => {
 // routes
 app.use(authRoutes);
 app.use('/api/user/', userRoutes);
-app.get('/api/top3', gameController.top3);
+app.get('/api/top3', cache("musiquiz.top3"), gameController.top3);
 app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
 app.use('/api/game', gameRoutes);
@@ -60,7 +63,6 @@ app.use((err, req, res, next) => {
     console.log(err);
     console.error(err.stack);
     res.status(err.status || 500).json({ message: err.message });
-    // res.status(500).json({ message: err.message });
 });
 
 

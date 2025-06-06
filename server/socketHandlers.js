@@ -4,9 +4,30 @@ const GameManager = require("./services/GameManager");
 const { gameEngine } = require('./services/AppWiring');
 const SocketGateway = require("./infra/websocket/SocketGateway");
 
+const invalidate = require('./infra/cache/cacheInvalidator');
+
 module.exports = (io) => {
 
   new SocketGateway(io, gameEngine);
+
+  // second game-ended listener to handle here cache invalidation
+  // when a game as ended
+  gameEngine.on('game-ended', async ( payload ) => {
+    try {
+      // invalidate scores related to the room
+      await invalidate(`_musiquiz.room.show[id-${payload.roomId}]_`);
+
+      // invalidate top3
+      await invalidate(`_musiquiz.top3_`);
+
+      // invalidate theme caches when theme data becomes available
+      await invalidate(`_musiquiz.theme.show[id-${payload.themeId}]_`);
+      
+    } catch (error) {
+      console.error(`Failed to invalidate caches for game ${payload.gameId}:`, error);
+    }
+  });
+
 
 
   io.on("connection", (socket) => {

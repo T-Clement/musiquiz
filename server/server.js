@@ -1,9 +1,8 @@
 require("dotenv").config();
-const http = require("http"); // va permetttre de créer un serveur
+const http = require("http"); // allow to create a http server
 const app = require("./app");
 const { error } = require("console");
 
-const { Server } = require("socket.io");
 
 const connectDB = require('./db/mongo');
 
@@ -21,8 +20,6 @@ const normalizePort = (val) => {
   return false;
 };
 
-// console.log("FRONT " + process.env.DOCKER_PORT_FRONT);
-// console.log("SERVER API " + process.env.DOCKER_PORT_API);
 
 const port = normalizePort(process.env.DOCKER_PORT_API) || 3000; // get port from env variables
 app.set("port", port); // set port of app server
@@ -59,17 +56,6 @@ const errorHandler = (error) => {
 
 const server = http.createServer(app);
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: process.env.FRONT_URL,
-//     methods: ["GET", "POST"],
-//     credentials: true,
-//   },
-// });
-
-
-// const socketHandlers = require("./socketHandlers");
-// socketHandlers(io);
 
 const createSocketServer = require('./createSocketServer');
 createSocketServer(server, port);

@@ -369,6 +369,7 @@ router.post('/create-game', async (req, res, next) => {
         const newGame = new Game({
             _id: gameId,
             roomId: parseInt(roomId), 
+            themeId: parseInt(roomData.id_theme),
             status: 'waiting',
             createdAt: new Date(),
             playlistId: roomData.api_id_playlist,

@@ -61,6 +61,10 @@ const GameSchema = new mongoose.Schema({
         type: Number, // requeest to SQL database / custom validation 
         required: true
     },
+    themeId:  {
+        type: Number,
+        required: true
+    },
     status: {
         type: String,
         enum: ['waiting', 'in_progress', 'finished', 'failed'],
