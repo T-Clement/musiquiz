@@ -69,7 +69,7 @@ router.get('/random', async (req, res, next) => {
 
 });
 
-router.get('/:id', cache(req => `musiquiz.room.show[id-${parseInt(req.params.id)}]`) , roomCtrl.show);
+router.get('/:id', cache(req => `_musiquiz.room.show[id-${parseInt(req.params.id)}]_`) , roomCtrl.show);
 
 router.post("/check-new-playlist", validateCheckNewPlaylist, validateRequest, async (req, res, next) => {
 

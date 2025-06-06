@@ -4,9 +4,26 @@ const GameManager = require("./services/GameManager");
 const { gameEngine } = require('./services/AppWiring');
 const SocketGateway = require("./infra/websocket/SocketGateway");
 
+const invalidate = require('./infra/cache/cacheInvalidator');
+
 module.exports = (io) => {
 
   new SocketGateway(io, gameEngine);
+
+  // second game-ended listener to handle here cache invalidation
+  // when a game as ended
+  gameEngine.on('game-ended', ( payload ) => {
+    // invalidate scores related to the room
+    invalidate(`_musiquiz.room.show[id-${payload.roomId}]_`);
+
+    // invalidate rooms related to theme (GET /theme/:id) who returns rooms with bestscore in each room
+    // invalidate(`_musiquiz.theme.show[id-${payload.}_`); // no theme in state and Document ...
+
+    // invalidate top3
+    invalidate(`_musiquiz.top3_`);
+
+  });
+
 
 
   io.on("connection", (socket) => {

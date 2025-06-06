@@ -270,8 +270,9 @@ class GameEngine extends EventEmitter {
             gameId,
             message: "La partie est terminée, merci d'avoir joué !",
             scores: state.players,
-            roomName: state.roomName, // undefined
-            tracks: this.#getGameTracks(state) 
+            roomName: finishedGame.roomName, // undefined
+            tracks: this.#getGameTracks(state),
+            roomId: finishedGame.roomId
         });
 
         // delete data from store

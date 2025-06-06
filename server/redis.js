@@ -60,6 +60,10 @@ class FallbackCache {
     return this;
   }
 
+  async del($key) {
+    return this.cache.delete($key);
+  }
+
   // add status property to match Redis interface
   get status() {
     return "ready";
