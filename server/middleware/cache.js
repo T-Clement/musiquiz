@@ -2,9 +2,13 @@ const { client: redis, fallbackCache } = require("../redis");
 
 // this middleware returns cached data if available
 // otherwise it create a method to save the response to cache, and calls the next middleware
-module.exports = (prefix = "musiquiz", duration = 3600) => {
+module.exports = (keyBuilder = "musiquiz", duration = 3600) => {
   return async (req, res, next) => {
-    const key = `_${prefix}_${req.originalUrl || req.url}`;
+    
+    // if keybuilder is a function, call with req, if not, take default value
+    const key = typeof keyBuilder === 'function'
+      ? keyBuilder(req)
+      : `_${keyBuilder}_${req.originalUrl || req.url}`;
 
     // get cache instance used
     const cache = redis.status === "ready" ? redis : fallbackCache;

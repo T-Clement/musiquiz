@@ -9,6 +9,7 @@ const InputValidationMessage = require('../models/InputValidationMessage');
 const Room = require('../models/Room');
 const { body, matchedData } = require("express-validator");
 const validateRequest = require('../middleware/validateRequest');
+const cache = require('../middleware/cache');
 
 
 const validateRegisterUserTheme = [
@@ -68,7 +69,7 @@ router.get('/random', async (req, res, next) => {
 
 });
 
-router.get('/:id', roomCtrl.show);
+router.get('/:id', cache(req => `musiquiz.room.show[id-${parseInt(req.params.id)}]`) , roomCtrl.show);
 
 router.post("/check-new-playlist", validateCheckNewPlaylist, validateRequest, async (req, res, next) => {
 
