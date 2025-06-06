@@ -11,7 +11,7 @@ const Theme = require('../models/Theme');
 
 
 
-router.get('/:id', themeCtrl.show);
+router.get('/:id', cache(req => `musiquiz.themes.show[id-${parseInt(req.params.id)}]`), themeCtrl.show);
 router.get('/', cache("musiquiz.themes.index") ,themeCtrl.index);
 
 module.exports = router;

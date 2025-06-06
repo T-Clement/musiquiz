@@ -4,11 +4,12 @@ const { client: redis, fallbackCache } = require("../redis");
 // otherwise it create a method to save the response to cache, and calls the next middleware
 module.exports = (keyBuilder = "musiquiz", duration = 3600) => {
   return async (req, res, next) => {
-    
+
     // if keybuilder is a function, call with req, if not, take default value
     const key = typeof keyBuilder === 'function'
       ? keyBuilder(req)
-      : `_${keyBuilder}_${req.originalUrl || req.url}`;
+      // : `_${keyBuilder}_${req.originalUrl || req.url}`;
+      : `_${keyBuilder}_`;
 
     // get cache instance used
     const cache = redis.status === "ready" ? redis : fallbackCache;
@@ -34,7 +35,8 @@ module.exports = (keyBuilder = "musiquiz", duration = 3600) => {
     res.json = (body) => {
         // put in cache without blocking the response
         if (body) {
-          console.log(`Cache set for ${key}`);
+          const source = redis.status === "ready" ? "Redis" : "Memory";
+          console.log(`Cache set for ${key} (${source})`);
           cache.set(key, JSON.stringify(body), "EX", duration)
             .catch(err => console.error('Failed to set cache:', err));
         }
