@@ -9,7 +9,7 @@ import InGamePlayerPage from "./pages/InGame/InGamePlayerPage";
 import InGamePresentatorPage from "./pages/InGame/InGamePresentatorPage";
 import NewRoomPage from "./pages/NewRoom/NewRoomPage";
 import FinalLeaderBoardPage from "./pages/InGame/FinalLeaderBoardPage";
-import UserPage, { loader as userPageLoader } from "./pages/UserPage";
+import AccountPage, { loader as accountPageLoader } from "./pages/Account/AccountPage";
 import ResetPassword from "./pages/ResetPassword";
 import BrowseRoomsPage from "./pages/BrowseRoomsPage";
 import JoinRoomQrCodePage from "./pages/JoinRoomQrCodePage";
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
       { path: "room/new", element: <NewRoomPage /> },
       { path: "room/browse", element: <BrowseRoomsPage /> },
       { path: "qr-code-join-room", element: <JoinRoomQrCodePage /> },
-      { path: "user/:id", element: <UserPage />, loader: userPageLoader },
+      { path: "user/:id", element: <AccountPage />, loader: accountPageLoader },
       { path: "theme/:id", element: <ThemePage />, loader: themePageLoader },
       { path: "reset-password", element: <ResetPassword /> },
       { path: "*", element: <Page404 /> },
