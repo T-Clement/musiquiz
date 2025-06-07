@@ -99,7 +99,7 @@ export default function GameLayout() {
     <WebSocketContext.Provider value={{ socket: socketRef, isSocketReady }}>
       {/* maybe issue for presentator if height is full screen */}
       <GameSocketProvider gameId={gameId}>
-          <div className="game-layout h-screen ">
+          <div className="game-layout h-screen max-w-screen-2xl mx-auto mb-12 md:mb-2">
             <p>GameLayout</p>
             <div className="mx-auto flex items-center justify-center">
               
