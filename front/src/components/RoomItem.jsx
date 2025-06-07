@@ -29,7 +29,7 @@ export function RoomItem({room}) {
             </LinkWithViewTransition>
           </div>
 
-          <div className='basis-1/2 flex flex-row justify-center items-center gap-2 px-4 py-8 relative'>
+          <div className='flex flex-row basis-1/2 justify-center items-center gap-2 px-4 py-8 relative'>
 
             <div className='absolute bg-black opacity-30 inset-0 rounded-r-lg'></div>
 
