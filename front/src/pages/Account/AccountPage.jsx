@@ -14,7 +14,7 @@ export async function loader({ params }) {
 export default function AccountPage() {
 
     const { userData } = useLoaderData();
-    console.log(userData);
+    // console.log(userData);
 
   // TODO : update password
   // TODO : total games, total of games this week / month

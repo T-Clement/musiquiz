@@ -38,7 +38,7 @@ export default function Nav({
             <li>
               <Button
                 onClick={() => openModal("login")}
-                variant="secondary"
+                variant="blue"
                 className=""
               >
                 <svg

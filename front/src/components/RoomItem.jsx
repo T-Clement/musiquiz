@@ -15,6 +15,9 @@ export function RoomItem({room}) {
   const bestPlayerScore = room?.game?.score ?? room?.best_player?.best_score;
 
 
+  // TODO : add a way to have to add other scores of players not displayed ?
+
+
   return (
     <article className='flex flex-col gap-y-4'>
       <div className='flex flex-wrap'>
