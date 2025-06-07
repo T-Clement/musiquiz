@@ -5,6 +5,9 @@ import Spinner from "../../components/Spinner";
 import Button from "../../components/Button";
 import { useContext } from "react";
 import { AuthContext } from "../../hooks/authContext";
+import Separator from "../../components/Separator";
+import Heading2 from "../../components/Heading2";
+import SubHeading2 from "../../components/SubHeading2";
 
 export async function loader({ params }) {
   const roomData = await fetch(
@@ -75,11 +78,9 @@ export function RoomPage() {
     <div className="mx-2">
       <section className="mb-6 max-w-lg">
         <p className="mb-6">RoomPage - id : {id}</p>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">{roomData.room.name}</h2>
-        <div className="h-1 w-32 bg-white my-3" />
-
-        <p className="text-lg text-slate-300 leading-relaxed">{roomData.room.description}</p>
-
+        <Heading2>{roomData.room.name}</Heading2>
+        <Separator />
+        <SubHeading2>{roomData.room.description}</SubHeading2>
       </section>
 
 
@@ -103,7 +104,7 @@ export function RoomPage() {
 
               <tbody>
                 {roomData.room.scores.length > 0 ? (
-                  roomData.room.scores.map((bestscore, index) => (
+                  roomData.room.scores.map((bestscore, index) => ( // index use as ranking
                     <tr
                       key={bestscore.id}
                       className={`
@@ -118,7 +119,7 @@ export function RoomPage() {
                       <td className="px-4 py-3 text-center relative"><span
                           className={
                             bestscore.id_user == userId
-                              ? "absolute left-2 top-1/2 -translate-y-1/2 h-5 w-0.5 bg-emerald-400 rounded"
+                              ? "absolute left-2 top-1/2 -translate-y-1/2 h-5 w-0.5 bg-emerald-400 rounded" // tick to show user connected
                               : ""
                           }
                         />
@@ -148,7 +149,7 @@ export function RoomPage() {
         </div>
 
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
-          <h3>Multijoueur</h3>
+          <h3 className="">Multijoueur</h3>
           <div className="flex flex-col gap-3 mt-6">
             <Button
               className="flex flex-row-reverse items-center gap-4"
