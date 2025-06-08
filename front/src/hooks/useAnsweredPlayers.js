@@ -13,16 +13,17 @@ export function useAnsweredPlayers(
     setAnsweredSet(new Set());
   }, [currentRound]);
 
-  // listener of the socket event
-  // server emits 'player-answered' when player answers with his userId as payload
-  useEffect(() => {
-    if (!socketInstance) return;
-    socketInstance.on('player-answered', onAnswer);
-    return () => {
-      socketInstance.off('player-answered', onAnswer);
-    };
-  }, [socketInstance]);
-  
+
+   // listener of the socket event
+   // server emits 'player-answered' when player answers with his userId as payload
+   useEffect(() => {
+     if (!socketInstance) return;
+     socketInstance.on('player-answered', onAnswer);
+     return () => {
+       socketInstance.off('player-answered', onAnswer);
+     };
+  }, [socketInstance, onAnswer]);
+
 
   // take the userId from the payload of the event
   // and add it to the answeredSet
@@ -34,6 +35,10 @@ export function useAnsweredPlayers(
       return next;
     });
   };
+
+
+
+
 
   return { answeredSet };
 }

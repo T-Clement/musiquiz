@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useWebSocket } from "../../layouts/GameLayout";
 import { useOutletContext, useParams } from "react-router-dom";
-import LeaderBoard from "./LeaderBoard";
 
 import CountDownCircle from "./CountDownCircle";
 import { useGameSocketContext } from "../../contexts/GameSocketProvider";
