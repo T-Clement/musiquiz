@@ -12,7 +12,7 @@ export function Header({user, setUser, openModal}) {
 
 
   return (
-    <header className='max-w-screen-xl mx-auto flex p-6'>
+    <header className='max-w-screen-xl mx-auto flex p-6 items-center'>
         
         <h1 className='me-auto uppercase font-black text-2xl md:text-3xl'>
           <LinkWithViewTransition to="/">Musiquiz</LinkWithViewTransition>

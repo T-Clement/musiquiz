@@ -59,7 +59,7 @@ app.use(resetPasswordRoutes);
 
 // error handling middleware
 app.use((err, req, res, next) => {
-    console.log("In error middleware");
+    console.log("In error middleware in app");
     console.log(err);
     console.error(err.stack);
     res.status(err.status || 500).json({ message: err.message });

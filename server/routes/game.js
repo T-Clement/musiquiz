@@ -242,7 +242,6 @@ router.post('/create-game', async (req, res, next) => {
         // api playlist id, name, ..
         const roomData = await Room.findOneRoomById(roomId, true);
 
-
         //-------------------------------------------------------------------------------
         // prepare datas for game rounds
 
@@ -291,6 +290,7 @@ router.post('/create-game', async (req, res, next) => {
             const newGame = new Game({
                 _id: gameId,
                 roomId: parseInt(roomId),
+                themeId: parseInt(roomData.id_theme),
                 status: 'failed',
                 createdAt: new Date(),
                 playlistId: roomData.api_id_playlist,

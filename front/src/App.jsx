@@ -12,7 +12,7 @@ export function App() {
     
       <RouterProvider
         router={router}
-        fallbackElement={<div>Loading ...</div>}
+        fallbackElement={<div className="">Loading ...</div>}
       >
       </RouterProvider>
     </AuthContextProvider>

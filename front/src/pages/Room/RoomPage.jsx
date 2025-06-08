@@ -10,6 +10,7 @@ import Heading2 from "../../components/Heading2";
 import SubHeading2 from "../../components/SubHeading2";
 import SimpleRoomTile from "./SimpleRoomTile";
 import NavLinkWithViewTransition from "../../components/NavLinkWithViewTransition";
+import apiAxios from "../../libs/axios";
 
 export async function loader({ params }) {
   const roomData = await fetch(
@@ -49,7 +50,7 @@ export function RoomPage() {
     setLoading(true);
     console.warn(roomId);
     try {
-      const response = await axios.post(
+      const response = await apiAxios.post(
         `${import.meta.env.VITE_API_URL}/api/game/create-game`,
         {
           roomId: roomId,
@@ -64,13 +65,15 @@ export function RoomPage() {
       const { gameId, sharingCode } = response.data;
 
       // send gameId (_id) to next page
-      setLoading(false);
+      // setLoading(false);
       navigate(
         `/game/${gameId}/choose-role?source=create&sharingCode=${sharingCode}`,
         { state: { gameId } }
       );
     } catch (error) {
       console.error("Error creating game : ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,7 +190,7 @@ export function RoomPage() {
       {/* related rooms with the same theme */}
       <section className="w-full mb-14">
         <Heading2 additionnalClasses="!text-2xl">
-            Rooms du meme thème <NavLinkWithViewTransition to={`/theme/${roomData.room.id_theme}`} className="bg-slate-50 text-slate-700 p-2 rounded text-transparent">{roomData.room.theme.name}</NavLinkWithViewTransition>
+            Rooms du même thème <NavLinkWithViewTransition to={`/theme/${roomData.room.id_theme}`} className="bg-slate-50 text-slate-700 p-2 rounded text-transparent">{roomData.room.theme.name}</NavLinkWithViewTransition>
           </Heading2>
 
           <Separator />
@@ -199,7 +202,7 @@ export function RoomPage() {
           md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
         ">
           {roomData.room.theme.relatedRooms.map((r) => (
-            <div key={r._id} className="scroll-snap-start md:scroll-snap-none mb-4">
+            <div key={r.room_id} className="scroll-snap-start md:scroll-snap-none mb-4">
               <SimpleRoomTile room={r} onClick={handleOpen} />
             </div>
           ))}
