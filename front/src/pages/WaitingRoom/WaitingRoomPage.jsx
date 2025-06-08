@@ -130,7 +130,7 @@ export default function WaitingRoomPage() {
     }
 
     if (role === "presentator") {
-      socketInstance.emit("presentator-left", gameId);
+      socketInstance.emit("presentator-left", gameId, userId ?? null);
 
       // optional because where are leaving ???
       setPresentator(null);

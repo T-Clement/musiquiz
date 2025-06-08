@@ -156,9 +156,14 @@ module.exports = (io) => {
     });
 
 
-    socket.on("presentator-left", async (gameId) => {
+    socket.on("presentator-left", async (gameId, userId) => {
         try {
             
+            if(userId) {
+                // remove user from in memory players
+                GameManager.removeOnePlayerFromInGameMemory(userId);
+            }
+
             const updatePullPresentator = {
                 $set: {
                     presentator: null,
