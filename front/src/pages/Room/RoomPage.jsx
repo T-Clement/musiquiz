@@ -16,6 +16,9 @@ export async function loader({ params }) {
   return { roomData };
 }
 
+
+// TODO : add a row under the table to show the score of the player if he has played in this
+// TODO : this room and is not in the display of the best scores
 export function RoomPage() {
   const navigate = useNavigate();
 
@@ -37,6 +40,7 @@ export function RoomPage() {
   // count of parties played
 
   // add datas related to previous games in this room (history of parties ??)
+
 
   const handleCreateGame = async (roomId) => {
     setLoading(true);
@@ -76,7 +80,7 @@ export function RoomPage() {
 
   return (
     <div className="mx-2">
-      <section className="mb-6 max-w-lg">
+      <section className="mb-2 max-w-lg">
         <p className="mb-6">RoomPage - id : {id}</p>
         <Heading2>{roomData.room.name}</Heading2>
         <Separator />
@@ -92,6 +96,7 @@ export function RoomPage() {
                 overflow-hidden w-full"
           >
             <div className="absolute inset-0 -z-10 bg-[url('/assets/grid.svg')] opacity-5" />
+œ
 
             <table className="min-w-full text-sm text-slate-200">
               <thead>
@@ -105,6 +110,7 @@ export function RoomPage() {
               <tbody>
                 {roomData.room.scores.length > 0 ? (
                   roomData.room.scores.map((bestscore, index) => ( // index use as ranking
+
                     <tr
                       key={bestscore.id}
                       className={`
@@ -145,7 +151,9 @@ export function RoomPage() {
                 )}
               </tbody>
             </table>
+
           </div>
+
         </div>
 
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center">

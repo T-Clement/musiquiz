@@ -1,22 +1,31 @@
 import { useState, useEffect } from 'react';
+import { useWebSocket } from '../layouts/GameLayout';
 
-export function useAnsweredPlayers(socket, currentRound) {
+export function useAnsweredPlayers(
+  // socket, 
+  currentRound) {
   const [answeredSet, setAnsweredSet] = useState(new Set());
-
+  const {socket, isSocketReady} = useWebSocket();
+  const socketInstance = socket.current;
+  
   // reset at each round update / change
   useEffect(() => {
     setAnsweredSet(new Set());
   }, [currentRound]);
 
   // listener of the socket event
+  // server emits 'player-answered' when player answers with his userId as payload
   useEffect(() => {
-    if (!socket) return;
-    socket.on('player-answered', onAnswer);
+    if (!socketInstance) return;
+    socketInstance.on('player-answered', onAnswer);
     return () => {
-      socket.off('player-answered', onAnswer);
+      socketInstance.off('player-answered', onAnswer);
     };
-  }, [socket]);
+  }, [socketInstance]);
   
+
+  // take the userId from the payload of the event
+  // and add it to the answeredSet
   const onAnswer = ({ userId }) => {
     setAnsweredSet(prev => {
       if (prev.has(userId)) return prev;
