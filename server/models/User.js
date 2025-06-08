@@ -55,6 +55,32 @@ class User {
     }
 
 
+    static async findManyUsersByIds(ids) {
+        if (!Array.isArray(ids) || ids.length === 0) {
+            console.log("No ids provided to findManyUsersByIds");
+            return [];
+        }
+
+        // create placeholder string for the number of ids
+        const placeholders = ids.map(() => '?').join(',');
+        const query = `SELECT * FROM ${this.tableName} WHERE id IN (${placeholders})`;
+        
+        try {
+            const [rows, fields] = await pool.execute(query, ids);
+
+            if (rows.length === 0) {
+                console.log("No Users found with the provided ids");
+                return [];
+            }
+
+            return rows.map(row => new User(row.id, row.pseudo, null, null, row.createdAt, row.updatedAt));
+            
+        } catch (error) {
+            console.error('Error finding users by ids : ' + error.message);
+            throw error;
+        }
+    }
+
     static async getUserForGame(id) {
         
         const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;

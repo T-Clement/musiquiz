@@ -28,17 +28,43 @@ exports.show = async (req, res, next) => {
         const theme = await Theme.findOneThemeById(room.id_theme);
         room.name_theme = theme.name;
 
+        //get all ids of users who are in scores
+        const userIds = scores.map(score => score.id_user);
 
+        // get all users with these ids
+        const players = await User.findManyUsersByIds(userIds);
         // get pseudo of each player for each Game
-        // await foreach call to database made to be resolved
-        const scoresWithUsernames = await Promise.all(scores.map(async (score) => {
-            const user = await User.findOneUserById(score.id_user);
-            score.pseudo_user = user.getPseudo();
-            return score;
-        }));
+        const scoresWithUsernames = scores.map(score => {
+            const player = players.find(p => p.id === score.id_user);
+            return {
+                ...score,
+                pseudo_user: player ? player.getPseudo() : "Unknown Player"
+            };
+        });
 
         room.scores = scoresWithUsernames;
 
+        // !! TODO : FIND A WAY TO UPDATE CACHE -> no data related to player because cache is used by all players !!
+        // !! cache is set with call of .json method, so it's not possible to put data related to player
+        // TODO : get the number of games played in this room 
+
+
+        // TODO : get the best position of currently connected user in this room
+
+
+        // rooms with the same theme
+        room.theme = {};
+        room.theme.id_theme = room.id_theme;
+        room.theme.name = theme.name;
+        const relatedRooms = await Theme.getRoomsOfOneTheme(room.id_theme);
+
+        // remove current room from related rooms
+        const filteredRooms = relatedRooms.filter(r => r.room_id !== roomId);
+
+        room.theme.relatedRooms = filteredRooms;
+
+
+        // console.log("Room data: ", room);
         // return room data
         res.status(200).json({room});
 

@@ -57,7 +57,11 @@ class Theme {
     }
 
 
-
+    /**
+     * Get all rooms of one theme with the best player and his score
+     * @param {*} themeId 
+     * @returns 
+     */
     static async getRoomsOfOneTheme(themeId) {
         const Room = require("./Room");
         const Game = require("./Game");
@@ -109,7 +113,7 @@ class Theme {
             if(rows.length === 0) {
                 return [];
             }
-            console.log(rows);
+            // console.log(rows);
             return rows.map(room => {
                 return {
                     room_id: room.room_id,

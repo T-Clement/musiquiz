@@ -41,7 +41,7 @@ class Room {
             const { id: roomId, name, api_id_playlist, description, id_theme } = rows[0];
             
             // null to api_id_playlist
-            console.log(new Room(roomId, name, withApiUrl ? api_id_playlist : null, description, id_theme));
+            // console.log(new Room(roomId, name, withApiUrl ? api_id_playlist : null, description, id_theme));
             return new Room(roomId, name, withApiUrl ? api_id_playlist : null, description, id_theme);
 
         } catch (error) {
@@ -181,7 +181,7 @@ class Room {
             if (rows.length === 0) {
                 return null;
             }
-            console.log(rows)
+            // console.log(rows)
             return rows;
 
         } catch (error) {
@@ -190,7 +190,7 @@ class Room {
         }
     }
     
-    
+
 
 
 }
