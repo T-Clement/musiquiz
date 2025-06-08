@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useWebSocket } from "../../layouts/GameLayout";
 import { useOutletContext, useParams } from "react-router-dom";
-import LeaderBoard from "./LeaderBoard";
 
 import CountDownCircle from "./CountDownCircle";
 import { useGameSocketContext } from "../../contexts/GameSocketProvider";
+import ScoreboardFlex from "../../components/Scoreboard/ScoreboardInGameFlex";
 
 export default function InGamePresentatorPage() {
   const { id: gameId } = useParams();
@@ -20,6 +20,11 @@ export default function InGamePresentatorPage() {
   // ------------------------------------
   // -------- HANDLERS ------------------
 
+  /**
+   * Handles the audio loaded event.
+   * Function called when the audio element has loaded its source.
+   * It emits an 'audio-ready' event to socker server to notify that presentator is ready.
+   */
   const handleAudioLoaded = () => {
     console.log("Audio loaded, presentator is ready");
 
@@ -32,7 +37,7 @@ export default function InGamePresentatorPage() {
 
   };
 
-
+  // get players of rooms
   useEffect(() => {
     if (isSocketReady && socketInstance) {
       console.log("Emitting get-room-players from InGamePresentatorPage");
@@ -40,6 +45,9 @@ export default function InGamePresentatorPage() {
     }
   }, [isSocketReady, gameId, socketInstance]);
 
+
+  // update audio ref source when roundData.audioUrl changes
+  // trigger loading of audio extract
   useEffect(() => {
     // load / fetch audio extract
     if(audioRef.current && roundData.audioUrl) {
@@ -50,7 +58,8 @@ export default function InGamePresentatorPage() {
   }, [roundData.audioUrl]);
 
 
-
+  // play audio when roundInProgress changes to true
+  // event triggered by the server when the round starts
   useEffect(() => {
     // plays audio when value of roundInProgress changes
     if(roundData.roundInProgress && audioRef.current) {
@@ -79,16 +88,12 @@ export default function InGamePresentatorPage() {
       </p>
 
       {/*  */}
-      <div className="flex flex-col-reverse md:flex-row justify-around mx-auto max-w-7xl">
+      <div className="flex flex-col-reverse md:flex-row justify-evenly mx-auto max-w-7xl">
         {/* Left */}
-        <div className="relative p-10 ">
+        <div className="relative p-5 md:min-w-[400px]">
           
-          
-
-          <LeaderBoard 
-            players={players} 
-            setPlayers = { () => {} } 
-            socket={socketInstance} 
+          <ScoreboardFlex
+            scores={players}
             currentRound={roundData.currentRound}
           />
 
@@ -101,7 +106,7 @@ export default function InGamePresentatorPage() {
             ref={audioRef} 
             
             preload="auto" 
-            onCanPlayThrough={handleAudioLoaded} 
+            onCanPlayThrough={handleAudioLoaded} // called when the audio is ready to play (is loaded)
             onError={(e) => console.error("Erreur lors du chargement de l'audio : ", e)}
           >
             <source src={roundData.audioUrl || ""}></source>

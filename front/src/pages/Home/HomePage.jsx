@@ -16,6 +16,7 @@ import { VARIANT_STYLES } from "../../components/Button";
 import RandomRoomCard from "./RandomRoomCard";
 import DashboardCard from "../../components/DashboardCard";
 import LinkWithViewTransition from "../../components/LinkWithViewTransition";
+import Heading2 from "../../components/Heading2";
 // import { useRenderLogger } from "../../hooks/useRenderLogger";
 
 export async function loader() {
@@ -46,12 +47,12 @@ export function HomePage() {
   return (
     <div className="px-4 mb-4">
       <section className="mt-8">
-        <h2 className="text-3xl font-semibold mb-2">Rejoindre une partie</h2>
+        <Heading2 additionnalClasses="mb-2">Rejoindre une partie</Heading2>
         <JoinGameSection />
       </section>
 
       <section className="mt-8">
-        <h2 className="text-3xl font-semibold mb-2 uppercase">Top 3</h2>
+        <Heading2 additionnalClasses="uppercase">Top 3</Heading2>
         {/* <p>
           Voici les parties les plus jouées du site. Vous pensez être meilleur
           qu'eux, à vous de jouer !
@@ -72,7 +73,7 @@ export function HomePage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-3xl font-semibold mb-2 uppercase">Themes</h2>
+        <Heading2 additionnalClasses="uppercase">Themes</Heading2>
 
         <Swiper
           direction="horizontal"

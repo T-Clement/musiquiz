@@ -1,6 +1,9 @@
 import { useLoaderData } from 'react-router-dom';
 import { RoomItem } from '../../components/RoomItem';
 import { useEffect } from 'react';
+import Heading2 from '../../components/Heading2';
+import Separator from '../../components/Separator';
+import SubHeading2 from '../../components/SubHeading2';
 // import { useRenderLogger } from '../../hooks/useRenderLogger';
 
 
@@ -28,9 +31,12 @@ export function ThemePage() {
 
   return (
     
-    <section className='mt-8'>
-        <h2 className='text-2xl'>Theme : {theme.name}</h2>
-        <p>Il y a {theme.rooms.length} room(s) correspondant à ce thème.</p>
+    <section className='mt-8 mx-1'>
+        <Heading2>Theme : {theme.name}</Heading2>
+        <Separator/>
+        <SubHeading2>Il y a {theme.rooms.length} room(s) correspondant à ce thème.</SubHeading2>
+
+
         <ul className='mt-6 flex flex-col lg:flex-row gap-12 lg:gap-12 items-center md:flex-wrap'>
             
         {/* min-[320px]: */}

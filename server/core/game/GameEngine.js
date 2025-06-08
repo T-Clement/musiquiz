@@ -258,7 +258,7 @@ class GameEngine extends EventEmitter {
         // register all games with players and their score in the related room in SQL database
         setImmediate(() => {
             try {
-                this.sqlRepo.registerEndedGame(finishedGame.room_id, finishedGame.players).catch(console.error)
+                this.sqlRepo.registerEndedGame(finishedGame.roomId, finishedGame.players).catch(console.error)
             } catch(error) {
                 console.error(error);
             } finally {

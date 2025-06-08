@@ -134,9 +134,10 @@ export default function ChooseRole() {
         <div>
             <h1>ChooseRole</h1>
 
-            <div>
-                <div className="min-h-screen bg-gradient-to-br flex flex-col items-center justify-center">
-                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div className='flex flex-col h-[500px] justify-center items-center'>
+                <div className="bg-gradient-to-br flex flex-col items-center justify-center">
+                    
+                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md m-4">
                         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Choisissez votre rôle</h1>
                         <p className="text-center text-gray-600 mb-8">
                             Sélectionnez le rôle que vous souhaitez jouer dans cette partie.
@@ -158,6 +159,7 @@ export default function ChooseRole() {
                             </Button>
                         </div>
                     </div>
+
                 {   !user && (<p className='italic text-sm pt-3'>Vous voulez être joueur, connectez vous !</p>)}
                 </div>
 

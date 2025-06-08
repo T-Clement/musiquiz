@@ -8,12 +8,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { useWebSocket } from "../../layouts/GameLayout";
-import WaitingRoomPresentator from "./WaitingRoomPresentator";
-import WaitingRoomPlayer from "./WaitingRoomPlayer";
-
-import QRCode from "react-qr-code";
-import Modal from "../../components/Modal";
-
+import { WaitingRoom } from "./WaitingRoom";
 
 export async function loader({ params }) {
   const { id } = params;
@@ -42,43 +37,25 @@ export default function WaitingRoomPage() {
   // issue when page reload becaus state data is not available because there is no previous navigation
   const { state } = useLocation();
   const { userId } = state;
-
   const { role } = useOutletContext();
-
   const { socket } = useWebSocket();
   const socketInstance = socket.current;
-
   // data coming from component loader
   const { game } = useLoaderData();
-
+  // id of game in url params
+  const { id: gameId } = useParams();
+  const navigate = useNavigate();
   // console.log(game)
+
+  // ----------------------------------------
+  // STATES
   // initialization with players connected in
   const [players, setPlayers] = useState(game.players || []);
-
   // state to display if there is a presentator in game
   const [presentator, setPresentator] = useState(game.presentator || null);
 
-  const [qrCodeModalIsOpen, setQrCodeModalIsOpen] = useState(false);
-
-  // id of game in url params
-  const { id: gameId } = useParams();
-
-  // console.log("gameId :", gameId)
-
-  const navigate = useNavigate();
-
-  // console.log("User role : ", role);
-  //
-
-  // CHANGE LAYOUT !!!!
-  // IF ARRIVED HERE, PLAYER IS A USER
-  // OR NOT CONNECTED DEVICE CAN ONLY BE A PRESENTATOR
 
   // check for {userId: value, websocketId, value} when page connection (connection lost, reload of page, ...)
-
-  // console.error(state);
-
-  // console.log(game);
 
   useEffect(() => {
     if (!socketInstance) return;
@@ -136,6 +113,8 @@ export default function WaitingRoomPage() {
     };
   }, [socketInstance, gameId, userId]);
 
+  // -------------------------------------------------------------
+  // HANDLERS 
   const handleQuitRoom = (userId, role) => {
     console.log("L'utilisateur souhaite quitter la partie");
 
@@ -162,7 +141,7 @@ export default function WaitingRoomPage() {
 
   const handleLaunchGame = () => {
     // ws event to launch game
-
+    console.log(role +  " lance la partie");
     socketInstance.emit("launch-game", gameId, () => {
       console.log("WS : La partie est lancée par le présentateur");
 
@@ -180,58 +159,15 @@ export default function WaitingRoomPage() {
     return <div>Loading in WaitingRoom...</div>;
   }
 
-
-  
-
-  // console.log(players);
-
   return (
-    <div className="mt-5">
-
-      <h1 className="text-2xl font-extrabold uppercase text-center mb-6">
-        Salle d&apos;attente
-      </h1>
-
-      <h2 className="flex flex-col items-center gap-4 mb-6">
-        <span>Code pour rejoindre la partie :</span>
-        <strong className="p-4 bg-white rounded-lg text-black inline-block mx-auto">
-          {game.sharingCode}
-        </strong>
-
-
-        <div className="">
-          <QRCode onClick={() => setQrCodeModalIsOpen(true)} size={170} value={`${window.location.origin}/game/${game._id}/choose-role?source=qrcode&sharingCode=${game.sharingCode}`} />
-          {qrCodeModalIsOpen && 
-          <Modal open={qrCodeModalIsOpen} onClose = {() => setQrCodeModalIsOpen(false) } >
-              <QRCode size={340} value={`${window.location.origin}/game/${game._id}/choose-role?source=qrcode&sharingCode=${game.sharingCode}`} />
-
-          </Modal>}
-        </div>
-      </h2>
-
-      <h3 className="font-bold">Role utilisateur: {role}</h3>
-      <p>Socket: {socketInstance.id}</p>
-
-      {role === "presentator" ? (
-        <WaitingRoomPresentator
-          players={players}
-          presentator={presentator}
-          socket={socketInstance}
-          handleLaunchGame={handleLaunchGame}
-        />
-      ) : (
-        <WaitingRoomPlayer socket={socketInstance} presentator={presentator} />
-      )}
-
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={() => handleQuitRoom(userId, role)}
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Quitter
-        </button>
-      </div>
-    </div>
-  );
+  <WaitingRoom 
+    game={game} 
+    onKick={() => { console.log("Not implemented yet !") }} // check if socket who sends event is really presentator socket
+    onLaunch={handleLaunchGame} // no arguments 
+    onQuit={() => handleQuitRoom(userId, role)} // arguments to function so need () => { ... }
+    players={ players }
+    presentator={ presentator}
+    role={ role }
+  />
+  )
 }
