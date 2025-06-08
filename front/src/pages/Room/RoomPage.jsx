@@ -190,7 +190,7 @@ export function RoomPage() {
       {/* related rooms with the same theme */}
       <section className="w-full mb-14">
         <Heading2 additionnalClasses="!text-2xl">
-            Rooms du même thème <NavLinkWithViewTransition to={`/theme/${roomData.room.id_theme}`} className="bg-slate-50 text-slate-700 p-2 rounded text-transparent">{roomData.room.theme.name}</NavLinkWithViewTransition>
+            Rooms du même thème <NavLinkWithViewTransition to={`/theme/${roomData.room.id_theme}`} className="bg-slate-50 text-slate-700 p-2 rounded">{roomData.room.theme.name}</NavLinkWithViewTransition>
           </Heading2>
 
           <Separator />
