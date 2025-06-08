@@ -1,8 +1,9 @@
 // import { AuthContext } from '../../App';
 import Logout from "./Logout";
-import Button from "../Button";
+import Button , {VARIANT_STYLES} from "../Button";
 import LinkWithViewTransition from "../LinkWithViewTransition";
-
+import { Link } from "react-router-dom";
+import {House} from "lucide-react";
 export default function Nav({
   openModal,
   isLoggedIn,
@@ -16,8 +17,12 @@ export default function Nav({
       {isLoggedIn ? (
         <ul className="flex gap-x-6">
           <li>
+            <LinkWithViewTransition  to="/">
+                <House />
+            </LinkWithViewTransition>
+          </li>
+          <li>
             <LinkWithViewTransition
-              unstable_viewTransition
               to={`/user/${user.userId}`}
             >
               Compte
