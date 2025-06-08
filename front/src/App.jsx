@@ -9,10 +9,12 @@ export function App() {
   console.log("Render App");
   return (
     <AuthContextProvider>
+    
       <RouterProvider
         router={router}
         fallbackElement={<div>Loading ...</div>}
-      />
+      >
+      </RouterProvider>
     </AuthContextProvider>
   );
 }

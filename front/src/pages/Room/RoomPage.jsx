@@ -8,6 +8,8 @@ import { AuthContext } from "../../hooks/authContext";
 import Separator from "../../components/Separator";
 import Heading2 from "../../components/Heading2";
 import SubHeading2 from "../../components/SubHeading2";
+import SimpleRoomTile from "./SimpleRoomTile";
+import NavLinkWithViewTransition from "../../components/NavLinkWithViewTransition";
 
 export async function loader({ params }) {
   const roomData = await fetch(
@@ -21,6 +23,7 @@ export async function loader({ params }) {
 // TODO : this room and is not in the display of the best scores
 export function RoomPage() {
   const navigate = useNavigate();
+    const handleOpen = (id) => navigate(`/room/${id}`);
 
   console.log("Render Home Page");
 
@@ -79,7 +82,7 @@ export function RoomPage() {
   ];
 
   return (
-    <div className="mx-2">
+    <div className="mx-2 mb-8">
       <section className="mb-2 max-w-lg">
         <p className="mb-6">RoomPage - id : {id}</p>
         <Heading2>{roomData.room.name}</Heading2>
@@ -178,6 +181,34 @@ export function RoomPage() {
           </div>
         </div>
       </div>
+
+
+
+      {/* related rooms with the same theme */}
+      <section className="w-full mb-14">
+        <Heading2 additionnalClasses="!text-2xl">
+            Rooms du meme thème <NavLinkWithViewTransition to={`/theme/${roomData.room.id_theme}`} className="bg-slate-50 text-slate-700 p-2 rounded text-transparent">{roomData.room.theme.name}</NavLinkWithViewTransition>
+          </Heading2>
+
+          <Separator />
+
+        {/* carrousel on mobile — grid on desktop */}
+        <div className="
+          flex gap-6 overflow-x-auto md:overflow-visible
+          scroll-snap-x
+          md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+        ">
+          {roomData.room.theme.relatedRooms.map((r) => (
+            <div key={r._id} className="scroll-snap-start md:scroll-snap-none mb-4">
+              <SimpleRoomTile room={r} onClick={handleOpen} />
+            </div>
+          ))}
+        </div>
+      </section>
+
     </div>
+
+
+
   );
 }

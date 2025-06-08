@@ -6,6 +6,7 @@ import Modal from "../components/Modal";
 import UserLoginForm from "../components/Header/UserLoginForm";
 import UserRegisterForm from "../components/Header/UserRegisterForm";
 import UserForgotPassword from "../components/Header/UserForgotPassword";
+import ScrollToTop from "../components/ScrollToTop";
 
 export function DefaultLayout() {
   console.log("render Default Layout");
@@ -24,7 +25,9 @@ export function DefaultLayout() {
   console.log("User in DefaultLayout : ", user);
 
   return (
-    <>
+    <>   
+      {/* <ScrollToTop /> */}
+      {/* Header with sticky position and gradient background */}   
       <div className="sticky top-0 z-20 bg-gradient-to-b from-black/100 to-black/40 backdrop-blur-md">
         <Header user={user} setUser={setUser} openModal={openModal}/>
       </div>
