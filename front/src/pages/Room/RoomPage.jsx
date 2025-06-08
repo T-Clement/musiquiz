@@ -96,7 +96,7 @@ export function RoomPage() {
                 overflow-hidden w-full"
           >
             <div className="absolute inset-0 -z-10 bg-[url('/assets/grid.svg')] opacity-5" />
-œ
+
 
             <table className="min-w-full text-sm text-slate-200">
               <thead>
