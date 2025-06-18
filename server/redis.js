@@ -1,5 +1,24 @@
 const Redis = require("ioredis");
 
+
+
+
+if (process.env.NODE_ENV === "test") {
+  // dummy cache object for tests: no-op methods, no logs
+  const dummyCache = {
+    async get() { return null; },
+    async set() { return "OK"; },
+    async del() { return true; },
+    on() { return this; },
+    get status() { return "ready"; }
+  };
+  module.exports = {
+    client: dummyCache,
+    fallbackCache: dummyCache,
+  };
+} else {
+
+
 // get Redis connection details from env variables
 const redisConfig = {
   host: process.env.REDIS_HOST || "localhost",
@@ -127,3 +146,4 @@ module.exports = {
   client,
   fallbackCache,
 };
+}

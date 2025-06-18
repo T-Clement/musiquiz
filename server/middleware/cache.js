@@ -5,6 +5,8 @@ const { client: redis, fallbackCache } = require("../redis");
 module.exports = (keyBuilder = "musiquiz", duration = 3600) => {
   return async (req, res, next) => {
 
+    if(process.env.NODE_ENV === "test") next();
+
     // if keybuilder is a function, call with req, if not, take default value
     const key = typeof keyBuilder === 'function'
       ? keyBuilder(req)

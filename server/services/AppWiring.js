@@ -1,4 +1,6 @@
-const io = require('../createSocketServer');
+// Dependency Injection and Repository Pattern: https://psid23.medium.com/dependency-injection-and-the-repository-design-pattern-7664df76fb93
+
+// const io = require('../createSocketServer');
 const InMemoryStore = require('../core/game/InMemoryStore');
 const GameEngine = require('../core/game/GameEngine');
 // const SocketGateway = require('../infra/websocket/SocketGateway');
@@ -18,8 +20,8 @@ const engine = new GameEngine({ store, gameRepo, sqlRepo });
 // hook / wire WS and engine events
 // new SocketGateway(io, engine);
 
-// Dependency Injection and Repository Pattern
-https://psid23.medium.com/dependency-injection-and-the-repository-design-pattern-7664df76fb93
+const mailer = process.env.NODE_ENV === "test"
+  ? require("./dummyMailer")
+  : require("./emailService");
 
-
-module.exports = { gameEngine: engine, store };
+module.exports = { gameEngine: engine, store, mailer };

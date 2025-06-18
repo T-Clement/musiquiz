@@ -9,7 +9,6 @@ const fs = require("fs");
 const { Cookie, CookieAccessInfo } = require('cookiejar');
 
 let mysqlTestConnection;
-const dumpFilePath = "./tests/test-setup.sql";
 
 
 describe("unit tests on jwt token functions", () => {
@@ -46,10 +45,10 @@ describe('authenticateJWT', () => {
         await mysqlTestConnection.beginTransaction();
         
         
-        const dumpContent = fs.readFileSync(dumpFilePath, 'utf-8');
+        // const dumpContent = fs.readFileSync(dumpFilePath, 'utf-8');
 
         // initlialize database
-        await mysqlTestConnection.query(dumpContent);
+        // await mysqlTestConnection.query(dumpContent);
         
         const password = "secret123";
         const hashedPassword = await utils.generatePasswordHash(password, 10);

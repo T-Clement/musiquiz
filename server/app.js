@@ -12,12 +12,12 @@ const roomRoutes = require('./routes/room');
 const gameRoutes = require('./routes/game');
 const authRoutes = require('./routes/auth');
 const resetPasswordRoutes = require('./routes/reset-password');
-
+const homeRoutes = require('./routes/home');
 // controller for specific route
-const gameController = require('./controllers/gameSQL');
+// const gameController = require('./controllers/gameSQL');
 
 // middlewares
-const cache = require('./middleware/cache');
+// const cache = require('./middleware/cache');
 
 
 const app = express();
@@ -50,7 +50,8 @@ app.get('/api/ping', (req, res) => {
 // routes
 app.use(authRoutes);
 app.use('/api/user/', userRoutes);
-app.get('/api/top3', cache("musiquiz.top3"), gameController.top3);
+// app.get('/api/top3', cache("musiquiz.top3"), gameController.top3);
+app.get('/api/top3', homeRoutes);
 app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
 app.use('/api/game', gameRoutes);

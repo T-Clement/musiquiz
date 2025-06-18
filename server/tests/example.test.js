@@ -8,7 +8,7 @@ const User = require("../models/User");
 
 const InputValidationMessage = require("../models/InputValidationMessage");
 
-const dumpFilePath = "./tests/test-setup.sql";
+// const dumpFilePath = "./tests/test-setup.sql";
 
 let mysqlConnection;
 
@@ -32,19 +32,20 @@ beforeEach(async () => {
   await mysqlConnection.beginTransaction();
 
   // import SQL dump
-  const dumpContent = fs.readFileSync(dumpFilePath, "utf-8");
+  // const dumpContent = fs.readFileSync(dumpFilePath, "utf-8");
 
-  try {
-    await mysqlConnection.query(dumpContent);
-    // console.log("BEFORE EACH : Dump imported successfully");
-  } catch (error) {
-    console.error(
-      "BEFORE EACH : Error during importing dump : ",
-      error.message
-    );
-    throw error;
+  // try {
+  //   await mysqlConnection.query(dumpContent);
+  //   // console.log("BEFORE EACH : Dump imported successfully");
+  // } catch (error) {
+  //   console.error(
+  //     "BEFORE EACH : Error during importing dump : ",
+  //     error.message
+  //   );
+  //   throw error;
   }
-});
+// }
+);
 
 // /* closing database connection after each test. */
 afterEach(async () => {
