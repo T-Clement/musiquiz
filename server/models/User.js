@@ -130,12 +130,36 @@ class User {
     }
 
 
-
+    /**
+     * Boolean who returns true if mail is already in database
+     * @param {string} mail 
+     * @returns {boolean} 
+     */
     static async checkMail(email) {
         const query = `SELECT * FROM ${this.tableName} WHERE email = ?`;
         const values = [email];
 
         const [rows, fields] = await pool.execute(query, values);
+        if(rows.length !== 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Boolean who returns true if pseudo is already in database
+     * @param {string} pseudo 
+     * @returns {boolean} 
+     */
+    static async checkPseudo(pseudo) {
+        const query = `SELECT * FROM ${this.tableName} WHERE pseudo = ?`;
+        const values = [pseudo];
+
+
+        const [rows, fields] = await pool.execute(query, values);
+        
+        return rows.length !== 0; 
 
         if(rows.length !== 0) {
             return false;
@@ -143,6 +167,7 @@ class User {
             return true;
         }
     }
+
 
 
     static async findUserByMail(email) {
@@ -168,21 +193,7 @@ class User {
     }
 
 
-
-    static async checkPseudo(pseudo) {
-        const query = `SELECT * FROM ${this.tableName} WHERE pseudo = ?`;
-        const values = [pseudo];
-
-
-        const [rows, fields] = await pool.execute(query, values);
-
-        if(rows.length !== 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
+    
 
 
 

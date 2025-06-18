@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
-const pool = require("../db/index");
+// const mongoose = require("mongoose");
 const fs = require("fs");
+const path = require("path");
+const pool = require("../db/index");
 
 const request = require("supertest");
 const app = require("../app");
@@ -8,9 +9,7 @@ const User = require("../models/User");
 
 const InputValidationMessage = require("../models/InputValidationMessage");
 
-// const dumpFilePath = "./tests/test-setup.sql";
 
-let mysqlConnection;
 
 const utils = require('../utils/utils');
 const { createGameFixture } = require("./fakeGame");
@@ -18,42 +17,21 @@ const GameManager = require("../services/GameManager");
 
 
 
-
-require("dotenv").config();
-
-// /* connecting to the database before each test. */
-beforeEach(async () => {
-  // await mongoose.connect(process.env.MONGODB_URI);
-  // console.log("BEFORE EACH : Setting up test database");
-
-  // create connection
-  mysqlConnection = await pool.getConnection();
-  // start a transaction
-  await mysqlConnection.beginTransaction();
-
-  // import SQL dump
-  // const dumpContent = fs.readFileSync(dumpFilePath, "utf-8");
-
-  // try {
-  //   await mysqlConnection.query(dumpContent);
-  //   // console.log("BEFORE EACH : Dump imported successfully");
-  // } catch (error) {
-  //   console.error(
-  //     "BEFORE EACH : Error during importing dump : ",
-  //     error.message
-  //   );
-  //   throw error;
+// utility to reset the database before each test
+const resetDb = async () => {
+  const sql = fs.readFileSync(path.join(__dirname, "test-setup.sql"), "utf8");
+  const connection = await pool.getConnection();
+  try {
+    await connection.query(sql);
+  } finally {
+    connection.release();
   }
-// }
-);
+};
 
-// /* closing database connection after each test. */
-afterEach(async () => {
-  // await mongoose.connection.close();
-  // console.log("AFTER EACH : Rolling back transaction...");
-  await mysqlConnection.rollback();
-  await mysqlConnection.release();
-  // console.log("AFTER EACH : Connection released");
+
+
+beforeEach(async () => {
+  await resetDb();
 });
 
 afterAll(async () => {
@@ -61,6 +39,10 @@ afterAll(async () => {
   console.log("AFTER ALL : Database connection pool closed.");
 });
 
+
+
+
+// --------------------------------------------------------------------------
 // each test use the database connection
 
 describe("GET /api/ping", () => {
@@ -75,7 +57,7 @@ describe("POST /api/user/register", () => {
   it("should register a new user in database", async () => {
     const newUser = new User(
       null,
-      "PseudoTest",
+      "TestPseudoTest",
       "password",
       "test@example.com",
       Date.now,
@@ -89,7 +71,6 @@ describe("POST /api/user/register", () => {
       .set("Accept", "application/json");
     
       expect(res.statusCode).toBe(201);
-    // add some expects ...
 
 
 
@@ -450,7 +431,6 @@ describe("WS tests", () => {
 
 
 });
-
 
 // FICHIER DE REPONSE D'UN UTILISATEUR A UN ROUND SPÉCIFIQUE OU JE 
 // DECOUPE EN PLUSIEURS BLOCS LES DIFFÉRENTES ETAPES DU TEST DE LA FONCTIONNALITE

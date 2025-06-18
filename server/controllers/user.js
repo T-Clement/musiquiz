@@ -65,7 +65,7 @@ exports.create = async (req, res, next) => {
         const pseudoExists = await User.checkPseudo(pseudo);
         console.log('pseudo exists : '  + pseudoExists);
 
-        if(!pseudoExists ) {
+        if(pseudoExists) {
             errorsObject.pseudo = User.errorsMessages.pseudoAlreadyExists;
         }
 
@@ -73,11 +73,9 @@ exports.create = async (req, res, next) => {
         // check if user with same mail exists
         const emailExists = await User.checkMail(email);
         console.log('mail exists : '  + emailExists);
-        if(!emailExists) {
+        if(emailExists) {
             errorsObject.email = User.errorsMessages.emailAlreadyExists;
         }
-
-
         if(Object.keys(errorsObject).length > 0) {
             return res.status(400).json({errors : errorsObject});
         }
