@@ -20,7 +20,7 @@ import Heading2 from "../../components/Heading2";
 // import { useRenderLogger } from "../../hooks/useRenderLogger";
 
 export async function loader() {
-  const top3 = await fetch(`${import.meta.env.VITE_API_URL}/api/top3`).then(
+  const top3 = await fetch(`${import.meta.env.VITE_API_URL}/api/home/top3`).then(
     (response) => response.json()
   );
   const themes = await fetch(`${import.meta.env.VITE_API_URL}/api/theme`).then(

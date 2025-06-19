@@ -4,3 +4,4 @@ dist
 coverage
 .env
 .env.test
+tests/gameEngine.core.test.js

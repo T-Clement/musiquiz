@@ -7,6 +7,6 @@ const cache = require('../middleware/cache');
 
 
 
-router.get("/", cache("musiquiz.top3") ,gameController.top3);
+router.get("/top3", cache("musiquiz.top3") ,gameController.top3);
 
 module.exports = router;

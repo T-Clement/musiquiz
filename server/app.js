@@ -51,7 +51,7 @@ app.get('/api/ping', (req, res) => {
 app.use(authRoutes);
 app.use('/api/user/', userRoutes);
 // app.get('/api/top3', cache("musiquiz.top3"), gameController.top3);
-app.get('/api/top3', homeRoutes);
+app.use('/api/home/', homeRoutes);
 app.use('/api/theme/', themeRoutes);
 app.use('/api/room/', roomRoutes);
 app.use('/api/game', gameRoutes);
